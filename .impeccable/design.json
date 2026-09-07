@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-02T16:56:00.000Z",
+  "title": "Design System: brag.fast",
+  "extensions": {
+    "colorMeta": {
+      "foam": {
+        "role": "neutral",
+        "displayName": "Foam",
+        "canonical": "#f4fbff",
+        "tonalRamp": [
+          "oklch(15% 0.008 220)",
+          "oklch(27% 0.008 220)",
+          "oklch(38% 0.008 220)",
+          "oklch(50% 0.008 220)",
+          "oklch(61% 0.008 220)",
+          "oklch(72% 0.008 220)",
+          "oklch(84% 0.008 220)",
+          "oklch(95% 0.008 220)"
+        ]
+      },
+      "sky": {
+        "role": "tertiary",
+        "displayName": "Sky",
+        "canonical": "#8fd4f8",
+        "tonalRamp": [
+          "oklch(15% 0.09 230)",
+          "oklch(27% 0.09 230)",
+          "oklch(38% 0.09 230)",
+          "oklch(50% 0.09 230)",
+          "oklch(61% 0.09 230)",
+          "oklch(72% 0.09 230)",
+          "oklch(84% 0.09 230)",
+          "oklch(95% 0.09 230)"
+        ]
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Night",
+        "canonical": "#1b1540",
+        "tonalRamp": [
+          "oklch(15% 0.08 285)",
+          "oklch(27% 0.08 285)",
+          "oklch(38% 0.08 285)",
+          "oklch(50% 0.08 285)",
+          "oklch(61% 0.08 285)",
+          "oklch(72% 0.08 285)",
+          "oklch(84% 0.08 285)",
+          "oklch(95% 0.08 285)"
+        ]
+      },
+      "flare": {
+        "role": "primary",
+        "displayName": "Flare",
+        "canonical": "#ff5a9a",
+        "tonalRamp": [
+          "oklch(15% 0.21 355)",
+          "oklch(27% 0.21 355)",
+          "oklch(38% 0.21 355)",
+          "oklch(50% 0.21 355)",
+          "oklch(61% 0.21 355)",
+          "oklch(72% 0.21 355)",
+          "oklch(84% 0.21 355)",
+          "oklch(95% 0.21 355)"
+        ]
+      },
+      "citrus": {
+        "role": "primary",
+        "displayName": "Citrus",
+        "canonical": "#ff7a2e",
+        "tonalRamp": [
+          "oklch(15% 0.19 45)",
+          "oklch(27% 0.19 45)",
+          "oklch(38% 0.19 45)",
+          "oklch(50% 0.19 45)",
+          "oklch(61% 0.19 45)",
+          "oklch(72% 0.19 45)",
+          "oklch(84% 0.19 45)",
+          "oklch(95% 0.19 45)"
+        ]
+      },
+      "sun": {
+        "role": "secondary",
+        "displayName": "Sun",
+        "canonical": "#ffd15c",
+        "tonalRamp": [
+          "oklch(15% 0.15 88)",
+          "oklch(27% 0.15 88)",
+          "oklch(38% 0.15 88)",
+          "oklch(50% 0.15 88)",
+          "oklch(61% 0.15 88)",
+          "oklch(72% 0.15 88)",
+          "oklch(84% 0.15 88)",
+          "oklch(95% 0.15 88)"
+        ]
+      },
+      "mint": {
+        "role": "tertiary",
+        "displayName": "Mint",
+        "canonical": "#7ee0c3",
+        "tonalRamp": [
+          "oklch(15% 0.11 170)",
+          "oklch(27% 0.11 170)",
+          "oklch(38% 0.11 170)",
+          "oklch(50% 0.11 170)",
+          "oklch(61% 0.11 170)",
+          "oklch(72% 0.11 170)",
+          "oklch(84% 0.11 170)",
+          "oklch(95% 0.11 170)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(27% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(50% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "City names over the city still: solid white Lilita One with .photo-copy." },
+      "headline": { "displayName": "Headline", "purpose": "Spot and passport names over the still, white; admin title in night on foam." },
+      "section": { "displayName": "Section", "purpose": "Section heads on foam: featured cities, board, seed tail, hours, search results." },
+      "title": { "displayName": "Title", "purpose": "The name painted onto a photo card; panel titles." },
+      "lede": { "displayName": "Lede", "purpose": "The hero sentence under the painted wordmark, white on the still." },
+      "body": { "displayName": "Body", "purpose": "Hours, addresses, brag text; night or night/75 on light surfaces." },
+      "label": { "displayName": "Label", "purpose": "Candy keys, buttons, segments, card meta, back-to-city." },
+      "script": { "displayName": "Script accent", "purpose": "#bragfast signatures only: footer in sun, Instagram embed in citrus. Not the wordmark." }
+    },
+    "gradients": [
+      { "name": "flare-citrus", "value": "linear-gradient(to bottom, #ff5a9a, #ff7a2e)", "purpose": "The one brand gradient: baked into /wordmark.png; fills primary button, active candy key, and rank burst. Never CSS gradient-text." }
+    ],
+    "textShadows": [
+      { "name": "photo-copy", "value": "0 1px 1px rgba(27,21,64,0.4), 0 10px 28px rgba(27,21,64,0.32)", "purpose": "Local legibility on a bright still. Replaces full-bleed indigo overlays." }
+    ],
+    "scrims": [
+      { "name": "card-foot", "value": "linear-gradient(to top, rgba(27,21,64,0.55), transparent)", "purpose": "Short bottom 40% fade on photo cards only. Heroes have none." }
+    ],
+    "shadows": [
+      { "name": "candy-key-rest", "value": "inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 0 rgba(27,21,64,0.12), 0 4px 0 rgba(27,21,64,0.16)", "purpose": "3D drum-machine foot on chips and segments. A key, not a card side-tab." },
+      { "name": "candy-key-pressed", "value": "inset 0 2px 0 rgba(255,255,255,0.4), inset 0 -2px 0 rgba(27,21,64,0.18), 0 2px 0 rgba(27,21,64,0.12)", "purpose": "Active candy key; pair with translateY(2px)." },
+      { "name": "stamp-foot", "value": "inset 0 2px 0 rgba(255,255,255,0.55), 0 3px 0 rgba(27,21,64,0.18)", "purpose": "Sun atmosphere stamp." },
+      { "name": "pink-glow", "value": "0 8px 20px rgba(255,90,154,0.35)", "purpose": "Under the primary button." },
+      { "name": "pink-glow-burst", "value": "drop-shadow(0 8px 18px rgba(255,90,154,0.5))", "purpose": "Under the rank burst." },
+      { "name": "ink-lift", "value": "0 16px 40px rgba(27,21,64,0.25)", "purpose": "The search pill floating on the hero still." },
+      { "name": "wordmark-lift", "value": "drop-shadow(0 2px 16px rgba(27,21,64,0.35))", "purpose": "Under the painted wordmark raster." },
+      { "name": "ink-rest", "value": "0 12px 32px rgba(27,21,64,0.08)", "purpose": "Brag cards resting on foam." }
+    ],
+    "motion": [
+      { "name": "ken", "value": "ken 22s ease-out alternate infinite (scale 1.04 → 1.14)", "purpose": "Home hero still drift; disabled under prefers-reduced-motion." },
+      { "name": "card-zoom", "value": "transform 700ms (scale 1 → 1.05)", "purpose": "Photo card image on hover." },
+      { "name": "key-press", "value": "transform: translateY(2px)", "purpose": "Active candy key sits down." },
+      { "name": "colors", "value": "color, background-color, border-color 150ms", "purpose": "Default state transitions on pills and chips." }
+    ],
+    "focus": [
+      { "name": "ring-sun", "value": "outline: 2px solid #ffd15c; outline-offset: 2px", "purpose": "Page-level focus on buttons, links and photo cards." },
+      { "name": "ring-flare", "value": "box-shadow: 0 0 0 2px #ff5a9a", "purpose": "Fields inside white panels." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Flare-to-citrus pill with a pink glow; the one call to action on a surface.",
+      "html": "<button class=\"ds-btn-primary\">Log in om te braggen</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 20px; border: none; border-radius: 9999px; background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); color: #fff; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; box-shadow: 0 8px 20px rgba(255,90,154,0.35); cursor: pointer; transition: filter 150ms; } .ds-btn-primary:hover { filter: brightness(1.1); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; pointer-events: none; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Quiet white pill with an indigo hairline; turns flare on hover.",
+      "html": "<button class=\"ds-btn-outline\">Dichtbij</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 20px; border: 1px solid rgba(27,21,64,0.15); border-radius: 9999px; background: #fff; color: var(--color-night, #1b1540); font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; transition: color 150ms, border-color 150ms; } .ds-btn-outline:hover { border-color: var(--color-flare, #ff5a9a); color: var(--color-flare, #ff5a9a); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Candy Key",
+      "kind": "chip",
+      "refersTo": "chip-sky",
+      "description": "3D drum-machine key. Rest fills are sky, mint or sun; pressed fill is flare → citrus with translateY(2px).",
+      "html": "<span class=\"ds-chip-row\"><a class=\"ds-chip ds-chip-sun\" href=\"#\">Open nu</a><a class=\"ds-chip ds-chip-mint\" href=\"#\">Met brags</a><a class=\"ds-chip ds-chip-active\" href=\"#\" data-active=\"true\">Geselecteerd</a></span>",
+      "css": ".ds-chip-row { display: inline-flex; gap: 8px; font-family: Figtree, system-ui, sans-serif; } .ds-chip { display: inline-flex; align-items: center; justify-content: center; padding: 6px 16px; border-radius: 9999px; text-decoration: none; font-size: 0.875rem; font-weight: 700; color: var(--color-night, #1b1540); box-shadow: inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 0 rgba(27,21,64,0.12), 0 4px 0 rgba(27,21,64,0.16); } .ds-chip-sun { background: var(--color-sun, #ffd15c); } .ds-chip-mint { background: var(--color-mint, #7ee0c3); } .ds-chip-sky { background: var(--color-sky, #8fd4f8); } .ds-chip-active, .ds-chip[data-active=\"true\"] { background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); color: #fff; transform: translateY(2px); box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), inset 0 -2px 0 rgba(27,21,64,0.18), 0 2px 0 rgba(27,21,64,0.12); } .ds-chip:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "nav",
+      "refersTo": "segment",
+      "description": "White pill tray holding candy-key segments; the current one is flare → citrus and sits pressed.",
+      "html": "<div class=\"ds-seg\" role=\"group\"><a class=\"ds-seg-item\" href=\"#\" aria-current=\"true\">Lijst</a><a class=\"ds-seg-item\" href=\"#\">Kaart</a></div>",
+      "css": ".ds-seg { display: inline-flex; align-items: center; padding: 2px; border-radius: 9999px; border: 1px solid rgba(27,21,64,0.12); background: #fff; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; } .ds-seg-item { display: inline-flex; align-items: center; justify-content: center; padding: 6px 14px; border-radius: 9999px; color: var(--color-night, #1b1540); text-decoration: none; box-shadow: inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 0 rgba(27,21,64,0.12), 0 4px 0 rgba(27,21,64,0.16); } .ds-seg-item[aria-current=\"true\"] { background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); color: #fff; transform: translateY(2px); box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), inset 0 -2px 0 rgba(27,21,64,0.18), 0 2px 0 rgba(27,21,64,0.12); } .ds-seg-item:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Pill",
+      "kind": "input",
+      "refersTo": "search-pill",
+      "description": "The hero's one control: a 64px frosted white pill with an ink lift, floating on the photograph.",
+      "html": "<form class=\"ds-search\" role=\"search\"><span class=\"ds-search-mark\" aria-hidden=\"true\"></span><input class=\"ds-search-input\" type=\"search\" placeholder=\"Bijvoorbeeld Haarlem of een bakkerij\"></form>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 12px; height: 64px; max-width: 36rem; padding: 0 20px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.92); box-shadow: 0 16px 40px rgba(27,21,64,0.25); } .ds-search-mark { width: 10px; height: 10px; flex-shrink: 0; border-radius: 9999px; background: var(--color-flare, #ff5a9a); } .ds-search-input { flex: 1; min-width: 0; border: none; background: transparent; outline: none; color: var(--color-night, #1b1540); font-family: Figtree, system-ui, sans-serif; font-size: 1rem; } .ds-search-input::placeholder { color: rgba(27,21,64,0.45); } .ds-search:focus-within { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Photo Card",
+      "kind": "card",
+      "refersTo": "photo-card",
+      "description": "City still with a short foot fade, white Lilita title, sun Sfeerbeeld stamp, and optional rank burst. Not venue photography.",
+      "html": "<a class=\"ds-photo-card\" href=\"#\"><span class=\"ds-photo-card-still\"></span><span class=\"ds-photo-card-foot\"></span><span class=\"ds-rank\" aria-hidden=\"true\"><svg viewBox=\"0 0 64 64\"><defs><linearGradient id=\"ds-rank-fill\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#ff5a9a\"/><stop offset=\"100%\" stop-color=\"#ff7a2e\"/></linearGradient></defs><path d=\"M32.00,1.00L37.18,12.68L47.50,5.15L46.14,17.86L58.85,16.50L51.32,26.82L63.00,32.00L51.32,37.18L58.85,47.50L46.14,46.14L47.50,58.85L37.18,51.32L32.00,63.00L26.82,51.32L16.50,58.85L17.86,46.14L5.15,47.50L12.68,37.18L1.00,32.00L12.68,26.82L5.15,16.50L17.86,17.86L16.50,5.15L26.82,12.68Z\" fill=\"url(#ds-rank-fill)\"/></svg><span class=\"ds-rank-n\">01</span></span><span class=\"ds-stamp\">Sfeerbeeld</span><span class=\"ds-photo-card-text\"><span class=\"ds-photo-card-title\">Anne&amp;Max Haarlem</span><span class=\"ds-photo-card-meta\">Grote Houtstraat 97</span></span></a>",
+      "css": ".ds-photo-card { position: relative; display: block; min-height: 224px; overflow: hidden; border-radius: 28px; text-decoration: none; } .ds-photo-card-still { position: absolute; inset: 0; background: linear-gradient(160deg, #8fd4f8 0%, #ffd15c 42%, #ff7a2e 100%); } .ds-photo-card-foot { position: absolute; left: 0; right: 0; bottom: 0; height: 40%; background: linear-gradient(to top, rgba(27,21,64,0.55), transparent); } .ds-photo-card-text { position: absolute; left: 0; right: 0; bottom: 0; padding: 20px; } .ds-photo-card-title { display: block; font-family: 'Lilita One', Impact, sans-serif; font-size: 1.5rem; letter-spacing: 0.025em; color: #fff; text-shadow: 0 1px 1px rgba(27,21,64,0.4), 0 10px 28px rgba(27,21,64,0.32); } .ds-photo-card-meta { display: block; margin-top: 4px; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; color: #fff; text-shadow: 0 1px 1px rgba(27,21,64,0.4), 0 10px 28px rgba(27,21,64,0.32); } .ds-rank { position: absolute; left: 12px; top: 12px; display: flex; width: 4.35rem; height: 4.35rem; align-items: center; justify-content: center; transform: rotate(-14deg); filter: drop-shadow(0 8px 18px rgba(255,90,154,0.5)); } .ds-rank svg { position: absolute; inset: 0; width: 100%; height: 100%; } .ds-rank-n { position: relative; font-family: 'Lilita One', Impact, sans-serif; font-size: 1.25rem; color: #fff; } .ds-stamp { position: absolute; right: 12px; top: 12px; transform: rotate(8deg); border-radius: 9999px; background: var(--color-sun, #ffd15c); color: var(--color-night, #1b1540); padding: 4px 10px; font-family: Figtree, system-ui, sans-serif; font-size: 0.75rem; font-weight: 800; box-shadow: inset 0 2px 0 rgba(255,255,255,0.55), 0 3px 0 rgba(27,21,64,0.18); } .ds-photo-card:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Rank Burst",
+      "kind": "custom",
+      "refersTo": "rank-burst",
+      "description": "12-point SVG flash sticker, rotated, flare → citrus fill, zero-padded Lilita number. Not a circle.",
+      "html": "<span class=\"ds-rank-burst\"><svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><defs><linearGradient id=\"ds-burst-fill\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#ff5a9a\"/><stop offset=\"100%\" stop-color=\"#ff7a2e\"/></linearGradient></defs><path d=\"M32.00,1.00L37.18,12.68L47.50,5.15L46.14,17.86L58.85,16.50L51.32,26.82L63.00,32.00L51.32,37.18L58.85,47.50L46.14,46.14L47.50,58.85L37.18,51.32L32.00,63.00L26.82,51.32L16.50,58.85L17.86,46.14L5.15,47.50L12.68,37.18L1.00,32.00L12.68,26.82L5.15,16.50L17.86,17.86L16.50,5.15L26.82,12.68Z\" fill=\"url(#ds-burst-fill)\"/></svg><span>03</span></span>",
+      "css": ".ds-rank-burst { position: relative; display: inline-flex; width: 4.35rem; height: 4.35rem; align-items: center; justify-content: center; transform: rotate(-14deg); filter: drop-shadow(0 8px 18px rgba(255,90,154,0.5)); } .ds-rank-burst svg { position: absolute; inset: 0; width: 100%; height: 100%; } .ds-rank-burst span { position: relative; font-family: 'Lilita One', Impact, sans-serif; font-size: 1.25rem; color: #fff; }"
+    },
+    {
+      "name": "Nav Bar",
+      "kind": "nav",
+      "refersTo": "nav-bar",
+      "description": "Frosted night header over the still: waffle icon, painted wordmark PNG in production, #bragfast in Lilita sun, frosted language toggle.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav-brand\" href=\"#\" aria-label=\"brag.fast\"><span class=\"ds-nav-icon\" aria-hidden=\"true\"></span><span class=\"ds-nav-wm\" aria-hidden=\"true\"></span></a><span class=\"ds-nav-tag\">#bragfast</span><div class=\"ds-nav-right\"><div class=\"ds-lang\"><button class=\"ds-lang-item\" aria-pressed=\"true\">nl</button><button class=\"ds-lang-item\">en</button></div><button class=\"ds-nav-login\">Inloggen</button></div></header>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 20px; background: rgba(27,21,64,0.75); backdrop-filter: blur(12px); color: #fff; } .ds-nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; } .ds-nav-icon { width: 40px; height: 40px; border-radius: 9999px; background: var(--color-sun, #ffd15c); box-shadow: inset 0 2px 0 rgba(255,255,255,0.55); } .ds-nav-wm { display: inline-block; height: 36px; width: 148px; border-radius: 4px; background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); filter: drop-shadow(0 2px 16px rgba(27,21,64,0.35)); } .ds-nav-tag { font-family: 'Lilita One', Impact, sans-serif; font-size: 0.875rem; letter-spacing: 0.025em; color: var(--color-sun, #ffd15c); } .ds-nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; } .ds-lang { display: flex; align-items: center; padding: 2px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); font-family: Figtree, system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; } .ds-lang-item { padding: 6px 10px; border: none; border-radius: 9999px; background: transparent; color: #fff; font: inherit; cursor: pointer; } .ds-lang-item[aria-pressed=\"true\"] { background: var(--color-flare, #ff5a9a); } .ds-nav-login { height: 32px; padding: 0 12px; border: none; border-radius: 9999px; background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); color: #fff; font-family: Figtree, system-ui, sans-serif; font-size: 0.75rem; font-weight: 700; cursor: pointer; } .ds-nav-brand:focus-visible, .ds-lang-item:focus-visible, .ds-nav-login:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Panel Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "A 48px white field inside a panel; 16px radius, indigo hairline, flare focus ring.",
+      "html": "<input class=\"ds-field\" type=\"text\" placeholder=\"Naam van de plek\">",
+      "css": ".ds-field { display: block; width: 100%; height: 48px; padding: 0 16px; border: 1px solid rgba(27,21,64,0.15); border-radius: 16px; background: #fff; color: var(--color-night, #1b1540); font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; outline: none; } .ds-field::placeholder { color: rgba(27,21,64,0.45); } .ds-field:focus { box-shadow: 0 0 0 2px var(--color-flare, #ff5a9a); }"
+    },
+    {
+      "name": "Brag Card",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Always shows maker name and time. Seed 1×1 photos are a sky slab; the hosted img stays sr-only.",
+      "html": "<article class=\"ds-brag\"><div class=\"ds-brag-media\"><p class=\"ds-brag-maker\">Ada</p><p class=\"ds-brag-when\">31 aug 2026, 15:36</p></div><img class=\"ds-brag-sr\" alt=\"\" src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\"><footer class=\"ds-brag-foot\"><p>Ada <span>31 aug 2026, 15:36</span></p></footer></article>",
+      "css": ".ds-brag { overflow: hidden; border-radius: 28px; background: color-mix(in srgb, var(--color-sky, #8fd4f8) 35%, transparent); box-shadow: 0 12px 32px rgba(27,21,64,0.08); } .ds-brag-media { display: flex; height: 20rem; flex-direction: column; justify-content: flex-end; background: var(--color-sky, #8fd4f8); padding: 24px 20px; } .ds-brag-maker { margin: 0; font-family: 'Lilita One', Impact, sans-serif; font-size: 1.5rem; letter-spacing: 0.025em; color: var(--color-night, #1b1540); } .ds-brag-when { margin: 4px 0 0; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; color: rgba(27,21,64,0.7); } .ds-brag-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; } .ds-brag-foot { display: flex; align-items: center; border-top: 1px solid rgba(27,21,64,0.08); background: #fff; padding: 12px 20px; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; color: var(--color-night, #1b1540); } .ds-brag-foot span { margin-left: 8px; font-weight: 600; color: rgba(27,21,64,0.55); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Golden-hour film still",
+    "overview": "Every public surface of brag.fast opens inside a photograph. The still is the product: a synthetic golden-hour breakfast scene runs edge to edge, bright, with no wash over it. Type sits on the photo the way a title is painted onto a sleeve. The wordmark is paint — a hand-brushed raster at `/wordmark.png` with bubblegum-to-tangerine baked into the strokes — not a costume gradient on a geometric font.\n\nThe world is warm light on a cool base. The photographs carry the tangerine hour; the page around them is a cold, pale sky-white (foam) so the warmth stays inside the frame. Ink is deep indigo (night), never black. The candy set is the only saturated UI: bubblegum flare, tangerine citrus, sun yellow, sky blue, mint. Flare fading into citrus is the brand's one gradient. It is baked into the painted wordmark, and it fills pressed-on objects (primary button, active candy key, rank burst). It is never applied as CSS gradient-text. Rank is a rotated 12-point flash sticker, not a table row and not a circle.\n\nDensity is generous and rounded. Controls are 3D candy keys, panels are 28px-radius slabs, spacing runs on a loose 4px rhythm with wide section gaps. Dutch is the default UI language; the atmosphere stamp reads **Sfeerbeeld**. Confirmed anti-references: cream and maple surfaces, the Syne display face, `.flare-text` on geometric fonts, full-bleed indigo hero overlays, circular rank badges, and directory-style cards where a thumbnail is boxed beside a text column.",
+    "keyCharacteristics": [
+      "Photo-first: hero, city and spot headers are full-bleed stills with no overlay; copy uses local text-shadow so the still stays bright.",
+      "Wordmark is a painted raster (`/wordmark.png`), used in the hero and the header. No CSS gradient-text.",
+      "Cool ground, warm subject: foam and white surfaces; the heat lives in the photography and the candy accents.",
+      "One gradient, pressed-on only: flare → citrus on the painted wordmark, the primary button, the active candy key, and the rank burst.",
+      "Indigo ink on light surfaces; solid white Lilita One with photo-copy on photographs.",
+      "Candy keys for filters and segments (sky / mint / sun at rest, flare → citrus when pressed); 28px slabs for content.",
+      "Two display voices: Lilita One for shouted titles; Pacifico only for `#bragfast` signatures."
+    ],
+    "rules": [
+      { "name": "The Warm Inside the Frame Rule", "body": "Warm colour comes from the photograph and the candy accents. Page grounds and panels are foam or white; no beige, cream or maple surface exists in this system.", "section": "colors" },
+      { "name": "The One Gradient Rule", "body": "The only gradient is flare → citrus, top to bottom. It is baked into `/wordmark.png` and fills pressed-on objects (primary button, active candy key, rank burst). Do not invent a second gradient, reverse this one, or apply it as CSS gradient-text.", "section": "colors" },
+      { "name": "The Indigo Ink Rule", "body": "Text is night, never `#000`. Night at alpha tints the header, borders, and a short card-foot fade. It does not wash the hero.", "section": "colors" },
+      { "name": "The Sun Points the Way Rule", "body": "On any night or photographic ground, links and focus rings are sun. Flare is for selected state, not for links.", "section": "colors" },
+      { "name": "The Paint, Not Costume Rule", "body": "The wordmark is a painted raster. Never apply a CSS gradient to a geometric display face and call it the wordmark.", "section": "typography" },
+      { "name": "The Painted Title Rule", "body": "A title on a photograph is Lilita One in solid white with `.photo-copy`, placed bottom-left. It is never boxed in a caption bar and never filled with flare → citrus.", "section": "typography" },
+      { "name": "The No Eyebrow Rule", "body": "Headlines are not preceded by a small uppercase kicker. The hashtag `#bragfast` is a brand signature in the header and footer, not a label above content.", "section": "typography" },
+      { "name": "The Two Shouts Rule", "body": "Lilita One shouts names. Pacifico signs `#bragfast` only. Body copy, labels and controls are always Figtree.", "section": "typography" },
+      { "name": "The Still First Rule", "body": "No public page starts with a heading on a flat ground. The first viewport is a photograph with the title and, on home, the search pill placed on it.", "section": "layout" },
+      { "name": "The Photo-Copy Rule", "body": "Legibility on a bright still comes from local text-shadow (`.photo-copy`), never from a full-bleed indigo overlay.", "section": "elevation" },
+      { "name": "The Coloured Glow Rule", "body": "Shadows are tinted with the thing casting them: flare under flare objects, night under white, photographic, or candy-key objects. No grey or black shadow.", "section": "elevation" },
+      { "name": "The Candy Key Rule", "body": "Filters and segments are 3D keys. The night-tinted foot is how a key sits on the desk. Do not flatten them into white-bordered chips and do not read the foot as a card side-tab.", "section": "elevation" },
+      { "name": "The Pill or Slab Rule", "body": "If a user can press it, it is a pill (and if it is a filter or segment, it is a candy key). If it holds content, it is a 28px slab. Rank is a burst. Nothing else.", "section": "shapes" },
+      { "name": "The Burst Rank Rule", "body": "Board rank is a rotated 12-point flare → citrus burst with a zero-padded Lilita number. Never a circle, never a table index.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do open every public page with a full-bleed still pulled under the translucent night header, title bottom-left in white Lilita with `.photo-copy`.",
+      "Do use the painted `/wordmark.png` in the hero and the header.",
+      "Do use flare → citrus only on the painted wordmark, the primary button, the active candy key, and the rank burst.",
+      "Do make filters and segments 3D candy keys (sky / mint / sun at rest) and every content container a 28px slab.",
+      "Do mark spot cards with the city still plus a sun Sfeerbeeld/Atmosphere stamp; put rank in a rotated 12-point burst.",
+      "Do show maker name and time on every brag card; keep seed placeholder images in the DOM as `sr-only` behind a sky fallback.",
+      "Do put the back-to-city link below the spot address.",
+      "Do use sun for links and focus rings on photographs and night grounds; flare for selected state.",
+      "Do keep body copy, labels and controls in Figtree; Lilita One shouts names; Pacifico signs `#bragfast` only.",
+      "Do keep the page ground foam and panels white so the photograph stays the warmest thing on screen."
+    ],
+    "donts": [
+      "Don't introduce cream, beige or maple surfaces, or bring back Syne.",
+      "Don't restore `.flare-text` or put a CSS gradient on Lilita, Pacifico, or any geometric display face.",
+      "Don't wash a hero, city or spot still with a full-bleed indigo overlay.",
+      "Don't treat spot cards as venue photography; they are city stills with an atmosphere stamp.",
+      "Don't draw rank as a circle or a table number.",
+      "Don't flatten candy keys into white-bordered chips.",
+      "Don't box a thumbnail beside a text column; a list item is a photo with the title painted on it.",
+      "Don't put a small uppercase kicker above a headline.",
+      "Don't use `#000` for text or fades; ink is night.",
+      "Don't add a second gradient, reverse the flare → citrus direction, or use citrus as a flat button fill.",
+      "Don't use grey or black drop shadows, or borders to fake elevation.",
+      "Don't hide maker name or time on a brag card."
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-berry: #4a1534;
+  --color-milk: #ffe5f0;
+  --color-shell: #fff5f8;
+  --color-candy: #ff9ebe;
+  --color-blush: #fa715a;
+  --color-yolk: #feb62a;
+  --color-mint: #bfead3;
+
+  --radius-slab: 1.75rem;
+  --radius-field: 1rem;
+
+  --shadow-stamp: inset 0 2px 0 rgb(255 255 255 / 0.55),
+    0 3px 0 rgb(250 113 90 / 0.22);
+  --shadow-lift: 0 8px 0 rgb(74 21 52 / 0.12), 0 12px 24px rgb(74 21 52 / 0.14);
+  --shadow-rest: 0 12px 32px rgb(250 113 90 / 0.12);
+
+  --drop-shadow-sticker: 0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff,
+    -2px 0 0 #fff, 0 6px 16px rgb(74 21 52 / 0.22);
+  --drop-shadow-burst: 0 8px 18px rgb(250 113 90 / 0.45);
+
+  --text-shadow-photo: 0 1px 1px rgb(74 21 52 / 0.4),
+    0 10px 28px rgb(74 21 52 / 0.32);
+}
+
+/* next/font sets --font-bagel / --font-nunito on <body>, not :root */
+@theme inline {
+  --font-display: var(--font-bagel), "Arial Rounded MT Bold", sans-serif;
+  --font-body: var(--font-nunito), system-ui, sans-serif;
+}
+
+@utility candy-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: #fff;
+}
+
+body {
+  margin: 0;
+  color: var(--color-berry);
+  font-family: var(--font-body);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+::selection {
+  background: var(--color-berry);
+  color: var(--color-milk);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-yolk);
+  outline-offset: 2px;
+}
+
+@keyframes ken {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: scale(1.14);
+  }
+}
+
+.hero-ken {
+  animation: ken 22s ease-out alternate infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ken {
+    animation: none;
+  }
+}
+
+.leaflet-container {
+  font-family: var(--font-body);
+  background: color-mix(in srgb, var(--color-candy) 28%, var(--color-milk));
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--color-blush);
+  color: var(--color-berry);
+}
+
+.leaflet-popup-content a {
+  color: var(--color-berry);
+  font-weight: 700;
+}
+
+.spot-marker {
+  stroke: var(--color-blush);
+  fill: var(--color-yolk);
+  fill-opacity: 0.9;
+}

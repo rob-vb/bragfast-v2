@@ -1,0 +1,52 @@
+ts	phase	decision	why	evidence	result
+2026-08-31T09:58:24Z	frame	figure-it-out for v1, this run is SPEC step 1 Shell	ambitious multi-part product, sequence into verifiable units, stop at signed-in/out plus language switch	/home/henk/bragfast-v2/.audit/workflow.md	open
+2026-08-31T09:58:24Z	frame	Convex instead of SPEC Postgres	human named the stack, SPEC says use it unless the human names another	SPEC.md:195-202	open
+2026-08-31T09:58:24Z	frame	auth via official @convex-dev/better-auth, not a custom adapter	one-way door, official Next.js SSR helpers exist	https://labs.convex.dev/better-auth/framework-guides/next	open
+2026-08-31T10:02:19Z	frame	Convex cloud on convex.dev, env vars at the end	operator will provision the deployment and paste secrets later, do not block Shell on live OAuth	user-message	open
+2026-08-31T10:11:08Z	frame	Convex cloud project bragfast-1da73 in team rob-64791	operator logged in, created the project from this session	https://dashboard.convex.dev/t/rob-64791/bragfast-1da73	open
+2026-08-31T10:11:39Z	frame	dev deployment focused-deer-318 in eu-west-1	operator login used, env.local write waits on package.json	https://focused-deer-318.eu-west-1.convex.cloud	open
+2026-08-31T10:13:16Z	arena	all four design packages landed, cross-judge started	exhaust the design space before writing app code	/tmp/arena-bragfast-arch/	open
+2026-08-31T10:19:28Z	arena	base candidate 1, graft MessageKey LicensedImage cities, flatten spot indexes	judge 28 vs 26/26/21, parent agrees, event log too heavy for v1	/tmp/arena-bragfast-arch/JUDGE.md	picked
+2026-08-31T10:35:59Z	shell	removed fake NL 01 city numbers from homepage	board numbers are earned, seed and featured cities must not wear rank badges	app/page.tsx	fixed
+2026-08-31T10:36:26Z	shell	parent re-checked localhost:3002 after dropping fake city ranks	prove it works on the live HTML not the delegate summary	http://localhost:3002/	VERIFIED
+2026-08-31T10:38:55Z	trail	copied arena packages into .audit/design/arena	tmp is disposable, the synthesis must survive a reboot	/home/henk/bragfast-v2/.audit/design/arena/JUDGE.md	copied
+2026-08-31T10:38:55Z	shell	SITE_URL now http://localhost:3002 because port 3000 belongs to 200squares	magic links must land on this app not another Next process	convex-env	SITE_URL=http://localhost:3002
+2026-08-31T10:38:55Z	shell	npm run test:domain typecheck build after parent fixes	audit asked for a build after the city-rank edit	npm-run-build	VERIFIED
+2026-08-31T10:38:55Z	frame	Shell predicate holds on live HTML plus language POST	supersedes earlier open framing rows	http://localhost:3002/	VERIFIED
+2026-08-31T10:40:30Z	shell	POST /api/locale then GET / stays on / with English H1	audit asked for the language control not only a Cookie header	http://localhost:3002/api/locale	VERIFIED
+2026-08-31T10:40:30Z	shell	magic-link verify on SITE_URL 3002 lands signed-in with Uitloggen	previous auth check used 3002 against SITE_URL 3000	http://localhost:3002/api/auth/magic-link/verify	VERIFIED
+2026-08-31T11:23:53Z	shell	preview on http://77.42.31.66 via nginx, Next bound to 127.0.0.1:3002	operator cannot open localhost on a VPS	http://77.42.31.66/	VERIFIED
+2026-08-31T15:01:45Z	frame	this run is SPEC step 2 Catalog, Shell already done	stop when a seeded city lists spots, spot view-source has schema, search finds city and spot	.audit/workflow.md	VERIFIED
+2026-08-31T15:01:45Z	arena	skipped a second four-package arena	catalog modules were already in the Shell synthesis	.audit/design/SYNTHESIS.md	skipped
+2026-08-31T15:01:45Z	catalog	seed Haarlem by Place ID fixtures, not live Places	no Places key on the VPS, upsert is still the ingest shape	convex/seed.ts	seeded
+2026-08-31T15:01:45Z	catalog	live Haarlem lists 5 seeds, gravestone kept off the list	prove it on public HTML not the Convex payload	scripts/verify-catalog.sh	VERIFIED
+2026-08-31T15:07:27Z	catalog	upsert retargets seed Place IDs by city slug	Places matching only placeId would duplicate Haarlem rows	domain/spot.ts:planSpotUpsert	fixed
+2026-08-31T15:07:27Z	catalog	verify script lists all five Haarlem seeds and parses JSON-LD	string grep of one name was a weak gate	scripts/verify-catalog.sh	VERIFIED
+2026-08-31T15:22:55Z	frame	this run is SPEC step 3 in-app brag + board	catalog is live, stop when two makers share one numbered row and a seed sits in the tail	.audit/workflow.md	open
+2026-08-31T15:22:55Z	arena	skipped a second four-package arena	Shell synthesis already named reconcileVote and the votes.ts writer	.audit/design/SYNTHESIS.md	skipped
+2026-08-31T15:22:55Z	domain	reconcileVote grants keeps retracts from visible posts	vote rows are derived, extra posts must not insert a second vote	domain/vote.ts	tests green
+2026-08-31T15:22:55Z	frame	Places autocomplete and passports stay out	no Places key, SPEC step 3 done predicate is two makers one rank	SPEC.md:236-237	deferred
+2026-08-31T15:40:43Z	brag	makerVotes writes only in convex/model/votes.ts	one writer keeps extra posts, hide, and delete on one vote	convex/model/votes.ts	kept
+2026-08-31T15:40:43Z	verify	Haarlem HTML is 01 Anne&Max score 2, Jopenkerk in the tail	prove the SPEC predicate on the public URL, not the Convex payload	scripts/verify-brag.sh	VERIFIED
+2026-08-31T15:40:43Z	ops	restarted next start on 127.0.0.1:3002 after 502	the implementer process died when that agent ended	http://77.42.31.66/nl/haarlem	VERIFIED
+2026-08-31T15:40:43Z	brag	ensureAppUser survives a missing Better Auth name	magic-link users can have null name, trim would throw on first brag	convex/model/users.ts	fixed
+2026-08-31T15:45:07Z	ops	Next now runs under henk pm2 as bragfast	session shells were killing next start and 502ing nginx	pm2-henk.service	VERIFIED
+2026-08-31T15:45:07Z	brag	replace refuses hidden posts	a report hid the post, then the owner could swap the media a moderator would see	convex/brags.ts	fixed
+2026-08-31T15:45:07Z	verify	board must list Anne&Max once	a duplicate board row would have passed the old grep	scripts/verify-brag.sh	hardened
+2026-09-01T18:52:40Z	frame	this run is SPEC step 4 passport	stop when /nl/u/{slug} is HTML after brag 1, missing slugs 404, zero votes noindex	.audit/workflow.md	VERIFIED
+2026-09-01T18:52:40Z	arena	skipped a second four-package arena	Shell synthesis already named ensurePassport and passportBySlug	.audit/design/PASSPORT.md	skipped
+2026-09-01T18:52:40Z	passport	users.passport written only in ensurePassport	first brag mints, later brags keep, seed re-run is a no-op on slug	convex/model/users.ts	kept
+2026-09-01T18:52:40Z	verify	maker-a HTML, week tab, sitemap, 404, English on same URL	prove the SPEC predicate on the public URL, not the Convex payload	scripts/verify-passport.sh	VERIFIED
+2026-09-01T19:01:27Z	frame	SPEC step 5 Instagram skipped, this run is polish starting with brand	owner named the logo and colors, no Meta credentials	user-message	open
+2026-09-01T19:01:27Z	polish	waffle icon and crust/gold/cream palette replace the navy shell	logo from brag.fast/logo-icon.svg, Mac Downloads path not on the VPS	http://77.42.31.66/	VERIFIED
+2026-09-01T19:34:00Z	frame	SPEC step 6 polish, Instagram still skipped	stop when open-nu and met-brags filter on HTML and signed-out /admin is 404	.audit/workflow.md	VERIFIED
+2026-09-01T19:34:00Z	polish	nearby, featured makers-first, brag-live mail, owner queue	type chips stay removed, Places autocomplete stays blocked	SPEC.md:245-246	kept
+2026-09-01T19:34:00Z	verify	Dichtbij on /, brags=1 hides tail, /admin 404 signed-out	prove the SPEC predicate on the public URL	scripts/verify-polish.sh	VERIFIED
+2026-09-01T19:54:00Z	frame	SPEC step 5 social ingest plus deferred Places user-add	hard-tag permalink on STACH, caption queue does not rank Jopenkerk	.audit/workflow.md	VERIFIED
+2026-09-01T19:54:00Z	social	hard tag attaches as social post, caption goes to aiMatchQueue	no Instagram bytes in Convex storage, LicensedImage stays null	convex/model/social.ts	kept
+2026-09-01T19:54:00Z	places	hospitality live via classifyPlaceTypes, petrol waits in spotAddQueue	autocomplete empty without GOOGLE_PLACES_API_KEY	convex/model/placeAdd.ts	kept
+2026-09-01T19:54:00Z	verify	STACH permalink, Anne&Max 01/2, Jopenkerk tail, koffiesalon live	prove it on public HTML plus convex socialState	scripts/verify-social.sh	VERIFIED
+2026-09-02T12:50:00Z	frame	numbered SPEC 1-6 done, this run is catalog hygiene	SPEC catalog maintenance is leftover daily Places upsert, hours, closed, discover	.audit/workflow.md	VERIFIED
+2026-09-02T12:50:00Z	hygiene	planHygiene skips petrol and unknown graves, closes listed, never reopens	one writer upsertSpot plus standing-drop close, makerVotes untouched	domain/hygiene.ts	kept
+2026-09-02T12:50:00Z	verify	Bregje tail, Honing 06:30, Amsterdam bakery, petrol absent, Anne&Max 01/2	prove it on public HTML plus convex hygieneState	scripts/verify-hygiene.sh	VERIFIED
+2026-09-02T12:50:00Z	catalog	verify-catalog allows licensed Convex storage image on Anne&Max	board demo made JSON-LD image legal, Instagram images still fail	scripts/verify-catalog.sh	fixed

@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": ".candy-key",
+        "createdAt": "2026-09-02T16:40:40.227Z"
+      }
+    ]
+  },
+  "buildPath": "code"
+}
