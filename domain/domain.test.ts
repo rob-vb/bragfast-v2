@@ -8,10 +8,10 @@ import {
   haversineMeters,
   nearestCity,
   sortByDistance,
-  assignCitySlug,
 } from "./geo";
-import { NL_CITIES } from "./cities";
-import { canonicalCitySlug, lookupGemeente, NL_INGEST_GEMEENTEN } from "./gemeenten";
+import { NL_CITIES, canonicalCitySlug } from "./cities";
+import { lookupGemeente, NL_INGEST_GEMEENTEN } from "./gemeenten";
+import { assignPlaceSlug } from "./woonplaatsen";
 import { judgeCatalogFit } from "./catalogVerdict";
 import {
   INGEST_POPULATION_FLOOR,
@@ -846,37 +846,36 @@ test("exact city search matches slug and localized names only", () => {
   };
   assert.equal(exactCitySlugFromHits("Haarlem", [haarlem, denHaag]), "haarlem");
   assert.equal(exactCitySlugFromHits("the hague", [haarlem, denHaag]), "den-haag");
-  assert.equal(exactCitySlugFromHits("hoofddorp", [haarlem, denHaag]), "haarlemmermeer");
+  assert.equal(exactCitySlugFromHits("hoofddorp", [haarlem, denHaag]), "hoofddorp");
   assert.equal(exactCitySlugFromHits("ha", [haarlem, denHaag]), null);
   assert.equal(exactCitySlugFromHits("h", [haarlem]), null);
 });
 
-test("gazetteer is Dutch gemeenten, not dorpen", () => {
+test("gazetteer is Dutch woonplaatsen, not gemeenten", () => {
   const slugs = NL_CITIES.map((city) => city.slug);
-  assert.ok(NL_CITIES.length >= 300);
+  assert.ok(NL_CITIES.length >= 2500);
   assert.ok(
     NL_CITIES.filter((city) => city.featuredOrder !== undefined).length === 9,
   );
-  assert.ok(slugs.includes("maastricht"));
-  assert.ok(slugs.includes("leiden"));
+  assert.ok(slugs.includes("hoofddorp"));
   assert.ok(slugs.includes("den-bosch"));
-  assert.ok(slugs.includes("bloemendaal"));
-  assert.ok(slugs.includes("haarlemmermeer"));
-  assert.ok(!slugs.includes("hoofddorp"));
-  assert.ok(!slugs.includes("schoorl"));
-  assert.equal(canonicalCitySlug("hoofddorp"), "haarlemmermeer");
+  assert.ok(slugs.includes("giethoorn"));
+  assert.ok(slugs.includes("haarlem"));
+  assert.ok(!slugs.includes("haarlemmermeer"));
   assert.equal(canonicalCitySlug("den bosch"), "den-bosch");
+  assert.equal(canonicalCitySlug("hoofddorp"), "hoofddorp");
+  assert.equal(canonicalCitySlug("giethoorn"), "giethoorn");
   assert.equal(lookupGemeente("zaandam")?.nameNl, "Zaandam");
   for (const city of NL_CITIES) {
     assert.equal(parseCitySlug(city.slug), city.slug);
   }
 });
 
-test("assignCitySlug maps a point to the gemeente polygon", () => {
-  assert.equal(assignCitySlug({ lat: 52.3812, lng: 4.636 }), "haarlem");
-  assert.equal(assignCitySlug({ lat: 50.85, lng: 5.69 }), "maastricht");
-  assert.equal(assignCitySlug({ lat: 52.3025, lng: 4.6889 }), "haarlemmermeer");
-  assert.equal(assignCitySlug({ lat: 53.4, lng: 7.2 }), null);
+test("assignPlaceSlug maps a point to the woonplaats polygon", () => {
+  assert.equal(assignPlaceSlug({ lat: 52.3812, lng: 4.636 }), "haarlem");
+  assert.equal(assignPlaceSlug({ lat: 50.85, lng: 5.69 }), "maastricht");
+  assert.equal(assignPlaceSlug({ lat: 52.3025, lng: 4.6889 }), "hoofddorp");
+  assert.equal(assignPlaceSlug({ lat: 53.4, lng: 7.2 }), null);
 });
 
 test("Places free-tier budget stays on the Pro SKU cap", () => {
