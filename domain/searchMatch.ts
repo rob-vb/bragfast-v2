@@ -1,3 +1,4 @@
+import { canonicalCitySlug } from "./gemeenten";
 import type { SearchHit } from "./viewModels";
 
 export function searchNeedle(query: string): string {
@@ -12,21 +13,21 @@ export function isExactCityQuery(
   if (needle.length < 2) {
     return false;
   }
-  return (
-    city.slug === needle ||
-    city.nameNl.toLowerCase() === needle ||
-    city.nameEn.toLowerCase() === needle
-  );
+  return canonicalCitySlug(query) === city.slug;
 }
 
 export function exactCitySlugFromHits(
   query: string,
   hits: SearchHit[],
 ): string | null {
+  const slug = canonicalCitySlug(query);
+  if (!slug || searchNeedle(query).length < 2) {
+    return null;
+  }
   for (const hit of hits) {
-    if (hit.kind === "city" && isExactCityQuery(query, hit)) {
-      return hit.slug;
+    if (hit.kind === "city" && hit.slug === slug) {
+      return slug;
     }
   }
-  return null;
+  return slug;
 }

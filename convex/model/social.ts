@@ -6,6 +6,7 @@ import type { SocialEmbed } from "../../domain/post";
 import {
   isInstagramPermalink,
   planCaptionMatch,
+  planMakerMatchConfirm,
   planSocialIngest,
 } from "../../domain/social";
 import { applyVisiblePosts } from "./votes";
@@ -127,6 +128,66 @@ export async function rejectMatch(
     throw new ConvexError("Match is not pending");
   }
   await ctx.db.patch(queueId, { status: "rejected" });
+}
+
+export async function confirmMakerMatch(
+  ctx: MutationCtx,
+  input: {
+    queueId: Id<"aiMatchQueue">;
+    spotId: Id<"spots">;
+    userId: Id<"users">;
+  },
+): Promise<{ action: "attach" | "already"; spotName: string; path: string }> {
+  const row = await ctx.db.get(input.queueId);
+  if (!row) {
+    throw new ConvexError("Match not found");
+  }
+  const spot = await ctx.db.get(input.spotId);
+  if (!spot) {
+    throw new ConvexError("Spot not found");
+  }
+  const makerKey = serializeMakerKey({ kind: "user", userId: input.userId });
+  const existing = await ctx.db
+    .query("posts")
+    .withIndex("by_platform_media", (q) =>
+      q.eq("body.embed.platformMediaId", row.embed.platformMediaId),
+    )
+    .unique();
+  const plan = planMakerMatchConfirm({
+    queueStatus: row.status,
+    queueMakerKey: row.makerKey,
+    userMakerKey: makerKey,
+    listingStatus: spot.listingStatus,
+    existingSpotId: existing?.spotId ?? null,
+    targetSpotId: input.spotId,
+  });
+  if (!plan.ok) {
+    throw new ConvexError(
+      plan.reason === "not-owner"
+        ? "Not your post"
+        : plan.reason === "closed"
+          ? "Closed spots cannot take brags"
+          : plan.reason === "duplicate"
+            ? "This Instagram post is already on another spot"
+            : "Match is not pending",
+    );
+  }
+  if (!isInstagramPermalink(row.embed.permalink)) {
+    throw new ConvexError("Invalid Instagram permalink");
+  }
+  if (plan.action === "attach") {
+    await insertVisibleSocial(ctx, {
+      spotId: spot._id,
+      makerKey,
+      embed: row.embed,
+    });
+  }
+  await ctx.db.patch(input.queueId, { status: "approved" });
+  return {
+    action: plan.action,
+    spotName: spot.name,
+    path: `/nl/${spot.citySlug}/${spot.slug}`,
+  };
 }
 
 async function insertVisibleSocial(

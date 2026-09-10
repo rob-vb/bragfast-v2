@@ -8,6 +8,9 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { t, type Locale } from "@/domain/messages";
 import type { FeedItem } from "@/domain/viewModels";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { SocialEmbed } from "@/components/social-embed";
+import { requestSignIn } from "@/lib/sign-in-signal";
 
 function mediaTypeOf(file: File): "photo" | "video" | null {
   if (file.type.startsWith("image/")) {
@@ -87,10 +90,6 @@ function HostedBrag({
   );
 }
 
-function openSignIn() {
-  window.dispatchEvent(new Event("bragfast:open-signin"));
-}
-
 export function SpotBrags({
   locale,
   spotId,
@@ -110,9 +109,17 @@ export function SpotBrags({
   const replace = useMutation(api.brags.replace);
   const remove = useMutation(api.brags.remove);
   const report = useMutation(api.brags.report);
+  const confirmMatch = useMutation(api.instagram.confirmMatch);
+  const matches =
+    useQuery(api.instagram.pendingMatches, user ? {} : "skip") ?? [];
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const mineSet = new Set(mine);
+  const unmatched = matches.slice().sort((a, b) => {
+    const aHit = a.proposedSpotId === spotId ? 0 : 1;
+    const bHit = b.proposedSpotId === spotId ? 0 : 1;
+    return aHit - bHit;
+  });
 
   async function onCreate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -182,19 +189,30 @@ export function SpotBrags({
     }
   }
 
+  async function onConfirmMatch(queueId: Id<"aiMatchQueue">) {
+    setPending(true);
+    setError(null);
+    try {
+      await confirmMatch({ queueId, spotId });
+      router.refresh();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Confirm failed");
+    } finally {
+      setPending(false);
+    }
+  }
+
   return (
     <section className="mt-10">
       {!closed && user === null ? (
-        <Button type="button" onClick={openSignIn}>
+        <Button type="button" onClick={requestSignIn}>
           {t(locale, "loginToBrag")}
         </Button>
       ) : null}
 
       {!closed && user ? (
         <form className="rounded-slab border border-berry/10 bg-white p-5" onSubmit={onCreate}>
-          <label className="text-sm font-bold" htmlFor="brag-media">
-            {t(locale, "bragCta")}
-          </label>
+          <Label htmlFor="brag-media">{t(locale, "bragCta")}</Label>
           <p className="mt-1 text-sm text-berry/55">{t(locale, "photoOrVideo")}</p>
           <input
             id="brag-media"
@@ -208,6 +226,50 @@ export function SpotBrags({
             {t(locale, "uploadBrag")}
           </Button>
         </form>
+      ) : null}
+
+      {!closed && user && unmatched.length > 0 ? (
+        <section className="mt-4 rounded-slab border border-berry/10 bg-white p-5">
+          <h2 className="font-display text-xl tracking-wide">
+            {t(locale, "matchHeading")}
+          </h2>
+          <p className="mt-1 text-sm text-berry/55">{t(locale, "matchHint")}</p>
+          <ul className="mt-4 grid gap-3">
+            {unmatched.map((match) => (
+              <li
+                key={match.queueId}
+                className="rounded-field border border-berry/10 bg-shell px-4 py-3"
+              >
+                <p className="text-sm font-bold text-berry">{match.caption}</p>
+                {match.proposedSpotId === spotId ? (
+                  <p className="mt-1 text-sm font-bold text-blush">
+                    {t(locale, "matchProposed")}
+                  </p>
+                ) : null}
+                <a
+                  href={match.permalink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 inline-block text-sm font-bold text-blush"
+                >
+                  {match.platform === "youtube"
+                    ? t(locale, "viewOnYoutube")
+                    : t(locale, "viewOnInstagram")}
+                </a>
+                <div className="mt-3">
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={pending}
+                    onClick={() => void onConfirmMatch(match.queueId)}
+                  >
+                    {t(locale, "confirmMatch")}
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
       ) : null}
 
       {error ? (
@@ -229,22 +291,7 @@ export function SpotBrags({
                 <HostedBrag locale={locale} item={item} />
               ) : null}
               {item.media.kind === "embed" ? (
-                <div className="px-5 py-4">
-                  <p className="font-display text-lg tracking-wide">
-                    {t(locale, "instagramEmbed")}
-                  </p>
-                  <a
-                    href={item.media.embed.permalink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 inline-block font-bold text-blush"
-                  >
-                    {t(locale, "viewOnInstagram")}
-                  </a>
-                  <p className="mt-2 font-display text-lg text-blush">
-                    #bragfast
-                  </p>
-                </div>
+                <SocialEmbed locale={locale} embed={item.media.embed} />
               ) : null}
 
               <div className="flex flex-wrap items-center gap-3 border-t border-berry/8 bg-white px-5 py-3">
@@ -256,22 +303,24 @@ export function SpotBrags({
                 </p>
                 {user && mineSet.has(item.postId) ? (
                   <>
-                    <label className="text-sm font-bold text-blush">
-                      {t(locale, "replaceBrag")}
-                      <input
-                        type="file"
-                        accept="image/*,video/*"
-                        className="ml-2 text-sm"
-                        disabled={pending}
-                        onChange={(event) => {
-                          const file = event.target.files?.[0];
-                          event.target.value = "";
-                          if (file) {
-                            void onReplace(item.postId, file);
-                          }
-                        }}
-                      />
-                    </label>
+                    {item.media.kind === "hosted" ? (
+                      <label className="text-sm font-bold text-blush">
+                        {t(locale, "replaceBrag")}
+                        <input
+                          type="file"
+                          accept="image/*,video/*"
+                          className="ml-2 text-sm"
+                          disabled={pending}
+                          onChange={(event) => {
+                            const file = event.target.files?.[0];
+                            event.target.value = "";
+                            if (file) {
+                              void onReplace(item.postId, file);
+                            }
+                          }}
+                        />
+                      </label>
+                    ) : null}
                     <Button
                       type="button"
                       variant="outline"

@@ -16,5 +16,6 @@ crons.daily(
   internal.instagram.importLinked,
   {},
 );
+crons.interval("osm hours fill", { hours: 6 }, internal.osmHours.fillHours, {});
 
 export default crons;

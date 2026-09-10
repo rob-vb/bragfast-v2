@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { foodEstablishmentJsonLd } from "@/domain/jsonld";
+import { canonicalCitySlug } from "@/domain/gemeenten";
 import { openNow } from "@/domain/ranking";
 import { makersLabel, t, type Locale } from "@/domain/messages";
 import { loadSpotPage, publicSiteUrl } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import { SpotBrags } from "@/components/spot-brags";
+import { SpotShare } from "@/components/spot-share";
 import { PhotoFrame } from "@/components/visual";
 import { cityScene } from "@/lib/scenes";
 
@@ -18,6 +20,10 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { city, spot } = await params;
+  const canonical = canonicalCitySlug(city);
+  if (canonical && canonical !== city) {
+    redirect(`/nl/${canonical}/${spot}`);
+  }
   const page = await loadSpotPage(city, spot);
   if (!page) {
     return { title: "brag.fast" };
@@ -43,6 +49,10 @@ export default async function SpotPage({
   params: Promise<Params>;
 }) {
   const { city, spot } = await params;
+  const canonical = canonicalCitySlug(city);
+  if (canonical && canonical !== city) {
+    redirect(`/nl/${canonical}/${spot}`);
+  }
   const locale = await getLocale();
   const page = await loadSpotPage(city, spot);
   if (!page) {
@@ -109,9 +119,16 @@ export default async function SpotPage({
 
       <div className="mx-auto max-w-3xl px-5 py-12 sm:px-8">
         <section>
-          <h2 className="font-display text-2xl tracking-wide">
-            {t(locale, "hoursHeading")}
-          </h2>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-display text-2xl tracking-wide">
+              {t(locale, "hoursHeading")}
+            </h2>
+            <SpotShare
+              locale={locale}
+              url={`${publicSiteUrl()}${page.canonicalPath}`}
+              name={page.name}
+            />
+          </div>
           {page.hours ? (
             <ul className="mt-4 grid gap-1 text-berry/75">
               {page.hours.periods.map((period) => (

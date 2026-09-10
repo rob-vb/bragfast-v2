@@ -7,7 +7,7 @@ import type { CityCard, SearchHit } from "@/domain/viewModels";
 import { SearchBox } from "@/components/search-box";
 import { NearMe } from "@/components/near-me";
 import { PhotoFrame, SpotLinkCard } from "@/components/visual";
-import { HERO_SCENE, cityScene } from "@/lib/scenes";
+import { HERO_SCENE, cityScene, stillFor } from "@/lib/scenes";
 import { cn } from "@/lib/utils";
 
 export function HomeView({
@@ -101,10 +101,9 @@ export function HomeView({
                   <li key={`spot-${hit.citySlug}-${hit.slug}`}>
                     <SpotLinkCard
                       href={`/nl/${hit.citySlug}/${hit.slug}`}
-                      src={cityScene(hit.citySlug)}
+                      src={stillFor(hit.slug)}
                       title={hit.name}
                       meta={cityName}
-                      stamp={t(locale, "atmosphere")}
                     />
                   </li>
                 );
@@ -123,11 +122,12 @@ export function HomeView({
             {featured.map((city, index) => {
               const name = locale === "en" ? city.nameEn : city.nameNl;
               const hiddenOnMobile = index >= 4 && !moreCities;
+              const featuredHero = index === 0;
               return (
                 <li
                   key={city.slug}
                   className={cn(
-                    index === 0 && "sm:col-span-2 lg:row-span-2",
+                    featuredHero && "sm:col-span-2 lg:row-span-2",
                     hiddenOnMobile && "max-sm:hidden",
                   )}
                 >
@@ -140,7 +140,9 @@ export function HomeView({
                         ? boardCityLabel(locale, city.boardCount)
                         : undefined
                     }
-                    className={index === 0 ? "min-h-72 sm:min-h-full" : "min-h-48"}
+                    className={
+                      featuredHero ? "min-h-48 sm:min-h-72 lg:min-h-full" : "min-h-48"
+                    }
                   />
                 </li>
               );

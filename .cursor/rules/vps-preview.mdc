@@ -1,0 +1,8 @@
+---
+description: Owner-facing preview is the VPS, not localhost
+alwaysApply: true
+---
+
+# Preview URL
+
+This project runs on a VPS. The human-facing preview is http://77.42.31.66/ (nginx → 127.0.0.1:3002 → henk's pm2 `bragfast` = `next start`). Never tell the owner to open localhost. Cursor `next dev` on 3010 is not the public site. After UI changes: `next build`, then `sudo -u henk -H pm2 restart bragfast`.

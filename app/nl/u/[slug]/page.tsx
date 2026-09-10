@@ -15,7 +15,7 @@ import {
   Segmented,
   SpotLinkCard,
 } from "@/components/visual";
-import { HERO_SCENE, cityScene } from "@/lib/scenes";
+import { HERO_SCENE, stillFor } from "@/lib/scenes";
 
 type Params = { slug: string };
 type Search = {
@@ -150,10 +150,10 @@ export default async function PassportPage({
                 <li key={post.postId}>
                   <SpotLinkCard
                     href={`/nl/${post.citySlug}/${post.spotSlug}`}
-                    src={cityScene(post.citySlug)}
+                    src={stillFor(post.spotSlug)}
                     title={post.name}
                     meta={weekDate(locale, post.createdAt)}
-                    stamp={t(locale, "atmosphere")}
+                    egg
                   />
                 </li>
               ))}
@@ -173,10 +173,10 @@ export default async function PassportPage({
               <li key={`${spot.citySlug}/${spot.slug}`}>
                 <SpotLinkCard
                   href={`/nl/${spot.citySlug}/${spot.slug}`}
-                  src={cityScene(spot.citySlug)}
+                  src={stillFor(spot.slug)}
                   title={spot.name}
                   meta={spot.closed ? t(locale, "closed") : undefined}
-                  stamp={t(locale, "atmosphere")}
+                  egg
                 />
               </li>
             ))}

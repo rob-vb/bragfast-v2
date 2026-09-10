@@ -9,6 +9,7 @@ import type { Id } from "./_generated/dataModel";
 import { serializeMakerKey } from "../domain/makerKey";
 import { applyPlaceAdd } from "./model/placeAdd";
 import { ingestSocial } from "./model/social";
+import { NL_CITIES } from "../domain/cities";
 import { cityCentroid } from "../domain/geo";
 import type { PlacesSnapshot } from "../domain/hygiene";
 import { applySnapshot } from "./model/hygiene";
@@ -27,51 +28,38 @@ const WEEKDAY_BREAKFAST = {
   })),
 };
 
+export const cities = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const keep = new Set(NL_CITIES.map((city) => city.slug));
+    for (const city of NL_CITIES) {
+      await upsertCity(ctx, {
+        slug: city.slug,
+        nameNl: city.nameNl,
+        nameEn: city.nameEn,
+        featuredOrder: city.featuredOrder,
+      });
+    }
+    const existing = await ctx.db.query("cities").collect();
+    for (const row of existing) {
+      if (!keep.has(row.slug)) {
+        await ctx.db.delete(row._id);
+      }
+    }
+  },
+});
+
 export const catalog = internalMutation({
   args: {},
   handler: async (ctx) => {
-    await upsertCity(ctx, {
-      slug: "haarlem",
-      nameNl: "Haarlem",
-      nameEn: "Haarlem",
-      featuredOrder: 1,
-    });
-    await upsertCity(ctx, {
-      slug: "amsterdam",
-      nameNl: "Amsterdam",
-      nameEn: "Amsterdam",
-      featuredOrder: 2,
-    });
-    await upsertCity(ctx, {
-      slug: "rotterdam",
-      nameNl: "Rotterdam",
-      nameEn: "Rotterdam",
-      featuredOrder: 3,
-    });
-    await upsertCity(ctx, {
-      slug: "utrecht",
-      nameNl: "Utrecht",
-      nameEn: "Utrecht",
-      featuredOrder: 4,
-    });
-    await upsertCity(ctx, {
-      slug: "den-haag",
-      nameNl: "Den Haag",
-      nameEn: "The Hague",
-      featuredOrder: 5,
-    });
-    await upsertCity(ctx, {
-      slug: "eindhoven",
-      nameNl: "Eindhoven",
-      nameEn: "Eindhoven",
-      featuredOrder: 6,
-    });
-    await upsertCity(ctx, {
-      slug: "groningen",
-      nameNl: "Groningen",
-      nameEn: "Groningen",
-      featuredOrder: 7,
-    });
+    for (const city of NL_CITIES) {
+      await upsertCity(ctx, {
+        slug: city.slug,
+        nameNl: city.nameNl,
+        nameEn: city.nameEn,
+        featuredOrder: city.featuredOrder,
+      });
+    }
 
     await upsertSpot(ctx, {
       placeId: "seed:nl:haarlem:anne-max",

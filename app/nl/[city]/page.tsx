@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { AddSpot } from "@/components/add-spot";
+import { notFound, redirect } from "next/navigation";
 import { CityMap } from "@/components/city-map-loader";
-import { CityTail } from "@/components/city-tail";
+import { CitySpots } from "@/components/city-spots";
 import { loadCityPage } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import { t } from "@/domain/messages";
 import type { Locale } from "@/domain/messages";
+import { canonicalCitySlug } from "@/domain/gemeenten";
 import { openNow } from "@/domain/ranking";
-import type { RankedSpotCard } from "@/domain/viewModels";
+import type { CitySpotCard } from "@/domain/viewModels";
 import {
-  Chip,
+  FilterToggle,
   PhotoFrame,
   SegmentLink,
   Segmented,
-  SpotLinkCard,
 } from "@/components/visual";
 import { cityScene } from "@/lib/scenes";
 
@@ -31,6 +30,10 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { city } = await params;
+  const canonical = canonicalCitySlug(city);
+  if (canonical && canonical !== city) {
+    redirect(`/nl/${canonical}`);
+  }
   const page = await loadCityPage(city);
   if (!page) {
     return { title: "brag.fast" };
@@ -48,10 +51,13 @@ function cityName(
 }
 
 function matches(
-  spot: { hours: RankedSpotCard["hours"] },
-  filters: { open: boolean },
+  spot: { hours: CitySpotCard["hours"]; bragged: CitySpotCard["bragged"] },
+  filters: { open: boolean; brags: boolean },
 ): boolean {
   if (filters.open && !openNow(spot.hours, new Date())) {
+    return false;
+  }
+  if (filters.brags && spot.bragged === null) {
     return false;
   }
   return true;
@@ -87,6 +93,10 @@ export default async function CityPage({
   const { city } = await params;
   const search = await searchParams;
   const locale = await getLocale();
+  const canonical = canonicalCitySlug(city);
+  if (canonical && canonical !== city) {
+    redirect(`/nl/${canonical}`);
+  }
   const page = await loadCityPage(city);
   if (!page) {
     notFound();
@@ -98,13 +108,8 @@ export default async function CityPage({
     view: search.view === "map" ? ("map" as const) : ("list" as const),
   };
 
-  const board = page.board.filter((spot) => matches(spot, filters));
-  const tail = filters.brags
-    ? []
-    : page.tail.filter((spot) => matches(spot, filters));
-  const mapSpots = [...board, ...tail];
+  const spots = page.spots.filter((spot) => matches(spot, filters));
   const name = cityName(locale, page.city);
-  const empty = board.length === 0 && tail.length === 0;
 
   return (
     <main>
@@ -119,21 +124,29 @@ export default async function CityPage({
 
       <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap gap-2">
-            <Chip
-              href={hrefFor(page.city.slug, filters, { open: !filters.open })}
-              active={filters.open}
-              tone="yolk"
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              id="city-filters-label"
+              className="text-xs font-bold text-berry/55"
             >
-              {t(locale, "openNow")}
-            </Chip>
-            <Chip
-              href={hrefFor(page.city.slug, filters, { brags: !filters.brags })}
-              active={filters.brags}
-              tone="mint"
-            >
-              {t(locale, "filterBrags")}
-            </Chip>
+              {t(locale, "filters")}
+            </span>
+            <Segmented labelledBy="city-filters-label" className="gap-1.5">
+              <FilterToggle
+                href={hrefFor(page.city.slug, filters, { open: !filters.open })}
+                active={filters.open}
+              >
+                {t(locale, "openNow")}
+              </FilterToggle>
+              <FilterToggle
+                href={hrefFor(page.city.slug, filters, {
+                  brags: !filters.brags,
+                })}
+                active={filters.brags}
+              >
+                {t(locale, "filterBrags")}
+              </FilterToggle>
+            </Segmented>
           </div>
           <Segmented label={t(locale, "viewMode")}>
             <SegmentLink
@@ -151,41 +164,14 @@ export default async function CityPage({
           </Segmented>
         </div>
 
-        <AddSpot locale={locale} citySlug={page.city.slug} />
-
         {filters.view === "map" ? (
-          empty ? (
+          spots.length === 0 ? (
             <p className="mt-8 text-berry/70">{t(locale, "noSpotsYet")}</p>
           ) : (
-            <CityMap spots={mapSpots} />
+            <CityMap spots={spots} />
           )
         ) : (
-          <>
-            {board.length > 0 ? (
-              <section className="mt-12">
-                <h2 className="font-display text-3xl tracking-wide">
-                  {t(locale, "boardHeading")}
-                </h2>
-                <ol className="mt-6 grid gap-4 sm:grid-cols-2">
-                  {board.map((spot) => (
-                    <li key={spot.slug}>
-                      <SpotLinkCard
-                        href={`/nl/${spot.citySlug}/${spot.slug}`}
-                        src={cityScene(spot.citySlug)}
-                        title={spot.name}
-                        meta={String(spot.score)}
-                        rank={spot.rank}
-                        stamp={t(locale, "atmosphere")}
-                        className="min-h-56"
-                      />
-                    </li>
-                  ))}
-                </ol>
-              </section>
-            ) : null}
-
-            {!filters.brags ? <CityTail locale={locale} tail={tail} /> : null}
-          </>
+          <CitySpots locale={locale} spots={spots} />
         )}
       </div>
     </main>

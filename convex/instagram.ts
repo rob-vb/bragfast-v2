@@ -11,13 +11,16 @@ import {
   query,
 } from "./_generated/server";
 import { parseInstagramMedia, type InstagramMedia } from "../domain/instagram";
+import { serializeMakerKey } from "../domain/makerKey";
+import type { MakerMatchRow } from "../domain/viewModels";
 import { authComponent } from "./auth";
 import {
   completeInstagramLink,
   ingestInstagramMedia,
   unlinkInstagram,
 } from "./model/instagram";
-import { ensureAppUser } from "./model/users";
+import { confirmMakerMatch as commitMakerMatch } from "./model/social";
+import { ensureAppUser, ensurePassport } from "./model/users";
 
 type InstagramApp = { clientId: string; clientSecret: string };
 
@@ -95,6 +98,67 @@ export const disconnect = mutation({
   handler: async (ctx) => {
     const user = await ensureAppUser(ctx);
     await unlinkInstagram(ctx, user._id);
+  },
+});
+
+export const pendingMatches = query({
+  args: {},
+  handler: async (ctx): Promise<MakerMatchRow[]> => {
+    const authUser = await authComponent.safeGetAuthUser(ctx);
+    if (!authUser) {
+      return [];
+    }
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_authId", (q) => q.eq("authId", authUser._id))
+      .unique();
+    if (!user) {
+      return [];
+    }
+    const makerKey = serializeMakerKey({ kind: "user", userId: user._id });
+    const rows = await ctx.db
+      .query("aiMatchQueue")
+      .withIndex("by_maker_status", (q) =>
+        q.eq("makerKey", makerKey).eq("status", "pending"),
+      )
+      .collect();
+    return rows.map((row) => ({
+      queueId: row._id,
+      permalink: row.embed.permalink,
+      caption: row.caption,
+      platform: row.embed.platform,
+      proposedSpotId: row.proposedSpotId,
+    }));
+  },
+});
+
+export const confirmMatch = mutation({
+  args: {
+    queueId: v.id("aiMatchQueue"),
+    spotId: v.id("spots"),
+  },
+  handler: async (ctx, args) => {
+    const user = await ensureAppUser(ctx);
+    const result = await commitMakerMatch(ctx, {
+      queueId: args.queueId,
+      spotId: args.spotId,
+      userId: user._id,
+    });
+    await ensurePassport(ctx, user._id);
+    if (result.action !== "attach") {
+      return result;
+    }
+    const authUser = await authComponent.getAuthUser(ctx);
+    const email =
+      typeof authUser.email === "string" ? authUser.email.trim() : "";
+    if (email.length > 0) {
+      await ctx.scheduler.runAfter(0, internal.notify.sendBragLive, {
+        email,
+        spotName: result.spotName,
+        path: result.path,
+      });
+    }
+    return result;
   },
 });
 

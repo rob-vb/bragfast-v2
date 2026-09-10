@@ -3,19 +3,7 @@ import type { CitySlug, SpotSlug, UserSlug } from "./ids";
 import type { LicensedImage } from "./post";
 import type { OpeningHours, SpotLifecycle, SpotType } from "./spot";
 
-export type RankedSpotCard = {
-  slug: SpotSlug;
-  citySlug: CitySlug;
-  name: string;
-  rank: number;
-  score: number;
-  hours: OpeningHours | null;
-  spotType: SpotType;
-  geo: { lat: number; lng: number };
-  address: string;
-};
-
-export type SeedSpotCard = {
+export type CitySpotCard = {
   slug: SpotSlug;
   citySlug: CitySlug;
   name: string;
@@ -23,6 +11,7 @@ export type SeedSpotCard = {
   hours: OpeningHours | null;
   spotType: SpotType;
   geo: { lat: number; lng: number };
+  bragged: { rank: number; score: number } | null;
 };
 
 export type CityCard = {
@@ -34,8 +23,7 @@ export type CityCard = {
 
 export type CityPageData = {
   city: CityCard;
-  board: RankedSpotCard[];
-  tail: SeedSpotCard[];
+  spots: CitySpotCard[];
 };
 
 export type FeedItem = {
@@ -135,6 +123,14 @@ export type AdminMatchRow = {
   caption: string;
   proposedSpotName: string | null;
   proposedSpotPath: string | null;
+};
+
+export type MakerMatchRow = {
+  queueId: GenericId<"aiMatchQueue">;
+  permalink: string;
+  caption: string;
+  platform: "instagram" | "youtube";
+  proposedSpotId: GenericId<"spots"> | null;
 };
 
 export type AdminSpotAddRow = {

@@ -8,7 +8,24 @@ import {
   haversineMeters,
   nearestCity,
   sortByDistance,
+  assignCitySlug,
 } from "./geo";
+import { NL_CITIES } from "./cities";
+import { canonicalCitySlug, lookupGemeente, NL_INGEST_GEMEENTEN } from "./gemeenten";
+import { judgeCatalogFit } from "./catalogVerdict";
+import {
+  INGEST_POPULATION_FLOOR,
+  nextCityIndex,
+  orderGemeentenForIngest,
+  planIngestTurn,
+  resolveIngestIndex,
+} from "./ingestTurn";
+import {
+  billingMonthKey,
+  detailsBudgetLeft,
+  DISCOVERY_QUERIES,
+  DISCOVERY_TYPES,
+} from "./placesQuota";
 import {
   isOwnerEmail,
   planClosedOverride,
@@ -23,7 +40,10 @@ import {
 import { classifyPlaceTypes, slugFromPlaceName } from "./placeAdd";
 import {
   isInstagramPermalink,
+  isYoutubePermalink,
+  officialEmbedSrc,
   planCaptionMatch,
+  planMakerMatchConfirm,
   planMakerMerge,
   planSocialIngest,
 } from "./social";
@@ -495,6 +515,86 @@ test("instagram permalinks must be https instagram hosts", () => {
   assert.equal(isInstagramPermalink("not a url"), false);
 });
 
+test("official embeds point at Instagram and YouTube players, never a hosted file", () => {
+  assert.equal(
+    officialEmbedSrc({
+      platform: "instagram",
+      permalink: "https://www.instagram.com/p/BragFastHardTag/?igsh=abc",
+      platformMediaId: "1",
+    }),
+    "https://www.instagram.com/p/BragFastHardTag/embed",
+  );
+  assert.equal(
+    officialEmbedSrc({
+      platform: "instagram",
+      permalink: "https://instagram.com/reel/ReelCode99/embed",
+      platformMediaId: "2",
+    }),
+    "https://www.instagram.com/reel/ReelCode99/embed",
+  );
+  assert.equal(
+    officialEmbedSrc({
+      platform: "instagram",
+      permalink: "https://www.instagram.com/jopenkerk/",
+      platformMediaId: "3",
+    }),
+    null,
+  );
+  assert.equal(
+    officialEmbedSrc({
+      platform: "youtube",
+      permalink: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      platformMediaId: "yt",
+    }),
+    "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  );
+  assert.equal(
+    officialEmbedSrc({
+      platform: "youtube",
+      permalink: "https://youtu.be/dQw4w9WgXcQ",
+      platformMediaId: "yt",
+    }),
+    "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  );
+  assert.equal(isYoutubePermalink("https://youtu.be/dQw4w9WgXcQ"), true);
+  assert.equal(isYoutubePermalink("https://evil.example/watch?v=dQw4w9WgXcQ"), false);
+});
+
+test("maker confirm attaches a pending caption post onto the spot the author is on", () => {
+  const base = {
+    queueStatus: "pending" as const,
+    queueMakerKey: "user:abc",
+    userMakerKey: "user:abc",
+    listingStatus: "listed" as const,
+    existingSpotId: null,
+    targetSpotId: "spot-jopen",
+  };
+  assert.deepEqual(planMakerMatchConfirm(base), {
+    ok: true,
+    action: "attach",
+  });
+  assert.deepEqual(
+    planMakerMatchConfirm({ ...base, existingSpotId: "spot-jopen" }),
+    { ok: true, action: "already" },
+  );
+  assert.deepEqual(
+    planMakerMatchConfirm({ ...base, existingSpotId: "spot-other" }),
+    { ok: false, reason: "duplicate" },
+  );
+  assert.deepEqual(
+    planMakerMatchConfirm({ ...base, queueMakerKey: "ig:someone" }),
+    { ok: false, reason: "not-owner" },
+  );
+  assert.deepEqual(
+    planMakerMatchConfirm({ ...base, queueStatus: "approved" }),
+    { ok: false, reason: "not-pending" },
+  );
+  assert.deepEqual(
+    planMakerMatchConfirm({ ...base, listingStatus: "gravestone" }),
+    { ok: false, reason: "closed" },
+  );
+});
+
 test("instagram media parse skips rows without a permalink", () => {
   assert.equal(parseInstagramMedia({ id: "1", caption: "x" }), null);
   const media = parseInstagramMedia({
@@ -537,6 +637,14 @@ test("place types go live for hospitality and queue for petrol", () => {
     action: "live",
     spotType: "hotel",
   });
+  assert.deepEqual(classifyPlaceTypes(["breakfast_restaurant"]), {
+    action: "live",
+    spotType: "cafe",
+  });
+  assert.deepEqual(classifyPlaceTypes(["brunch_restaurant"]), {
+    action: "live",
+    spotType: "cafe",
+  });
   assert.deepEqual(classifyPlaceTypes(["gas_station"]), {
     action: "queue",
     reason: "disallowed-type",
@@ -555,14 +663,30 @@ const CAFE: PlacesSnapshot = {
   citySlug: "haarlem",
 };
 
-test("hygiene skips petrol even when a row exists", () => {
+test("hygiene closes listed petrol so it leaves the city list", () => {
   assert.deepEqual(
     planHygiene(
       { ...CAFE, types: ["gas_station"], name: "Shell Hygiene" },
       { placeId: "seed:nl:haarlem:hygiene-petrol", listingStatus: "listed" },
       10,
     ),
-    { action: "skip", reason: "not-hospitality" },
+    { action: "close", closedAt: 10 },
+  );
+});
+
+test("hygiene skips new fast food and closes listed fast food", () => {
+  const mcd = {
+    ...CAFE,
+    name: "McDonald's Haarlem",
+    types: ["fast_food_restaurant", "restaurant"],
+  };
+  assert.deepEqual(planHygiene(mcd, null, 10), {
+    action: "skip",
+    reason: "fast-food",
+  });
+  assert.deepEqual(
+    planHygiene(mcd, { placeId: mcd.placeId, listingStatus: "listed" }, 40),
+    { action: "close", closedAt: 40 },
   );
 });
 
@@ -722,6 +846,220 @@ test("exact city search matches slug and localized names only", () => {
   };
   assert.equal(exactCitySlugFromHits("Haarlem", [haarlem, denHaag]), "haarlem");
   assert.equal(exactCitySlugFromHits("the hague", [haarlem, denHaag]), "den-haag");
+  assert.equal(exactCitySlugFromHits("hoofddorp", [haarlem, denHaag]), "haarlemmermeer");
   assert.equal(exactCitySlugFromHits("ha", [haarlem, denHaag]), null);
   assert.equal(exactCitySlugFromHits("h", [haarlem]), null);
 });
+
+test("gazetteer is Dutch gemeenten, not dorpen", () => {
+  const slugs = NL_CITIES.map((city) => city.slug);
+  assert.ok(NL_CITIES.length >= 300);
+  assert.ok(
+    NL_CITIES.filter((city) => city.featuredOrder !== undefined).length === 9,
+  );
+  assert.ok(slugs.includes("maastricht"));
+  assert.ok(slugs.includes("leiden"));
+  assert.ok(slugs.includes("den-bosch"));
+  assert.ok(slugs.includes("bloemendaal"));
+  assert.ok(slugs.includes("haarlemmermeer"));
+  assert.ok(!slugs.includes("hoofddorp"));
+  assert.ok(!slugs.includes("schoorl"));
+  assert.equal(canonicalCitySlug("hoofddorp"), "haarlemmermeer");
+  assert.equal(canonicalCitySlug("den bosch"), "den-bosch");
+  assert.equal(lookupGemeente("zaandam")?.nameNl, "Zaandam");
+  for (const city of NL_CITIES) {
+    assert.equal(parseCitySlug(city.slug), city.slug);
+  }
+});
+
+test("assignCitySlug maps a point to the gemeente polygon", () => {
+  assert.equal(assignCitySlug({ lat: 52.3812, lng: 4.636 }), "haarlem");
+  assert.equal(assignCitySlug({ lat: 50.85, lng: 5.69 }), "maastricht");
+  assert.equal(assignCitySlug({ lat: 52.3025, lng: 4.6889 }), "haarlemmermeer");
+  assert.equal(assignCitySlug({ lat: 53.4, lng: 7.2 }), null);
+});
+
+test("Places free-tier budget stays on the Pro SKU cap", () => {
+  assert.deepEqual(
+    [...DISCOVERY_TYPES],
+    [
+      "cafe",
+      "bakery",
+      "hotel",
+      "breakfast_restaurant",
+      "brunch_restaurant",
+      "coffee_shop",
+    ],
+  );
+  assert.deepEqual([...DISCOVERY_QUERIES], ["ontbijt", "brunch"]);
+  assert.equal(detailsBudgetLeft(0, 4000), 4000);
+  assert.equal(detailsBudgetLeft(4000, 4000), 0);
+  assert.equal(billingMonthKey(Date.UTC(2026, 8, 7)), "2026-09");
+});
+
+test("catalog fit rejects fast food before hospitality types", () => {
+  assert.deepEqual(
+    judgeCatalogFit({
+      name: "McDonald's Haarlem",
+      types: ["restaurant", "fast_food_restaurant"],
+    }),
+    {
+      kind: "fast-food",
+      evidence: { kind: "google-type", value: "fast_food_restaurant" },
+    },
+  );
+  assert.equal(
+    judgeCatalogFit({ name: "Burger King Enschede", types: ["restaurant"] })
+      .kind,
+    "fast-food",
+  );
+  assert.deepEqual(
+    judgeCatalogFit({ name: "Anne&Max Haarlem", types: ["cafe"] }),
+    { kind: "hospitality", spotType: "cafe" },
+  );
+  assert.deepEqual(
+    judgeCatalogFit({ name: "Van der Valk", types: ["lodging", "hotel"] }),
+    { kind: "hospitality", spotType: "hotel" },
+  );
+});
+
+const LOETJE_HOURS = {
+  timezone: "Europe/Amsterdam",
+  periods: [{ day: 0, open: "11:30", close: "21:00" }],
+};
+
+test("catalog fit keeps breakfast types and drops dinner restaurants", () => {
+  assert.deepEqual(
+    judgeCatalogFit({ name: "Loetje Enschede", types: ["restaurant"] }),
+    { kind: "not-hospitality" },
+  );
+  assert.deepEqual(
+    judgeCatalogFit({
+      name: "Loetje Enschede",
+      types: ["restaurant"],
+      hours: LOETJE_HOURS,
+    }),
+    { kind: "not-hospitality" },
+  );
+  assert.deepEqual(
+    judgeCatalogFit({
+      name: "Loetje Enschede",
+      types: ["cafe"],
+      hours: LOETJE_HOURS,
+    }),
+    { kind: "not-hospitality" },
+  );
+  assert.deepEqual(
+    judgeCatalogFit({
+      name: "Bakers & Roasters",
+      types: ["restaurant"],
+      hours: {
+        timezone: "Europe/Amsterdam",
+        periods: [{ day: 1, open: "08:00", close: "16:00" }],
+      },
+    }),
+    { kind: "hospitality", spotType: "cafe" },
+  );
+  assert.deepEqual(
+    judgeCatalogFit({
+      name: "ETN Breakfast",
+      types: ["breakfast_restaurant"],
+    }),
+    { kind: "hospitality", spotType: "cafe" },
+  );
+  assert.deepEqual(
+    judgeCatalogFit({
+      name: "Van der Valk",
+      types: ["lodging", "hotel"],
+      hours: {
+        timezone: "Europe/Amsterdam",
+        periods: [{ day: 1, open: "17:00", close: "23:00" }],
+      },
+    }),
+    { kind: "hospitality", spotType: "hotel" },
+  );
+});
+
+test("hygiene closes a listed steak restaurant once hours prove it is not breakfast", () => {
+  assert.deepEqual(
+    planHygiene(
+      {
+        ...CAFE,
+        name: "Loetje Enschede",
+        types: ["restaurant"],
+        hours: LOETJE_HOURS,
+      },
+      { placeId: "seed:nl:enschede:loetje", listingStatus: "listed" },
+      80,
+    ),
+    { action: "close", closedAt: 80 },
+  );
+  assert.deepEqual(
+    planHygiene(
+      { ...CAFE, name: "Loetje Enschede", types: ["restaurant"], hours: null },
+      {
+        placeId: "seed:nl:enschede:loetje",
+        listingStatus: "listed",
+        hours: LOETJE_HOURS,
+      },
+      80,
+    ),
+    { action: "close", closedAt: 80 },
+  );
+});
+
+test("ingest walks the largest gemeenten first", () => {
+  assert.deepEqual(
+    orderGemeentenForIngest([
+      { slug: "tiny", population: 900 },
+      { slug: "haarlem", population: 160_000 },
+      { slug: "amsterdam", population: 900_000 },
+      { slug: "midsize", population: 25_000 },
+      { slug: "eemnes", population: 10_065 },
+      { slug: "oostzaan", population: 9_778 },
+    ]).map((row) => row.slug),
+    ["amsterdam", "haarlem", "midsize", "eemnes", "oostzaan", "tiny"],
+  );
+  assert.equal(INGEST_POPULATION_FLOOR, 20_000);
+  assert.equal(NL_INGEST_GEMEENTEN[0]?.slug, "amsterdam");
+  assert.equal(NL_INGEST_GEMEENTEN[1]?.slug, "rotterdam");
+  assert.equal(NL_INGEST_GEMEENTEN[2]?.slug, "den-haag");
+  assert.equal(NL_INGEST_GEMEENTEN.at(-1)?.slug, "schiermonnikoog");
+  const firstSmall = NL_INGEST_GEMEENTEN.findIndex(
+    (row) => row.population < INGEST_POPULATION_FLOOR,
+  );
+  assert.equal(firstSmall, 278);
+  assert.ok(
+    NL_INGEST_GEMEENTEN
+      .slice(0, firstSmall)
+      .every((row) => row.population >= INGEST_POPULATION_FLOOR),
+  );
+  const amsterdam = NL_INGEST_GEMEENTEN.findIndex((row) => row.slug === "amsterdam");
+  const haarlem = NL_INGEST_GEMEENTEN.findIndex((row) => row.slug === "haarlem");
+  assert.ok(amsterdam < haarlem);
+  assert.equal(NL_INGEST_GEMEENTEN.length, 342);
+});
+
+test("ingest turn mixes oldest refresh with discovery and rotates the cursor", () => {
+  assert.deepEqual(
+    planIngestTurn({
+      budget: 4,
+      discoveredIds: ["new-a", "new-b", "new-c"],
+      staleListedIds: ["old-a", "old-b"],
+    }).fetch,
+    [
+      { placeId: "old-a", intent: "refresh" },
+      { placeId: "new-a", intent: "discover" },
+      { placeId: "old-b", intent: "refresh" },
+      { placeId: "new-b", intent: "discover" },
+    ],
+  );
+  assert.equal(nextCityIndex(341, 342), 0);
+  assert.equal(nextCityIndex(0, 342), 1);
+  const slugs = ["amsterdam", "rotterdam", "den-haag", "hellendoorn"];
+  assert.equal(resolveIngestIndex(slugs, "den-haag", 0), 2);
+  assert.equal(resolveIngestIndex(slugs, "hellendoorn", 0), 3);
+  assert.equal(resolveIngestIndex(slugs, null, 2), 2);
+  assert.equal(resolveIngestIndex(slugs, "gone", 1), 1);
+});
+

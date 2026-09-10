@@ -9,14 +9,16 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:domain": "tsx --test domain/*.test.ts"
+    "test:domain": "tsx --test domain/*.test.ts",
+    "generate:gemeenten": "node scripts/generate-gemeenten.mjs",
+    "generate:gemeente-population": "node scripts/generate-gemeente-population.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
+    "@base-ui/react": "^1.8.0",
     "@convex-dev/better-auth": "^0.12.5",
-    "@radix-ui/react-slot": "^1.3.3",
     "@types/leaflet": "^1.9.22",
     "better-auth": "1.6.15",
     "class-variance-authority": "^0.7.1",

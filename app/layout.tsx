@@ -6,6 +6,7 @@ import { getLocale } from "@/lib/i18n";
 import { ConvexClientProvider } from "@/app/convex-client-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { Toaster } from "@/components/ui/toast";
 import "./globals.css";
 
 const bagel = Bagel_Fat_One({
@@ -64,6 +65,7 @@ export default async function RootLayout({
           />
           {children}
           <SiteFooter locale={locale} />
+          <Toaster />
         </ConvexClientProvider>
       </body>
     </html>

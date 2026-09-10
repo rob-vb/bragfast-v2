@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type Tone = "candy" | "mint" | "yolk";
@@ -78,85 +79,50 @@ export function PhotoFrame({
   );
 }
 
-function Stamp({ children }: { children: ReactNode }) {
-  return (
-    <span className="absolute right-3 top-3 rotate-[8deg] rounded-full bg-candy px-2.5 py-1 text-xs font-extrabold text-berry shadow-stamp">
-      {children}
-    </span>
-  );
-}
-
 export function SpotLinkCard({
   href,
   src,
   title,
   meta,
-  rank,
-  stamp,
+  egg,
   className,
 }: {
   href: string;
   src: string;
   title: string;
   meta?: string;
-  rank?: number;
-  stamp?: string;
+  egg?: boolean;
   className?: string;
 }) {
   return (
     <Link
       href={href}
-      className={cn(
-        "group relative block min-h-44 overflow-hidden rounded-slab focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk",
-        className,
-      )}
+      className="group block overflow-hidden rounded-slab bg-milk focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk"
     >
-      <img
-        src={src}
-        alt=""
-        className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105"
-      />
-      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-berry/55 to-transparent" />
-      {rank !== undefined ? <RankMark rank={rank} /> : null}
-      {stamp ? <Stamp>{stamp}</Stamp> : null}
-      <span className="absolute inset-x-0 bottom-0 p-5">
-        <span className="text-shadow-photo block font-display text-2xl tracking-wide text-white">
+      <div className={cn("relative min-h-44 overflow-hidden", className)}>
+        <img
+          src={src}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105"
+        />
+        {egg ? (
+          <Egg
+            size={44}
+            className="absolute right-3 top-3 rotate-[8deg] drop-shadow-sticker"
+          />
+        ) : null}
+      </div>
+      <span className="block px-4 py-3">
+        <span className="block font-display text-2xl tracking-wide text-berry">
           {title}
         </span>
         {meta ? (
-          <span className="text-shadow-photo mt-1 block text-sm font-semibold text-white">
+          <span className="mt-1 block text-sm font-semibold text-berry/70">
             {meta}
           </span>
         ) : null}
       </span>
     </Link>
-  );
-}
-
-export function RankMark({ rank }: { rank: number }) {
-  return (
-    <span className="absolute left-3 top-3 flex size-[4.35rem] -rotate-[12deg] items-center justify-center">
-      <svg
-        viewBox="0 0 64 64"
-        className="absolute inset-0 drop-shadow-burst"
-        aria-hidden
-      >
-        <ellipse
-          cx="32"
-          cy="32"
-          rx="26"
-          ry="22"
-          fill="var(--color-yolk)"
-          stroke="var(--color-blush)"
-          strokeWidth="3"
-        />
-        <circle cx="22" cy="38" r="3.2" fill="var(--color-blush)" />
-        <circle cx="42" cy="38" r="3.2" fill="var(--color-blush)" />
-      </svg>
-      <span className="relative font-display text-xl text-berry">
-        {String(rank).padStart(2, "0")}
-      </span>
-    </span>
   );
 }
 
@@ -174,10 +140,10 @@ export function Chip({
   return (
     <Link
       href={href}
-      data-active={active ? "true" : undefined}
+      aria-current={active ? "true" : undefined}
       className={cn(
-        "candy-key px-4 py-1.5 text-sm font-bold",
-        active ? "bg-blush text-white" : CHIP_REST[tone],
+        "candy-key px-4 py-1.5 text-sm font-bold aria-current:bg-blush aria-current:text-white",
+        CHIP_REST[tone],
       )}
     >
       {children}
@@ -187,19 +153,57 @@ export function Chip({
 
 export function Segmented({
   label,
+  labelledBy,
   children,
+  className,
 }: {
-  label: string;
   children: ReactNode;
-}) {
+  className?: string;
+} & (
+  | { label: string; labelledBy?: undefined }
+  | { label?: undefined; labelledBy: string }
+)) {
   return (
     <div
       role="group"
       aria-label={label}
-      className="flex items-center rounded-full border border-berry/12 bg-white p-0.5 text-sm font-bold"
+      aria-labelledby={labelledBy}
+      className={cn(
+        "flex items-center rounded-full border border-berry/12 bg-white p-0.5 text-sm font-bold",
+        className,
+      )}
     >
       {children}
     </div>
+  );
+}
+
+const segmentKeyClass =
+  "candy-key px-3.5 py-1.5 text-berry hover:bg-milk aria-current:bg-blush aria-current:text-white aria-current:hover:bg-blush";
+
+export function FilterToggle({
+  href,
+  active,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-pressed={active}
+      className="candy-key gap-2 px-3.5 py-1.5 text-berry hover:bg-milk"
+    >
+      <span
+        aria-hidden
+        className="flex size-4 items-center justify-center rounded-[4px] border border-berry/30 bg-white"
+      >
+        {active ? <Check className="size-3 text-blush" strokeWidth={3} /> : null}
+      </span>
+      {children}
+    </Link>
   );
 }
 
@@ -216,7 +220,7 @@ export function SegmentLink({
     <Link
       href={href}
       aria-current={active ? "true" : undefined}
-      className="candy-key px-3.5 py-1.5 aria-current:bg-blush aria-current:text-white"
+      className={segmentKeyClass}
     >
       {children}
     </Link>
@@ -236,7 +240,7 @@ export function SegmentButton({
     <button
       type="button"
       aria-current={active ? "true" : undefined}
-      className="candy-key px-3.5 py-1.5 aria-current:bg-blush aria-current:text-white"
+      className={segmentKeyClass}
       onClick={onClick}
     >
       {children}

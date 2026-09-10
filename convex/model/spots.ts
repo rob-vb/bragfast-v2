@@ -17,6 +17,7 @@ export type SpotUpsert = {
   spotType: SpotType;
   listingStatus: "listed" | "gravestone";
   closedAt?: number;
+  lastSeenAt?: number;
   placesRaw?: unknown;
 };
 
@@ -26,7 +27,7 @@ export async function upsertCity(
     slug: string;
     nameNl: string;
     nameEn: string;
-    featuredOrder: number;
+    featuredOrder?: number;
   },
 ) {
   const slug = parseCitySlug(input.slug);
@@ -40,7 +41,9 @@ export async function upsertCity(
     country: "nl" as const,
     nameNl: input.nameNl,
     nameEn: input.nameEn,
-    featuredOrder: input.featuredOrder,
+    ...(input.featuredOrder !== undefined
+      ? { featuredOrder: input.featuredOrder }
+      : {}),
   };
 
   if (existing) {
@@ -98,6 +101,7 @@ export async function upsertSpot(ctx: MutationCtx, input: SpotUpsert) {
     hours: input.hours,
     spotType: input.spotType,
     ...listing,
+    ...(input.lastSeenAt !== undefined ? { lastSeenAt: input.lastSeenAt } : {}),
   };
 
   const placesRaw = input.placesRaw ?? { source: "seed" };

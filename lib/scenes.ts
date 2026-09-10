@@ -17,14 +17,14 @@ const STILLS = [
 
 export const HERO_SCENE = "/scenes/hero.png";
 
-export function cityScene(slug: string): string {
-  return CITY_SCENES[slug] ?? HERO_SCENE;
-}
-
 export function stillFor(slug: string): string {
   let n = 0;
   for (let i = 0; i < slug.length; i += 1) {
     n = (n + slug.charCodeAt(i) * 17) % STILLS.length;
   }
   return STILLS[n];
+}
+
+export function cityScene(slug: string): string {
+  return CITY_SCENES[slug] ?? stillFor(slug);
 }

@@ -52,6 +52,7 @@ export default defineSchema({
     latestBragAt: v.optional(v.number()),
     windowExpiresAt: v.optional(v.number()),
     closedAt: v.optional(v.number()),
+    lastSeenAt: v.optional(v.number()),
     allTimeMakers: v.number(),
     placesRaw: v.any(),
   })
@@ -100,7 +101,9 @@ export default defineSchema({
       v.literal("approved"),
       v.literal("rejected"),
     ),
-  }).index("by_status", ["status"]),
+  })
+    .index("by_status", ["status"])
+    .index("by_maker_status", ["makerKey", "status"]),
 
   spotAddQueue: defineTable({
     placeId: v.string(),
@@ -126,6 +129,31 @@ export default defineSchema({
     avatarUrl: v.union(v.string(), v.null()),
     expiresAt: v.number(),
   }).index("by_state", ["state"]),
+
+  placesQuota: defineTable({
+    monthKey: v.string(),
+    detailsCount: v.number(),
+  }).index("by_monthKey", ["monthKey"]),
+
+  ingestCursor: defineTable({
+    key: v.string(),
+    cityIndex: v.number(),
+    citySlug: v.optional(v.string()),
+  }).index("by_key", ["key"]),
+
+  placesSeen: defineTable({
+    placeId: v.string(),
+    reason: v.optional(
+      v.union(
+        v.literal("fast-food"),
+        v.literal("not-hospitality"),
+        v.literal("unassigned"),
+        v.literal("closed-unknown"),
+        v.literal("invalid"),
+      ),
+    ),
+    seenAt: v.optional(v.number()),
+  }).index("by_placeId", ["placeId"]),
 
   reports: defineTable({
     target: v.union(

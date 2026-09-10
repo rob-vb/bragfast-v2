@@ -1,5 +1,5 @@
-import { classifyPlaceTypes } from "./placeAdd";
-import type { OpeningHours, SpotType } from "./spot";
+import { catalogTypesFromStored, judgeCatalogFit } from "./catalogVerdict";
+import { openingHoursFromPeriods, type OpeningHours, type SpotType } from "./spot";
 
 export type PlacesBusinessStatus =
   | "OPERATIONAL"
@@ -20,10 +20,11 @@ export type PlacesSnapshot = {
 export type HygieneExisting = {
   placeId: string;
   listingStatus: "listed" | "gravestone";
+  hours?: OpeningHours | null;
 } | null;
 
 export type HygienePlan =
-  | { action: "skip"; reason: "not-hospitality" | "closed-unknown" }
+  | { action: "skip"; reason: "not-hospitality" | "closed-unknown" | "fast-food" }
   | { action: "noop" }
   | { action: "insert"; spotType: SpotType }
   | { action: "refresh"; spotType: SpotType }
@@ -42,7 +43,6 @@ export function placesHoursToOpeningHours(
   periods: readonly PlacesHoursPeriod[],
   timezone: string,
 ): OpeningHours | null {
-  const zone = timezone.length > 0 ? timezone : "Europe/Amsterdam";
   const mapped: OpeningHours["periods"] = [];
   for (const period of periods) {
     const close = period.close;
@@ -55,10 +55,32 @@ export function placesHoursToOpeningHours(
       close: clock(close),
     });
   }
-  if (mapped.length === 0) {
-    return null;
-  }
-  return { timezone: zone, periods: mapped };
+  return openingHoursFromPeriods(mapped, timezone);
+}
+
+export function snapshotFromListedSpot(input: {
+  placeId: string;
+  name: string;
+  address: string;
+  geo: { lat: number; lng: number };
+  hours: OpeningHours | null;
+  spotType: SpotType;
+  citySlug: string;
+  placesRaw: unknown;
+}): PlacesSnapshot {
+  return {
+    placeId: input.placeId,
+    name: input.name,
+    address: input.address,
+    geo: input.geo,
+    types: catalogTypesFromStored({
+      spotType: input.spotType,
+      placesRaw: input.placesRaw,
+    }),
+    hours: input.hours,
+    businessStatus: "OPERATIONAL",
+    citySlug: input.citySlug,
+  };
 }
 
 export function planHygiene(
@@ -66,8 +88,21 @@ export function planHygiene(
   existing: HygieneExisting,
   now: number,
 ): HygienePlan {
-  const classified = classifyPlaceTypes(snapshot.types);
-  if (classified.action === "queue") {
+  const fit = judgeCatalogFit({
+    name: snapshot.name,
+    types: snapshot.types,
+    hours: snapshot.hours ?? existing?.hours ?? null,
+  });
+  if (fit.kind === "fast-food") {
+    if (existing?.listingStatus === "listed") {
+      return { action: "close", closedAt: now };
+    }
+    return { action: "skip", reason: "fast-food" };
+  }
+  if (fit.kind === "not-hospitality") {
+    if (existing?.listingStatus === "listed") {
+      return { action: "close", closedAt: now };
+    }
     return { action: "skip", reason: "not-hospitality" };
   }
 
@@ -82,10 +117,10 @@ export function planHygiene(
   }
 
   if (existing === null) {
-    return { action: "insert", spotType: classified.spotType };
+    return { action: "insert", spotType: fit.spotType };
   }
   if (existing.listingStatus === "listed") {
-    return { action: "refresh", spotType: classified.spotType };
+    return { action: "refresh", spotType: fit.spotType };
   }
   return { action: "noop" };
 }

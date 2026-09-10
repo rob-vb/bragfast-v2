@@ -8,6 +8,7 @@ import {
   sortByDistance,
 } from "../domain/geo";
 import { DomainParseError, parseCitySlug, parseSpotSlug } from "../domain/ids";
+import { lookupGemeente } from "../domain/gemeenten";
 import { serializeMakerKey } from "../domain/makerKey";
 import type { MakerKey } from "../domain/makerKey";
 import {
@@ -21,13 +22,12 @@ import { boardComparator, standingAsOf } from "../domain/ranking";
 import type {
   CityCard,
   CityPageData,
+  CitySpotCard,
   FeedItem,
   HomepageData,
   NearbyData,
   NearbySpotCard,
-  RankedSpotCard,
   SearchHit,
-  SeedSpotCard,
   SitemapEntry,
   SpotPageData,
 } from "../domain/viewModels";
@@ -104,24 +104,10 @@ function listedAsOfNow(spot: Spot): Spot {
   };
 }
 
-function rankedCard(spot: Spot, rank: number): RankedSpotCard {
-  return {
-    slug: spot.slug,
-    citySlug: spot.citySlug,
-    name: spot.name,
-    rank,
-    score:
-      spot.lifecycle.kind === "listed" && spot.lifecycle.standing
-        ? spot.lifecycle.standing.score
-        : 0,
-    hours: spot.hours,
-    spotType: spot.spotType,
-    geo: spot.geo,
-    address: spot.address,
-  };
-}
-
-function seedCard(spot: Spot): SeedSpotCard {
+function citySpotCard(
+  spot: Spot,
+  bragged: { rank: number; score: number } | null,
+): CitySpotCard {
   return {
     slug: spot.slug,
     citySlug: spot.citySlug,
@@ -130,6 +116,7 @@ function seedCard(spot: Spot): SeedSpotCard {
     hours: spot.hours,
     spotType: spot.spotType,
     geo: spot.geo,
+    bragged,
   };
 }
 
@@ -154,7 +141,7 @@ async function loadCityPage(
     .map((row) => listedAsOfNow(parseSpot(asSpotDoc(row))))
     .filter((spot) => spot.lifecycle.kind === "listed");
 
-  const board = listed
+  const ranked = listed
     .filter(
       (spot) => spot.lifecycle.kind === "listed" && spot.lifecycle.standing !== null,
     )
@@ -166,17 +153,28 @@ async function loadCityPage(
         return 0;
       }
       return boardComparator(a.lifecycle.standing, b.lifecycle.standing);
-    })
-    .map((spot, index) => rankedCard(spot, index + 1));
+    });
 
-  const tail = listed
-    .filter(
-      (spot) => spot.lifecycle.kind === "listed" && spot.lifecycle.standing === null,
-    )
+  const braggedBySlug = new Map(
+    ranked.flatMap((spot, index) => {
+      if (spot.lifecycle.kind !== "listed" || !spot.lifecycle.standing) {
+        return [];
+      }
+      return [
+        [
+          spot.slug,
+          { rank: index + 1, score: spot.lifecycle.standing.score },
+        ] as const,
+      ];
+    }),
+  );
+
+  const spots = listed
+    .slice()
     .sort((a, b) => a.name.localeCompare(b.name, "nl"))
-    .map(seedCard);
+    .map((spot) => citySpotCard(spot, braggedBySlug.get(spot.slug) ?? null));
 
-  return { city: cityCard(city), board, tail };
+  return { city: cityCard(city), spots };
 }
 
 export const homepage = query({
@@ -322,12 +320,14 @@ export const searchCatalog = query({
       });
     }
 
+    const alias = lookupGemeente(needle);
     const cities: SearchHit[] = cityRows
       .filter(
         (row) =>
           row.slug.includes(needle) ||
           row.nameNl.toLowerCase().includes(needle) ||
-          row.nameEn.toLowerCase().includes(needle),
+          row.nameEn.toLowerCase().includes(needle) ||
+          alias?.slug === row.slug,
       )
       .map((row) => ({
         kind: "city" as const,
@@ -389,7 +389,7 @@ export const spotPage = query({
 
     const spot = parseSpot(asSpotDoc(row));
     const cityData = await loadCityPage(ctx, citySlug);
-    const ranked = cityData?.board.find((card) => card.slug === spot.slug);
+    const card = cityData?.spots.find((item) => item.slug === spot.slug);
 
     const postRows = await ctx.db
       .query("posts")
@@ -456,7 +456,7 @@ export const spotPage = query({
       hours: spot.hours,
       spotType: spot.spotType,
       lifecycle: spot.lifecycle,
-      rankInCity: ranked?.rank ?? null,
+      rankInCity: card?.bragged?.rank ?? null,
       allTimeMakers: spot.allTimeMakers,
       feed,
       licensedImage,

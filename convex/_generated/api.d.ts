@@ -27,6 +27,7 @@ import type * as model_spots from "../model/spots.js";
 import type * as model_users from "../model/users.js";
 import type * as model_votes from "../model/votes.js";
 import type * as notify from "../notify.js";
+import type * as osmHours from "../osmHours.js";
 import type * as places from "../places.js";
 import type * as seed from "../seed.js";
 import type * as social from "../social.js";
@@ -58,6 +59,7 @@ declare const fullApi: ApiFromModules<{
   "model/users": typeof model_users;
   "model/votes": typeof model_votes;
   notify: typeof notify;
+  osmHours: typeof osmHours;
   places: typeof places;
   seed: typeof seed;
   social: typeof social;

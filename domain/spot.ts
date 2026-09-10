@@ -38,6 +38,73 @@ export type OpeningHours = {
   periods: Array<{ day: number; open: string; close: string }>;
 };
 
+function minutesFromClock(value: string): number {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(value);
+  if (!match) {
+    return Number.NaN;
+  }
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (minute > 59) {
+    return Number.NaN;
+  }
+  if (hour === 24 && minute === 0) {
+    return 24 * 60;
+  }
+  if (hour > 23) {
+    return Number.NaN;
+  }
+  return hour * 60 + minute;
+}
+
+function formatClock(minutes: number): string {
+  if (minutes === 24 * 60) {
+    return "24:00";
+  }
+  const hour = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+}
+
+export function hasOpenBefore(hours: OpeningHours, cutoff: string): boolean {
+  const limit = minutesFromClock(cutoff);
+  if (!Number.isFinite(limit)) {
+    return false;
+  }
+  return hours.periods.some((period) => {
+    const open = minutesFromClock(period.open);
+    return Number.isFinite(open) && open < limit;
+  });
+}
+
+export function openingHoursFromPeriods(
+  periods: ReadonlyArray<{ day: number; open: string; close: string }>,
+  timezone: string,
+): OpeningHours | null {
+  const zone = timezone.length > 0 ? timezone : "Europe/Amsterdam";
+  const mapped: OpeningHours["periods"] = [];
+  for (const period of periods) {
+    if (!Number.isInteger(period.day) || period.day < 0 || period.day > 6) {
+      continue;
+    }
+    const open = minutesFromClock(period.open);
+    const close = minutesFromClock(period.close);
+    if (!Number.isFinite(open) || !Number.isFinite(close) || close <= open) {
+      continue;
+    }
+    mapped.push({
+      day: period.day,
+      open: formatClock(open),
+      close: formatClock(close),
+    });
+  }
+  mapped.sort((a, b) => a.day - b.day || a.open.localeCompare(b.open));
+  if (mapped.length === 0) {
+    return null;
+  }
+  return { timezone: zone, periods: mapped };
+}
+
 export type BoardStanding = {
   score: number;
   latestBragAt: number;

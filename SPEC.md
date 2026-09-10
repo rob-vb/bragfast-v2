@@ -17,15 +17,15 @@ The brand is English (`brag.fast`, hashtag `#bragfast`). The first market is NL 
 | Word | Meaning |
 |------|---------|
 | **Spot** | One hospitality venue, canonicalized by Google Place ID. |
-| **City** | The seeker’s query unit (Haarlem, not a neighbourhood). Board is always city-scoped. |
-| **Catalog** | All spots in NL. Seeded and maintained by Places/scrape. Does not rank. |
+| **City** | One Dutch **gemeente** board. The URL slug is the name people type (`den-bosch`, `zaandam`) when that is well-known, otherwise the gemeente name (`haarlemmermeer`, `westland`). Neighbourhoods and dorpen are not boards. Search aliases land on the canonical slug. |
+| **Catalog** | All spots in NL. Seeded and maintained by Places. Does not rank. |
 | **Seed** | A catalog spot with zero makers. Visible, not numbered. |
 | **Brag** | Proof of a visit: in-app media *or* a social embed pointing at the original. |
 | **Maker** | The identity that bragged. One maker = one vote per spot. Unconnected Instagram user id counts. Connecting merges identities. |
 | **Board** | Numbered city ranking of spots that have ≥1 maker in the ranking window. |
-| **Catalog tail** | Unnumbered list of seed spots on the same city page, under the board. |
+| **Catalog tail** | Seed spots in a city (zero makers). They sit in the same city list as the board, without the egg. |
 | **Passport** | Public profile of unique spots a linked brag.fast user has bragged. |
-| **Claim** | Restaurant takes ownership of the spot page. v2. Never buys rank. |
+| **Claim** | Paid ownership of the spot page (v2). Tools and a conversion CTA, never rank. **Geclaimd** means someone is paying for that page, not that we verified the business. |
 
 ## v1 vs later
 
@@ -33,13 +33,12 @@ The brand is English (`brag.fast`, hashtag `#bragfast`). The first market is NL 
 
 - Crawlable site, NL catalog, city + spot + profile pages
 - Homepage: search (city or spot), featured cities, near-me
-- City page: numbered board + catalog tail, list default, map toggle
-- Filters: open now, has brags, type chips (Café/lunch, Bakker, Hotel, Overig)
+- City page: one list of listed spots, egg on bragged spots, list default, map toggle
+- Filters: open now, has brags
 - Spot page: name, address, hours, 90-day rank + all-time maker count, brag feed
 - In-app brag: signed-in, one photo or short video, replaceable, deletable, reportable
 - Ranking: unique makers in 90 days; tie-break = most recent brag
 - Auth: Better Auth with Google + magic email link
-- User-add spot: signed-in Places autocomplete, hospitality/lodging types go live
 - Instagram connect: then auto-import `#bragfast` with a hard place tag
 - Social posts: official embed + permalink; never host a copy of IG/TT/YT media
 - Hard location tag → auto-attach + maker vote
@@ -52,7 +51,9 @@ The brand is English (`brag.fast`, hashtag `#bragfast`). The first market is NL 
 
 **Not v1**
 
-- Native app, Stripe/claim, pay-to-rank, TikTok/YouTube OAuth
+- Native app, Stripe/claim (see **Claim (v2)** — do not implement until a v2 task names it), pay-to-rank, TikTok/YouTube OAuth
+- Type chips (Café/lunch, Bakker, Hotel, Overig) — v2; `spotType` may exist in data, do not expose city filters until a v2 task
+- User-add spot (signed-in Places autocomplete; hospitality/lodging go live, other types to owner queue) — v2; do not mount add-spot UI until a v2 task
 - Likes, comments, followers, notifications beyond transactional email
 - Cuisine taxonomy, guests-only hotel flag, AI-written spot articles
 - ChatGPT-placement promises, national spot board, auto-AI matching (until the owner flips it)
@@ -64,14 +65,14 @@ The owner sets the “idea is working” bar. Do not block v1 on a metric.
 
 1. Discovery owns the product. Brags feed the board. Do not build a national live feed as the homepage.
 2. Rank **spots**, not dishes. Person boards exist only as passport + weekly heat.
-3. Catalog = NL. Board = city. URLs are country-prefixed for a future `/be/...`.
+3. Catalog = NL. Board = gemeente. One GPS point, one board. URLs are country-prefixed for a future `/be/...`.
 4. A brag is a vote. No star ratings. Do not surface Google rating as “best.”
 5. One maker per spot. Many posts from the same maker appear in the feed; they still count as one vote.
 6. Board numbers are earned. Seed never gets a rank number.
 7. Host only media the user uploaded on brag.fast. Third-party UGC is embed + link to origin.
-8. Claim (v2) is ownership and tools. Rank stays 100% makers.
-9. LLM pitch = public, factual, crawlable pages + schema. No generated brochure copy. No guaranteed chatbot mentions.
-10. Browse signed-out. Sign-in for in-app brag, add-spot, passport, Instagram connect.
+8. Claim (v2) is ownership and tools. Rank stays 100% makers. Paid extras are **additive** (CTA, official hero, Geclaimd mark). Unpaid pages keep the full brag feed and the same board rules. Owners cannot hide maker brags.
+9. LLM pitch = public, factual, crawlable pages + schema for **every** spot. No generated brochure copy. No guaranteed chatbot mentions. Do not give claimed spots an exclusive machine layer (`llms.txt`, extra schema, “AI visibility”).
+10. Browse signed-out. Sign-in for in-app brag, passport, Instagram connect. (v2: also add-spot.)
 
 ## URLs
 
@@ -84,6 +85,7 @@ The owner sets the “idea is working” bar. Do not block v1 on a metric.
 ```
 
 - `{city}` and `{spot}` are English-safe slugs (e.g. `haarlem`, `de-bakkerswinkel`).
+- `{city}` is the canonical gemeente slug. Well-known names that are not the CBS naam (`den-bosch`, `den-haag`, `zaandam`) are the slug. Other names people type (`hoofddorp`) are search aliases of the canonical page, not a second board.
 - `/nl/` is **country**, not language. Language is a UI switch (cookie / `Accept-Language`, default Dutch).
 - Do not clone the tree under `/en/...` in v1.
 - Profiles with zero brags: noindex. After first brag: index.
@@ -112,9 +114,11 @@ Show all-time distinct makers on the spot page as a separate figure.
 
 ## What a spot is
 
-In the catalog if a guest can **buy** breakfast or brunch there (café, bakery, lunchroom, hotel). Home kitchens and offices stay out. McDonald’s may exist; makers will rank it.
+In the catalog if a guest can **buy** breakfast or brunch there (café, bakery, lunchroom that opens for breakfast, hotel). Home kitchens and offices stay out. Fast food stays out: Places type `fast_food_restaurant`, plus a short name blocklist (McDonald’s, Burger King, KFC, Subway, FEBO, New York Pizza). Chains that serve breakfast as hospitality stay in (Anne&Max, Bagels & Beans, Van der Valk).
 
-Place types allowed on user-add (live immediately): café, bakery, restaurant, meal_takeaway, lodging/hotel equivalents from Places. Petrol station, office, generic store → owner queue, not live.
+Generic Google type `restaurant` or `meal_takeaway` is not breakfast. Those stay out unless stored hours show at least one opening **before 11:00**. A café, bakery, coffee shop, `breakfast_restaurant`, or `brunch_restaurant` stays in when hours are unknown, and drops when hours never open before 11:00. Hotels stay even with dinner hours. Lunch-only and dinner restaurants (Loetje, bistros that open 11:30+) are not catalog.
+
+**v2 user-add** (do not ship in v1): Place types that go live immediately: café, bakery, restaurant, meal_takeaway, lodging/hotel equivalents from Places. Petrol station, office, generic store → owner queue, not live.
 
 Permanently closed (`business_status` CLOSED): strip from city lists and search; keep the page with a clear “Gesloten” state. Passport keeps it as history, not a recommendation. Temporarily closed follows opening hours, not gravestone.
 
@@ -130,14 +134,16 @@ Search: catalog only. Exact spots first, then cities. Ambiguous tent names show 
 
 ### City `/nl/{city}`
 
-1. Numbered **board** — spots with ≥1 maker in 90 days.
-2. **Catalog tail** — remaining spots in that city, unnumbered, sortable by distance or name.
+One list of listed spots in that city, sortable by name or distance.
+
+Spots with ≥1 maker in 90 days wear the logo egg, top-right on the card. Seed spots have no egg and no rank number on this page. Rank numbers stay on the spot page.
 
 Default view: list. Toggle: map.  
-Chips: Open nu · Met brags · Café/lunch · Bakker · Hotel · Overig.  
-“Met brags” shows only block 1.
+Chips in v1: Open nu · Met brags.  
+v2 chips: Café/lunch · Bakker · Hotel · Overig (do not ship until a v2 task).  
+“Met brags” shows only spots with the egg.
 
-Visual distinction: seed vs earned is the two-block split, not a fake #12 badge on seed.
+Visual distinction: egg vs none. Do not split the page into Board and “Nog niet gebragd”.
 
 ### Spot `/nl/{city}/{spot}`
 
@@ -146,7 +152,7 @@ Name, address, city, opening hours / open-now from Places.
 Feed: newest first; in-app media + social embeds (click through to origin).  
 Share URL. Report.  
 If signed in: brag here (upload or confirm Instagram match).  
-No menu, price, booking, phone-as-a-product (optional tel link is fine). No comments/likes.
+No menu, price, booking, phone-as-a-product in **v1** (optional tel link is fine). No comments/likes. v2 claimed spots may add one owner conversion CTA — see Claim (v2).
 
 JSON-LD `FoodEstablishment` (or `Restaurant`/`Bakery`/`Hotel` when type is clear): name, address, geo, opening hours, url, image from a brag only when we have a license (in-app). Social embeds are not our images.
 
@@ -186,7 +192,13 @@ Display name, avatar, unique-spot count, posts-this-week count, list/map of spot
 
 ## Catalog maintenance
 
-Daily/periodic job is **hygiene**, not ranking: upsert by Place ID, refresh hours/address, mark closed, discover new breakfast/brunch hospitality in NL cities. Initial fill: Places text search per city for breakfast/brunch. Grok/LLM may help classify “is this breakfast hospitality?” — it must not write board order.
+Daily job is **hygiene**, not ranking: upsert by Place ID, refresh hours/address, mark closed, discover new breakfast/brunch hospitality across all Dutch gemeenten (~340). No LLM. Discovery Text Search uses `ontbijt` / `brunch` with included types café, bakery, hotel, `breakfast_restaurant`, `brunch_restaurant`, coffee shop. It does not search generic `restaurant`. The catalog gate is those breakfast types, plus the fast-food skip above. Generic `restaurant` / `meal_takeaway` enter only when hours already prove a morning open. Listed spots that fail the gate drop from city lists (same close path as listed fast food).
+
+Place Details on the free Pro SKU omits `regularOpeningHours`. A recurring job fills `hours` on listed spots that are still null from OpenStreetMap `opening_hours` (Overpass around those pins). OSM never inserts a spot, never writes a Place ID, and never overwrites hours that already exist. If Places later sends hours, those win. Catch-up may run from the VPS because Overpass often throttles Convex cloud.
+
+Each night mixes **discover** (new Place IDs) and **refresh** (oldest listed spots first). A city cursor stores the next **gemeente slug** and walks Dutch gemeenten **largest first** (CBS inwoners on 1 January; 20,000+ before the rest). Changing the walk order must resume at that slug — never restart at Amsterdam to save Place Details. Budget is finite (~200 Place Details per run, 4000/month). Text Search uses the gemeente bounding box. Point-in-polygon on CBS gemeente boundaries assigns `citySlug`. Google address components are fallback when a point misses every polygon.
+
+Listed fast food found on refresh is dropped from lists. Permanently closed listed spots become gravestones.
 
 ## Default stack
 
@@ -212,14 +224,39 @@ Do not add a second framework. Do not ship a client-only SPA for public pages.
 
 Maker_key merge: when Instagram is linked, rewrite `ig:{id}` brags to `user:{id}` and collapse duplicate votes on the same spot to one.
 
+## Claim (v2)
+
+Do not implement until a task explicitly starts v2 claim. Stripe, claim UI, and Geclaimd marks stay out of v1.
+
+The venue’s job is customers. Brags are the free etalage: good food → guests post proof → the spot page markets the tent. Claim is how brag.fast charges for **catching** that demand, not for existing on the board.
+
+**Price:** €29 per spot per month, cancel anytime. One price, no Bronze/Gold, no yearly discount in the first paid version. A chain pays per location. One active claim per spot (first subscriber). Stop paying: conversion CTA, official hero, and Geclaimd marks disappear; the public page matches never-claimed.
+
+**Additive only.** Unclaimed and claimed spots share the same board number, the same full brag feed, and the same crawl (HTML, JSON-LD, sitemap). A directory-wide `llms.txt` (if we add one) lists the catalog, not only paying tents. Do not throttle unpaid photos, do not exclusive-sort “most popular” for payers, do not sell ChatGPT placement.
+
+**Owners cannot hide maker brags.** Report (spam, wrong place, illegal) stays the existing moderation path. Paid may add an owner-uploaded official hero on the spot page, labeled as the house, **beside** the feed — not instead of it.
+
+**First paid SKU** (and nothing else until a later spec edit):
+
+1. One conversion CTA on the **spot page only** (owner-pasted URL: reserve / order / website). Not on the city board, not on the map as a button.
+2. Official hero (owner upload).
+3. **Geclaimd** mark on the spot page, the city board, and the map.
+
+Geclaimd means “this page has a paying owner,” not “we checked KvK” and not “this breakfast is better.” No identity-verification flow in this SKU; disputes are handled by the site owner out of band.
+
+**Not in the first SKU:** signature dish, diet fields, replies to brags, analytics dashboard, exclusive LLM files, extra schema. Those need a spec change before anyone builds them.
+
+**Seeker chrome:** the public spot page may show a small **Jouw zaak?** with no price. Pitch and Stripe live behind that link. Do not put €29 on the breakfast etalage.
+
 ## Copy (Dutch default)
 
 Homepage one-liner: **Beste ontbijt- en brunchplekken, per stad.**  
 Hashtag in UI: `#bragfast`.  
-Board empty: catalog tail still shows.  
-Seed block heading: **Nog niet gebragd**.  
+Board empty: the city list still shows seed spots.  
 Closed: **Gesloten**.  
-Open now: **Open nu**.
+Open now: **Open nu**.  
+Claim entry (v2): **Jouw zaak?**  
+Claimed mark (v2): **Geclaimd**.
 
 English UI translates chrome and our sentences only.
 
@@ -233,8 +270,8 @@ Stop each step when the criterion is true. Do not start Instagram ingest before 
 2. **Catalog + public pages** — Spot/city ingest by Place ID; homepage search; city two-block page; spot page with hours; JSON-LD + sitemap. Gravestone for closed.  
    *Done:* a seeded city lists spots; `/nl/{city}/{spot}` is view-source HTML with schema; search finds city and spot.
 
-3. **In-app brag + board** — upload, one-maker vote, 90-day numbering, catalog tail, filters, map toggle, report/delete/replace, user-add via Places autocomplete.  
-   *Done:* two users bragging the same spot still produce one numbered position with two feed items; a third spot with no brags sits unnumbered below.
+3. **In-app brag + board** — upload, one-maker vote, 90-day numbering, egg on the city list, filters, map toggle, report/delete/replace.  
+   *Done:* two users bragging the same spot still produce one numbered standing with two feed items; a third spot with no brags sits in the same city list without an egg.
 
 4. **Passport + bragger boards** — slug, unique spots, weekly posts tab.  
    *Done:* `/nl/u/{slug}` shows after first brag; noindex before.
@@ -242,9 +279,9 @@ Stop each step when the criterion is true. Do not start Instagram ingest before 
 5. **Instagram + embeds + owner queue** — connect, hard-tag auto, caption AI to queue, embed-only display.  
    *Done:* a hard-tagged `#bragfast` post appears on the spot without our S3 copy; a caption-only post sits in the owner queue and does not change rank until approved.
 
-6. **Polish** — near-me, type chips mapped from Places, featured cities, transactional “brag is live” email, admin reports/closed override.  
+6. **Polish** — near-me, featured cities, transactional “brag is live” email, admin reports/closed override.  
    *Done:* seeker can filter “open nu” + “met brags”; owner can hide a reported in-app brag.
 
 ## Out of scope reminders
 
-If a task would require Stripe, TikTok login, a store listing, a comment thread, Google stars on the board, or generating unique blog copy per spot — stop and leave it out.
+If a task would require Stripe, TikTok login, a store listing, a comment thread, Google stars on the board, generating unique blog copy per spot, city type chips, or user-add spot — stop and leave it out. Claim, type chips, and user-add are v2; a v1 task that touches Stripe, Geclaimd, type chips, or add-spot UI is out of scope.

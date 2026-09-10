@@ -6,7 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { t, type Locale } from "@/domain/messages";
 import { Button } from "@/components/ui/button";
 import { SpotLinkCard } from "@/components/visual";
-import { cityScene } from "@/lib/scenes";
+import { stillFor } from "@/lib/scenes";
 
 const NEARBY_CAP = 3;
 
@@ -142,10 +142,9 @@ export function NearMe({
                     <li key={`${spot.citySlug}-${spot.slug}`}>
                       <SpotLinkCard
                         href={`/nl/${spot.citySlug}/${spot.slug}`}
-                        src={cityScene(spot.citySlug)}
+                        src={stillFor(spot.slug)}
                         title={spot.name}
                         meta={cityName}
-                        stamp={t(locale, "atmosphere")}
                         className="min-h-36"
                       />
                     </li>

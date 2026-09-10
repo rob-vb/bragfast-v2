@@ -1,16 +1,12 @@
+import { NL_CITIES } from "./cities";
+import { assignGemeenteSlug } from "./gemeenten";
 import type { CitySlug } from "./ids";
 
 export type GeoPoint = { lat: number; lng: number };
 
-export const NL_CITY_CENTROIDS: Record<string, GeoPoint> = {
-  haarlem: { lat: 52.3812, lng: 4.636 },
-  amsterdam: { lat: 52.3676, lng: 4.9041 },
-  rotterdam: { lat: 51.9225, lng: 4.47917 },
-  utrecht: { lat: 52.0907, lng: 5.1214 },
-  "den-haag": { lat: 52.0705, lng: 4.3007 },
-  eindhoven: { lat: 51.4416, lng: 5.4697 },
-  groningen: { lat: 53.2194, lng: 6.5665 },
-};
+export const NL_CITY_CENTROIDS: Record<string, GeoPoint> = Object.fromEntries(
+  NL_CITIES.map((city) => [city.slug, { lat: city.lat, lng: city.lng }]),
+);
 
 const EARTH_M = 6371000;
 
@@ -50,4 +46,8 @@ export function nearestCity<T extends { slug: CitySlug; geo: GeoPoint }>(
 
 export function cityCentroid(slug: string): GeoPoint | null {
   return NL_CITY_CENTROIDS[slug] ?? null;
+}
+
+export function assignCitySlug(geo: GeoPoint): string | null {
+  return assignGemeenteSlug(geo);
 }

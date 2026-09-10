@@ -244,7 +244,7 @@ A cold, pale base with indigo ink and a candy set, where the photograph supplies
 - **Display** (Lilita One 400, `clamp(3rem, 10vw, 7rem)`, line-height 0.9, tracking 0.025em, solid white, `.photo-copy`): city names over the city still.
 - **Headline** (Lilita One 400, `clamp(2.4rem, 8vw, 5.5rem)`, line-height 0.92, tracking 0.025em, solid white, `.photo-copy`): spot and passport names over the still; admin title in night on foam.
 - **Section** (Lilita One 400, 1.875rem → 2.25rem at `sm`, tracking 0.025em, night): section heads such as featured cities, board, seed tail, hours, search results.
-- **Title** (Lilita One 400, 1.5rem, tracking 0.025em, white, `.photo-copy`): the name painted onto a photo card; panel titles at 1.25–1.5rem in night.
+- **Title** (Bagel Fat One 400, 1.5rem, tracking 0.025em, berry): the name on a photo-card milk caption.
 - **Lede** (Figtree 600, 1.125rem → 1.5rem at `sm`, line-height 1.4, white, `.photo-copy`): the hero sentence under the wordmark. The supporting intro drops to 400.
 - **Body** (Figtree 400, 1rem, line-height 1.75, night or night/75): hours, addresses, brag text. Reading columns cap at `max-w-3xl` (48rem).
 - **Label** (Figtree 700, 0.875rem, night or white): candy keys, buttons, segments, card meta, back-to-city (sun, below the spot address). The language toggle is the one uppercase label (11px, tracking 0.12em) because it is a two-letter code.
@@ -253,7 +253,7 @@ A cold, pale base with indigo ink and a candy set, where the photograph supplies
 ### Named Rules
 **The Paint, Not Costume Rule.** The wordmark is a painted raster. Never apply a CSS gradient to a geometric display face and call it the wordmark.
 
-**The Painted Title Rule.** A title on a photograph is Lilita One in solid white with `.photo-copy`, placed bottom-left. It is never boxed in a caption bar and never filled with flare → citrus.
+**The Painted Title Rule.** A title on a full-bleed page still is Bagel Fat One in solid white with `text-shadow-photo`, placed bottom-left. Card names sit on the milk caption in berry. They are never painted in white on the still.
 
 **The No Eyebrow Rule.** Headlines are not preceded by a small uppercase kicker. The hashtag `#bragfast` is a brand signature in the header and footer, not a label above content.
 
@@ -275,7 +275,7 @@ Breakpoints are Tailwind defaults: `sm` 640px, `md` 768px, `lg` 1024px.
 
 Depth is made four ways: local text-shadow on photographs, a frosted-glass header, 3D candy-key feet, and two families of soft coloured glow. There are no full-bleed indigo overlays and no grey drop shadows.
 
-Hero, city, spot and passport bands have no scrim. Legibility comes from `.photo-copy`. Photo cards add only a short bottom fade (`h-2/5`, night/55 → transparent) so the title sits, not so the still goes dark. The header is night at 75% with `backdrop-blur-md`; frosted badges over photos are white/15 with `backdrop-blur-sm`.
+Hero, city, spot and passport bands have no scrim. Legibility comes from `text-shadow-photo`. Photo cards put the name on a milk caption under the still, not on the photograph.
 
 ### Shadow Vocabulary
 - **Photo copy** (`text-shadow: 0 1px 1px rgba(27,21,64,0.4), 0 10px 28px rgba(27,21,64,0.32)`): every line of type on a still.
@@ -322,15 +322,15 @@ Flat colour pills, not white outlines.
 A white pill tray (`p-0.5`, berry/12 border) holding pill links at 14px × 6px. The current segment is solid blush with white text via `aria-current`. Inactive segments inherit the tray. The language toggle is the same idea: white tray, blush plus white when pressed.
 
 ### Photo card
-The signature list item. A link with `min-h-36`–`min-h-72`, 28px radius, `overflow-hidden`, the still as `object-cover`, a short bottom night/55 fade, and the title in Lilita One 1.5rem white with `.photo-copy` at bottom-left (20px padding). Meta sits under it at 14px 600 white. The image scales to 105% over 700ms on hover. Focus draws the sun ring.
+A 28px slab. The still fills the top of the card (`object-cover`, `min-h-36`–`min-h-72`). Name and meta sit on a milk caption under the photo, in berry Bagel Fat One / Nunito, not painted in white on the still. The image scales to 105% over 700ms on hover. Focus draws the yolk ring.
 
-Spot cards always use the **city still**, never venue photography. They wear a sun **Sfeerbeeld** / **Atmosphere** stamp, rotated 8°, top-right. Board cards add the rank burst, top-left. City tiles on the homepage have neither stamp nor rank.
+City tiles use that city's still. Spot cards use a hashed breakfast still (`stillFor(slug)`), never the city still. Bragged spots wear the logo egg (`/brag_fast_egg.svg`), 44px, 8° tilt, top-right on the photo, with the sticker drop-shadow. City tiles have neither egg nor rank. Rank numbers live on the spot page, not on the city list.
 
 ### Rank burst
-A 4.35rem 12-point SVG sticker, −14° rotation, 12px from the top-left of a photo card. Flare → citrus fill, white Lilita One ~1.25rem, two-digit zero-padded number, pink drop-shadow. It reads as a flash sticker on the photo.
+Used on the spot page standing, not on city cards. A 4.35rem yolk ellipse sticker, −12° rotation, berry two-digit number.
 
 ### Atmosphere stamp
-A sun pill, 12px extra-bold night label, 8° tilt, candy inset highlight. It marks the still as mood, not as a picture of that café.
+Retired on spot cards. The egg marks a bragged spot. City stills stay unlabeled.
 
 ### Search pill
 The hero's one control. 64px tall pill, white at 92% with a white/40 border, ink-lift shadow, 20px side padding, a flare accent at left and a transparent 16px Figtree input with night/45 placeholder.
@@ -367,7 +367,7 @@ The home still drifts: `scale(1.04) → scale(1.14)` over 22s, ease-out, alterna
 - **Do** use the painted `/wordmark.png` in the hero and the header.
 - **Do** use solid blush on primary buttons, selected chips, and the pressed language side.
 - **Do** make filters and segments colour pills (candy / mint / yolk at rest, blush when pressed) and every content container a 28px slab.
-- **Do** mark spot cards with the city still plus a sun Sfeerbeeld/Atmosphere stamp; put rank in a rotated 12-point burst.
+- **Do** mark bragged spot cards with the logo egg, top-right on the still.
 - **Do** show maker name and time on every brag card; keep seed placeholder images in the DOM as `sr-only` behind a sky fallback.
 - **Do** put the back-to-city link below the spot address.
 - **Do** use sun for links and focus rings on photographs and night grounds; flare for selected state.
@@ -378,11 +378,12 @@ The home still drifts: `scale(1.04) → scale(1.14)` over 22s, ease-out, alterna
 - **Don't** introduce cream, beige or maple surfaces, or bring back Syne.
 - **Don't** restore `.flare-text` or put a CSS gradient on Lilita, Pacifico, or any geometric display face.
 - **Don't** wash a hero, city or spot still with a full-bleed indigo overlay.
-- **Don't** treat spot cards as venue photography; they are city stills with an atmosphere stamp.
+- **Don't** put white type on a spot card still; names sit on the milk caption.
+- **Don't** use one city still for every spot in that city.
 - **Don't** draw rank as a circle or a table number.
 - **Don't** put a CSS gradient on a button or chip.
 - **Don't** turn filter chips into white-bordered outlines.
-- **Don't** box a thumbnail beside a text column; a list item is a photo with the title painted on it.
+- **Don't** split the city page into Board and “Nog niet gebragd”.
 - **Don't** put a small uppercase kicker above a headline.
 - **Don't** use `#000` for text or fades; ink is night.
 - **Don't** use grey or black drop shadows, or borders to fake elevation.
