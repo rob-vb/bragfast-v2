@@ -6,7 +6,7 @@ import { loadCityPage } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import { t } from "@/domain/messages";
 import type { Locale } from "@/domain/messages";
-import { canonicalCitySlug } from "@/domain/gemeenten";
+import { canonicalCitySlug } from "@/domain/cities";
 import { openNow } from "@/domain/ranking";
 import type { CitySpotCard } from "@/domain/viewModels";
 import {

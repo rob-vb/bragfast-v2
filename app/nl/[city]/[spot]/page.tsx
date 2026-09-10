@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { foodEstablishmentJsonLd } from "@/domain/jsonld";
-import { canonicalCitySlug } from "@/domain/gemeenten";
+import { canonicalCitySlug } from "@/domain/cities";
 import { openNow } from "@/domain/ranking";
 import { makersLabel, t, type Locale } from "@/domain/messages";
 import { loadSpotPage, publicSiteUrl } from "@/lib/catalog";
