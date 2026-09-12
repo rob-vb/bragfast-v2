@@ -17,7 +17,8 @@ import {
   planReportReview,
 } from "./moderation";
 import { bragLiveEmail } from "./notify";
-import { classifyPlaceTypes, slugFromPlaceName } from "./placeAdd";
+import { classifyPlaceTypes, planPlaceAdd, slugFromPlaceName } from "./placeAdd";
+import { isMissingConvexFunction } from "./convexQuery";
 import {
   POSTS_WEEK_MS,
   countPostsThisWeek,
@@ -72,7 +73,26 @@ test("JSON-LD omits image when none is licensed", () => {
     image: null,
   });
   assert.equal(json["@type"], "CafeOrCoffeeShop");
+  assert.equal(json.name, "Anne&Max Haarlem");
   assert.equal("image" in json, false);
+});
+
+test("JSON-LD keeps the name when an uploaded photo is present", () => {
+  const json = foodEstablishmentJsonLd({
+    name: "Anne&Max Haarlem",
+    address: "Grote Houtstraat 1, Haarlem",
+    cityName: "Haarlem",
+    geo: { lat: 52.38, lng: 4.63 },
+    hours: null,
+    spotType: "cafe",
+    url: "http://77.42.31.66/nl/haarlem/anne-max",
+    image: { url: "https://focused-deer-318.convex.cloud/api/storage/photo" },
+  });
+  assert.equal(json.name, "Anne&Max Haarlem");
+  assert.equal(
+    json.image,
+    "https://focused-deer-318.convex.cloud/api/storage/photo",
+  );
 });
 
 test("Places can retarget a seed Place ID via the city slug", () => {
@@ -261,7 +281,7 @@ test("brag-live mail escapes the spot name and skips empty urls", () => {
   assert.equal(bragLiveEmail({ spotName: "X", url: "  " }), null);
 });
 
-test("place types go live for hospitality and queue for petrol", () => {
+test("place types go live for hospitality and reject petrol and fast food", () => {
   assert.deepEqual(classifyPlaceTypes(["cafe", "store"]), {
     action: "live",
     spotType: "cafe",
@@ -279,10 +299,105 @@ test("place types go live for hospitality and queue for petrol", () => {
     spotType: "cafe",
   });
   assert.deepEqual(classifyPlaceTypes(["gas_station"]), {
-    action: "queue",
+    action: "reject",
     reason: "disallowed-type",
   });
+  assert.deepEqual(classifyPlaceTypes(["fast_food"]), {
+    action: "reject",
+    reason: "disallowed-type",
+  });
+  assert.deepEqual(classifyPlaceTypes(["fast_food", "cafe"]), {
+    action: "reject",
+    reason: "disallowed-type",
+  });
+  assert.deepEqual(classifyPlaceTypes(["fast_food_restaurant"]), {
+    action: "reject",
+    reason: "disallowed-type",
+  });
+  assert.deepEqual(classifyPlaceTypes(["restaurant", "fast_food_restaurant"]), {
+    action: "reject",
+    reason: "disallowed-type",
+  });
+  assert.deepEqual(classifyPlaceTypes(["cafe"]), {
+    action: "live",
+    spotType: "cafe",
+  });
   assert.equal(slugFromPlaceName("De Koffiesalon Haarlem"), "de-koffiesalon-haarlem");
+});
+
+test("isMissingConvexFunction swallows only a missing Convex function", () => {
+  assert.equal(
+    isMissingConvexFunction(
+      new Error(
+        "[Request ID: 70ff8c6e6a202263] Server Error\nCould not find public function for 'catalog:listedSpotsByCity'.",
+      ),
+    ),
+    true,
+  );
+  assert.equal(
+    isMissingConvexFunction(
+      new Error("fetchQuery failed", {
+        cause: new Error("Could not find function for 'catalog:spotPage'."),
+      }),
+    ),
+    true,
+  );
+  assert.equal(isMissingConvexFunction(new Error("Convex timeout")), false);
+  assert.equal(isMissingConvexFunction(new Error("Server Error")), false);
+  assert.equal(
+    isMissingConvexFunction({ data: "Could not find public function for 'catalog:listedSpotsByCity'." }),
+    true,
+  );
+});
+
+test("planPlaceAdd lives a café, redirects a duplicate placeId, and rejects fast food", () => {
+  const haarlem = { lat: 52.3812, lng: 4.636 };
+  const hoofddorp = { lat: 52.3025, lng: 4.6889 };
+  assert.deepEqual(
+    planPlaceAdd({
+      types: ["cafe"],
+      geo: haarlem,
+      photo: true,
+      existing: null,
+    }),
+    { action: "live", spotType: "cafe", placeSlug: "haarlem" },
+  );
+  assert.deepEqual(
+    planPlaceAdd({
+      types: ["cafe"],
+      geo: haarlem,
+      photo: true,
+      existing: { spotSlug: "anne-max", placeSlug: "haarlem" },
+    }),
+    { action: "redirect", spotSlug: "anne-max", placeSlug: "haarlem" },
+  );
+  assert.deepEqual(
+    planPlaceAdd({
+      types: ["fast_food"],
+      geo: haarlem,
+      photo: true,
+      existing: null,
+    }),
+    { action: "reject", reason: "disallowed-type" },
+  );
+  assert.deepEqual(
+    planPlaceAdd({
+      types: ["cafe"],
+      geo: haarlem,
+      photo: false,
+      existing: null,
+    }),
+    { action: "reject", reason: "photo-required" },
+  );
+  assert.deepEqual(
+    planPlaceAdd({
+      types: ["cafe"],
+      geo: hoofddorp,
+      photo: true,
+      existing: null,
+    }),
+    { action: "live", spotType: "cafe", placeSlug: "hoofddorp" },
+  );
 });
 
 test("exact city search matches slug and localized names only", () => {

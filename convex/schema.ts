@@ -54,6 +54,8 @@ export default defineSchema({
     lastSeenAt: v.optional(v.number()),
     allTimeMakers: v.number(),
     placesRaw: v.any(),
+    addedBy: v.optional(v.id("users")),
+    photoId: v.optional(v.id("_storage")),
   })
     .index("by_placeId", ["placeId"])
     .index("by_city_slug", ["citySlug", "slug"])

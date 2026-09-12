@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { CityMap } from "@/components/city-map-loader";
 import { CitySpots } from "@/components/city-spots";
+import { AddSpot } from "@/components/add-spot";
 import { loadCityPage } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import { t } from "@/domain/messages";
@@ -103,6 +104,7 @@ export default async function CityPage({
   const spots = page.spots.filter((spot) => matches(spot, filters));
   const name = cityName(locale, page.city);
   const empty = spots.length === 0;
+  const boardEmpty = page.spots.length === 0;
 
   return (
     <main>
@@ -150,7 +152,12 @@ export default async function CityPage({
         </div>
 
         {empty ? (
-          <p className="mt-8 text-berry/70">{t(locale, "noSpotsYet")}</p>
+          <>
+            <p className="mt-8 text-berry/70">{t(locale, "noSpotsYet")}</p>
+            {boardEmpty ? (
+              <AddSpot locale={locale} />
+            ) : null}
+          </>
         ) : filters.view === "map" ? (
           <CityMap spots={spots} />
         ) : (

@@ -1,6 +1,6 @@
 import data from "./data/woonplaatsen.json";
 import { canonicalCitySlug, type GazetteerCity } from "./cities";
-import { parseCitySlug } from "./ids";
+import { parseCitySlug, type CitySlug } from "./ids";
 
 export type BBox = {
   west: number;
@@ -70,7 +70,7 @@ export function pointInWoonplaats(
   return woonplaats.rings.some((ring) => ringContains(point, ring));
 }
 
-export function assignPlaceSlug(point: { lat: number; lng: number }): string | null {
+export function assignPlaceSlug(point: { lat: number; lng: number }): CitySlug | null {
   for (const woonplaats of NL_WOONPLAATSEN) {
     if (pointInWoonplaats(point, woonplaats)) {
       return parseCitySlug(woonplaats.slug);

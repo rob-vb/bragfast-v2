@@ -5,7 +5,6 @@ import { sortByDistance } from "@/domain/geo";
 import { t, type Locale } from "@/domain/messages";
 import type { CitySpotCard } from "@/domain/viewModels";
 import { SegmentButton, Segmented, SpotLinkCard } from "@/components/visual";
-import { stillFor } from "@/lib/scenes";
 
 export function CitySpots({
   locale,
@@ -77,7 +76,7 @@ export function CitySpots({
           <li key={spot.slug}>
             <SpotLinkCard
               href={`/nl/${spot.citySlug}/${spot.slug}`}
-              src={stillFor(spot.slug)}
+              src={spot.photoUrl}
               title={spot.name}
               meta={spot.address}
             />

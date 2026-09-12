@@ -10,6 +10,7 @@ export type CitySpotCard = {
   hours: OpeningHours | null;
   spotType: SpotType;
   geo: { lat: number; lng: number };
+  photoUrl: string;
 };
 
 export type CityCard = {

@@ -10,7 +10,6 @@
 
 import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
-import type * as brags from "../brags.js";
 import type * as catalog from "../catalog.js";
 import type * as crons from "../crons.js";
 import type * as http from "../http.js";
@@ -21,6 +20,7 @@ import type * as model_placeAdd from "../model/placeAdd.js";
 import type * as model_spots from "../model/spots.js";
 import type * as model_users from "../model/users.js";
 import type * as notify from "../notify.js";
+import type * as photos from "../photos.js";
 import type * as places from "../places.js";
 import type * as seed from "../seed.js";
 import type * as wipe from "../wipe.js";
@@ -34,7 +34,6 @@ import type {
 declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   auth: typeof auth;
-  brags: typeof brags;
   catalog: typeof catalog;
   crons: typeof crons;
   http: typeof http;
@@ -45,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   "model/spots": typeof model_spots;
   "model/users": typeof model_users;
   notify: typeof notify;
+  photos: typeof photos;
   places: typeof places;
   seed: typeof seed;
   wipe: typeof wipe;

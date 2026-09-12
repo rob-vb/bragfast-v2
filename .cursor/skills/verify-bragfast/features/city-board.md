@@ -5,6 +5,7 @@ A woonplaats page lists visitor-added breakfast spots. In PR-3 every board is em
 ## Sub-features
 
 - `city-empty` shows Haarlem with `noSpotsYet` and no catalog tents.
+- `city-add` mounts `AddSpot` only when `page.spots.length === 0`. Signed-out click fires `requestSignIn`. `open=1` emptying a non-empty list is not an add prompt.
 - `city-filter-open` keeps `Open nu` via `?open=1`.
 - `city-map` toggles `Kaart` via `?view=map`. An empty board shows the empty copy instead of markers.
 - `city-sort` is hidden while the list is empty.
@@ -23,6 +24,7 @@ Preconditions:
 - Catalog read path returns `spots: []`. Production Convex may still hold scraped Haarlem rows.
 
 - **Open Haarlem.** Run `… http GET /nl/haarlem --out artifacts/city-board/haarlem.html`. Status `200`, h1 `Haarlem`. HTML includes `Nog geen plekken in deze stad.` and does not include `Anne&Max` / `Anne&amp;Max`.
+- **Add CTA.** Same file includes `Plek toevoegen` when the board has zero spots. `?open=1` on a non-empty board must not mount `#add-spot`.
 - **No catalog tents.** Same file has no `STACH Haarlem`, `Jopenkerk`, `Bakkerij Honing`, `Koffielokaal Spaarne`, or `De Oude Banketbakker`.
 - **Open nu.** Run `… http GET '/nl/haarlem?open=1' --out artifacts/city-board/open-now.html`. The `Open nu` link has `aria-pressed="true"`. Empty copy remains. There is no `Met brags` chip.
 - **List chrome.** Unfiltered page: group labelled `Weergave` / `Filters:`, `Lijst` is `aria-current="true"`, `Kaart` links `?view=map`.

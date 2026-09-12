@@ -1,6 +1,7 @@
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { NL_CITIES } from "@/domain/cities";
+import { isMissingConvexFunction } from "@/domain/convexQuery";
 import { parseCitySlug } from "@/domain/ids";
 import { searchWoonplaatsHits } from "@/domain/searchMatch";
 import type {
@@ -37,21 +38,37 @@ export async function loadCityPage(citySlug: string): Promise<CityPageData | nul
   if (!gazetteer) {
     return null;
   }
+  let spots: CityPageData["spots"] = [];
+  try {
+    spots = await fetchQuery(api.catalog.listedSpotsByCity, { citySlug });
+  } catch (error) {
+    if (!isMissingConvexFunction(error)) {
+      throw error;
+    }
+    spots = [];
+  }
   return {
     city: {
       slug: parseCitySlug(gazetteer.slug),
       nameNl: gazetteer.nameNl,
       nameEn: gazetteer.nameEn,
     },
-    spots: [],
+    spots,
   };
 }
 
 export async function loadSpotPage(
-  _citySlug: string,
-  _spotSlug: string,
+  citySlug: string,
+  spotSlug: string,
 ): Promise<SpotPageData | null> {
-  return null;
+  try {
+    return await fetchQuery(api.catalog.spotPage, { citySlug, spotSlug });
+  } catch (error) {
+    if (!isMissingConvexFunction(error)) {
+      throw error;
+    }
+    return null;
+  }
 }
 
 export async function loadSitemap(): Promise<SitemapEntry[]> {

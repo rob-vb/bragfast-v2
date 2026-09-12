@@ -1,3 +1,4 @@
+import type { Id } from "../_generated/dataModel";
 import type { MutationCtx } from "../_generated/server";
 import {
   parseCitySlug,
@@ -19,6 +20,8 @@ export type SpotUpsert = {
   closedAt?: number;
   lastSeenAt?: number;
   placesRaw?: unknown;
+  addedBy?: Id<"users">;
+  photoId?: Id<"_storage">;
 };
 
 export async function upsertCity(
@@ -102,6 +105,8 @@ export async function upsertSpot(ctx: MutationCtx, input: SpotUpsert) {
     spotType: input.spotType,
     ...listing,
     ...(input.lastSeenAt !== undefined ? { lastSeenAt: input.lastSeenAt } : {}),
+    ...(input.addedBy !== undefined ? { addedBy: input.addedBy } : {}),
+    ...(input.photoId !== undefined ? { photoId: input.photoId } : {}),
   };
 
   const placesRaw = input.placesRaw ?? { source: "seed" };
