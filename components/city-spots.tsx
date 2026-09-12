@@ -4,6 +4,7 @@ import { useState } from "react";
 import { sortByDistance } from "@/domain/geo";
 import { t, type Locale } from "@/domain/messages";
 import type { CitySpotCard } from "@/domain/viewModels";
+import { LikeButton } from "@/components/like-button";
 import { SegmentButton, Segmented, SpotLinkCard } from "@/components/visual";
 
 export function CitySpots({
@@ -79,6 +80,13 @@ export function CitySpots({
               src={spot.photoUrl}
               title={spot.name}
               meta={spot.address}
+              action={
+                <LikeButton
+                  locale={locale}
+                  spotId={spot.id}
+                  likeCount={spot.likeCount}
+                />
+              }
             />
           </li>
         ))}

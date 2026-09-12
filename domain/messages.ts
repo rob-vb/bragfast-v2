@@ -75,6 +75,7 @@ export const nlMessages = {
   share: "Deel",
   linkCopied: "Link gekopieerd",
   shareFailed: "Delen lukte niet",
+  like: "Leuk",
 } as const;
 
 export type MessageKey = keyof typeof nlMessages;
@@ -156,6 +157,7 @@ export const enMessages = {
   share: "Share",
   linkCopied: "Link copied",
   shareFailed: "Could not share",
+  like: "Like",
 } as const satisfies Record<MessageKey, string>;
 
 export type Locale = "nl" | "en";
@@ -199,6 +201,19 @@ export function uniqueSpotsLabel(locale: Locale, count: number): string {
     return "1 unieke plek";
   }
   return `${count} unieke plekken`;
+}
+
+export function likeCountLabel(locale: Locale, count: number): string {
+  if (locale === "en") {
+    if (count === 1) {
+      return "1 like";
+    }
+    return `${count} likes`;
+  }
+  if (count === 1) {
+    return "1 like";
+  }
+  return `${count} likes`;
 }
 
 export function postsThisWeekLabel(locale: Locale, count: number): string {
