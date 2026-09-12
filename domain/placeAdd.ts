@@ -16,7 +16,11 @@ const LIVE_TYPES: Record<string, SpotType> = {
   guest_house: "hotel",
 };
 
-const REJECT_TYPES = new Set(["fast_food", "gas_station"]);
+const REJECT_TYPES = new Set([
+  "fast_food",
+  "fast_food_restaurant",
+  "gas_station",
+]);
 
 export type PlaceAddRejectReason =
   | "disallowed-type"

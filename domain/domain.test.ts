@@ -18,6 +18,7 @@ import {
 } from "./moderation";
 import { bragLiveEmail } from "./notify";
 import { classifyPlaceTypes, planPlaceAdd, slugFromPlaceName } from "./placeAdd";
+import { isMissingConvexFunction } from "./convexQuery";
 import {
   POSTS_WEEK_MS,
   countPostsThisWeek,
@@ -309,7 +310,44 @@ test("place types go live for hospitality and reject petrol and fast food", () =
     action: "reject",
     reason: "disallowed-type",
   });
+  assert.deepEqual(classifyPlaceTypes(["fast_food_restaurant"]), {
+    action: "reject",
+    reason: "disallowed-type",
+  });
+  assert.deepEqual(classifyPlaceTypes(["restaurant", "fast_food_restaurant"]), {
+    action: "reject",
+    reason: "disallowed-type",
+  });
+  assert.deepEqual(classifyPlaceTypes(["cafe"]), {
+    action: "live",
+    spotType: "cafe",
+  });
   assert.equal(slugFromPlaceName("De Koffiesalon Haarlem"), "de-koffiesalon-haarlem");
+});
+
+test("isMissingConvexFunction swallows only a missing Convex function", () => {
+  assert.equal(
+    isMissingConvexFunction(
+      new Error(
+        "[Request ID: 70ff8c6e6a202263] Server Error\nCould not find public function for 'catalog:listedSpotsByCity'.",
+      ),
+    ),
+    true,
+  );
+  assert.equal(
+    isMissingConvexFunction(
+      new Error("fetchQuery failed", {
+        cause: new Error("Could not find function for 'catalog:spotPage'."),
+      }),
+    ),
+    true,
+  );
+  assert.equal(isMissingConvexFunction(new Error("Convex timeout")), false);
+  assert.equal(isMissingConvexFunction(new Error("Server Error")), false);
+  assert.equal(
+    isMissingConvexFunction({ data: "Could not find public function for 'catalog:listedSpotsByCity'." }),
+    true,
+  );
 });
 
 test("planPlaceAdd lives a café, redirects a duplicate placeId, and rejects fast food", () => {
