@@ -86,6 +86,7 @@ export function SpotLinkCard({
   meta,
   egg,
   className,
+  action,
 }: {
   href: string;
   src: string;
@@ -93,36 +94,40 @@ export function SpotLinkCard({
   meta?: string;
   egg?: boolean;
   className?: string;
+  action?: ReactNode;
 }) {
   return (
-    <Link
-      href={href}
-      className="group block overflow-hidden rounded-slab bg-milk focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk"
-    >
-      <div className={cn("relative min-h-44 overflow-hidden", className)}>
-        <img
-          src={src}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105"
-        />
-        {egg ? (
-          <Egg
-            size={44}
-            className="absolute right-3 top-3 rotate-[8deg] drop-shadow-sticker"
+    <div className="overflow-hidden rounded-slab bg-milk">
+      <Link
+        href={href}
+        className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk"
+      >
+        <div className={cn("relative min-h-44 overflow-hidden", className)}>
+          <img
+            src={src}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105"
           />
-        ) : null}
-      </div>
-      <span className="block px-4 py-3">
-        <span className="block font-display text-2xl tracking-wide text-berry">
-          {title}
-        </span>
-        {meta ? (
-          <span className="mt-1 block text-sm font-semibold text-berry/70">
-            {meta}
+          {egg ? (
+            <Egg
+              size={44}
+              className="absolute right-3 top-3 rotate-[8deg] drop-shadow-sticker"
+            />
+          ) : null}
+        </div>
+        <span className="block px-4 py-3">
+          <span className="block font-display text-2xl tracking-wide text-berry">
+            {title}
           </span>
-        ) : null}
-      </span>
-    </Link>
+          {meta ? (
+            <span className="mt-1 block text-sm font-semibold text-berry/70">
+              {meta}
+            </span>
+          ) : null}
+        </span>
+      </Link>
+      {action ? <div className="px-4 pb-3">{action}</div> : null}
+    </div>
   );
 }
 

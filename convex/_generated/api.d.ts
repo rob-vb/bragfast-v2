@@ -14,6 +14,7 @@ import type * as catalog from "../catalog.js";
 import type * as crons from "../crons.js";
 import type * as http from "../http.js";
 import type * as identity from "../identity.js";
+import type * as likes from "../likes.js";
 import type * as mail from "../mail.js";
 import type * as model_owner from "../model/owner.js";
 import type * as model_placeAdd from "../model/placeAdd.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   http: typeof http;
   identity: typeof identity;
+  likes: typeof likes;
   mail: typeof mail;
   "model/owner": typeof model_owner;
   "model/placeAdd": typeof model_placeAdd;

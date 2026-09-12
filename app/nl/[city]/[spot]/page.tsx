@@ -8,6 +8,7 @@ import { t, type Locale } from "@/domain/messages";
 import { loadSpotPage, publicSiteUrl } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import { SpotShare } from "@/components/spot-share";
+import { LikeButton } from "@/components/like-button";
 import { PhotoFrame } from "@/components/visual";
 import { cityScene } from "@/lib/scenes";
 
@@ -112,11 +113,18 @@ export default async function SpotPage({
             <h2 className="font-display text-2xl tracking-wide">
               {t(locale, "hoursHeading")}
             </h2>
-            <SpotShare
-              locale={locale}
-              url={`${publicSiteUrl()}${page.canonicalPath}`}
-              name={page.name}
-            />
+            <div className="flex flex-wrap items-center gap-2">
+              <LikeButton
+                locale={locale}
+                spotId={page.id}
+                likeCount={page.likeCount}
+              />
+              <SpotShare
+                locale={locale}
+                url={`${publicSiteUrl()}${page.canonicalPath}`}
+                name={page.name}
+              />
+            </div>
           </div>
           {page.hours ? (
             <ul className="mt-4 grid gap-1 text-berry/75">
