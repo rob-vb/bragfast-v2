@@ -147,7 +147,7 @@ export default async function PassportPage({
           ) : (
             <ul className="mt-8 grid gap-4 sm:grid-cols-2">
               {page.weekPosts.map((post) => (
-                <li key={post.postId}>
+                <li key={`${post.citySlug}/${post.spotSlug}/${post.createdAt}`}>
                   <SpotLinkCard
                     href={`/nl/${post.citySlug}/${post.spotSlug}`}
                     src={stillFor(post.spotSlug)}

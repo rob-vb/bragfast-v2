@@ -1,6 +1,5 @@
 import type { GenericId } from "convex/values";
 import type { CitySlug, SpotSlug, UserSlug } from "./ids";
-import type { LicensedImage } from "./post";
 import type { OpeningHours, SpotLifecycle, SpotType } from "./spot";
 
 export type CitySpotCard = {
@@ -11,7 +10,6 @@ export type CitySpotCard = {
   hours: OpeningHours | null;
   spotType: SpotType;
   geo: { lat: number; lng: number };
-  bragged: { rank: number; score: number } | null;
 };
 
 export type CityCard = {
@@ -26,27 +24,6 @@ export type CityPageData = {
   spots: CitySpotCard[];
 };
 
-export type FeedItem = {
-  postId: GenericId<"posts">;
-  createdAt: number;
-  makerName: string;
-  media:
-    | {
-        kind: "hosted";
-        url: string;
-        mediaType: "photo" | "video";
-        placeholder: boolean;
-      }
-    | {
-        kind: "embed";
-        embed: {
-          platform: "instagram" | "youtube";
-          permalink: string;
-          platformMediaId: string;
-        };
-      };
-};
-
 export type SpotPageData = {
   id: GenericId<"spots">;
   name: string;
@@ -57,10 +34,7 @@ export type SpotPageData = {
   hours: OpeningHours | null;
   spotType: SpotType;
   lifecycle: SpotLifecycle;
-  rankInCity: number | null;
-  allTimeMakers: number;
-  feed: FeedItem[];
-  licensedImage: LicensedImage | null;
+  licensedImage: { url: string } | null;
   canonicalPath: string;
 };
 
@@ -103,10 +77,8 @@ export type NearbyData = {
 export type AdminReportRow = {
   reportId: GenericId<"reports">;
   reason: string;
-  postId: GenericId<"posts">;
   spotName: string;
   spotPath: string;
-  hiddenAt: number;
 };
 
 export type AdminSpotRow = {
@@ -115,30 +87,6 @@ export type AdminSpotRow = {
   citySlug: CitySlug;
   slug: SpotSlug;
   listingStatus: "listed" | "gravestone";
-};
-
-export type AdminMatchRow = {
-  queueId: GenericId<"aiMatchQueue">;
-  permalink: string;
-  caption: string;
-  proposedSpotName: string | null;
-  proposedSpotPath: string | null;
-};
-
-export type MakerMatchRow = {
-  queueId: GenericId<"aiMatchQueue">;
-  permalink: string;
-  caption: string;
-  platform: "instagram" | "youtube";
-  proposedSpotId: GenericId<"spots"> | null;
-};
-
-export type AdminSpotAddRow = {
-  queueId: GenericId<"spotAddQueue">;
-  name: string;
-  placeId: string;
-  types: string[];
-  citySlug: CitySlug;
 };
 
 export type SitemapEntry = {
@@ -155,7 +103,6 @@ export type PassportSpotCard = {
 };
 
 export type PassportWeekPost = {
-  postId: GenericId<"posts">;
   createdAt: number;
   spotSlug: SpotSlug;
   citySlug: CitySlug;

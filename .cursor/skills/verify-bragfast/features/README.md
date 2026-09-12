@@ -9,7 +9,7 @@ This directory is the maintained source for verifying seeker-facing behavior of 
 - `.env.local` points at the shared Convex catalog. Treat every drive as **read-only** unless a feature file says otherwise.
 - Never drive `http://77.42.31.66/` or `127.0.0.1:3002`.
 - Default UI language is Dutch (`html lang="nl"`) unless you POST `/api/locale`.
-- Seeded Haarlem fixtures must appear; extra live catalog spots may appear beside them.
+- Seeded Haarlem fixtures must **not** appear. Empty `noSpotsYet` copy is the proof.
 
 ## Driving conventions
 
@@ -33,7 +33,7 @@ Each feature file starts with an H1 and one paragraph of user-visible behavior, 
 ## Features
 
 - [Homepage search](./homepage-search.md) covers the hero search box, exact-city redirect, spot hits, empty results, and featured cities.
-- [City board](./city-board.md) covers Haarlem's listed spots, egg vs seed, Open nu / Met brags, list vs map.
-- [Spot page](./spot-page.md) covers a live tent, JSON-LD, hours/rank, and the gravestone URL.
+- [City board](./city-board.md) covers empty woonplaats boards, Open nu, list vs map.
+- [Spot page](./spot-page.md) covers old catalog URLs 404ing.
 - [Language switch](./language-switch.md) covers nl/en chrome on the same URLs via the cookie.
 - [Passport](./passport.md) covers the public `/nl/u/{slug}` profile after a maker has bragged.

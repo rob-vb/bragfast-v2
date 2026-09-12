@@ -7,7 +7,7 @@ import { getLocale } from "@/lib/i18n";
 import { t } from "@/domain/messages";
 import type { Locale } from "@/domain/messages";
 import { canonicalCitySlug } from "@/domain/cities";
-import { openNow } from "@/domain/ranking";
+import { openNow } from "@/domain/spot";
 import type { CitySpotCard } from "@/domain/viewModels";
 import {
   FilterToggle,
@@ -20,7 +20,6 @@ import { cityScene } from "@/lib/scenes";
 type Params = { city: string };
 type Search = {
   open?: string;
-  brags?: string;
   view?: string;
 };
 
@@ -51,13 +50,10 @@ function cityName(
 }
 
 function matches(
-  spot: { hours: CitySpotCard["hours"]; bragged: CitySpotCard["bragged"] },
-  filters: { open: boolean; brags: boolean },
+  spot: { hours: CitySpotCard["hours"] },
+  filters: { open: boolean },
 ): boolean {
   if (filters.open && !openNow(spot.hours, new Date())) {
-    return false;
-  }
-  if (filters.brags && spot.bragged === null) {
     return false;
   }
   return true;
@@ -65,16 +61,13 @@ function matches(
 
 function hrefFor(
   citySlug: string,
-  current: { open: boolean; brags: boolean; view: "list" | "map" },
+  current: { open: boolean; view: "list" | "map" },
   patch: Partial<typeof current>,
 ): string {
   const next = { ...current, ...patch };
   const params = new URLSearchParams();
   if (next.open) {
     params.set("open", "1");
-  }
-  if (next.brags) {
-    params.set("brags", "1");
   }
   if (next.view === "map") {
     params.set("view", "map");
@@ -104,12 +97,12 @@ export default async function CityPage({
 
   const filters = {
     open: search.open === "1",
-    brags: search.brags === "1",
     view: search.view === "map" ? ("map" as const) : ("list" as const),
   };
 
   const spots = page.spots.filter((spot) => matches(spot, filters));
   const name = cityName(locale, page.city);
+  const empty = spots.length === 0;
 
   return (
     <main>
@@ -138,14 +131,6 @@ export default async function CityPage({
               >
                 {t(locale, "openNow")}
               </FilterToggle>
-              <FilterToggle
-                href={hrefFor(page.city.slug, filters, {
-                  brags: !filters.brags,
-                })}
-                active={filters.brags}
-              >
-                {t(locale, "filterBrags")}
-              </FilterToggle>
             </Segmented>
           </div>
           <Segmented label={t(locale, "viewMode")}>
@@ -164,12 +149,10 @@ export default async function CityPage({
           </Segmented>
         </div>
 
-        {filters.view === "map" ? (
-          spots.length === 0 ? (
-            <p className="mt-8 text-berry/70">{t(locale, "noSpotsYet")}</p>
-          ) : (
-            <CityMap spots={spots} />
-          )
+        {empty ? (
+          <p className="mt-8 text-berry/70">{t(locale, "noSpotsYet")}</p>
+        ) : filters.view === "map" ? (
+          <CityMap spots={spots} />
         ) : (
           <CitySpots locale={locale} spots={spots} />
         )}

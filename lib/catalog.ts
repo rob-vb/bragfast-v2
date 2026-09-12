@@ -3,28 +3,39 @@ import { api } from "@/convex/_generated/api";
 import { NL_CITIES } from "@/domain/cities";
 import { parseCitySlug } from "@/domain/ids";
 import { searchWoonplaatsHits } from "@/domain/searchMatch";
-import type { CityPageData, SearchHit } from "@/domain/viewModels";
+import type {
+  CityPageData,
+  HomepageData,
+  PassportData,
+  SearchHit,
+  SitemapEntry,
+  SpotPageData,
+} from "@/domain/viewModels";
 
 export function publicSiteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "http://77.42.31.66";
 }
 
-export const loadHomepage = () => fetchQuery(api.catalog.homepage, {});
+export async function loadHomepage(): Promise<HomepageData> {
+  const featured = NL_CITIES.filter((city) => city.featuredOrder !== undefined)
+    .sort((a, b) => (a.featuredOrder ?? 0) - (b.featuredOrder ?? 0))
+    .map((city) => ({
+      slug: parseCitySlug(city.slug),
+      nameNl: city.nameNl,
+      nameEn: city.nameEn,
+      boardCount: 0,
+    }));
+  return { featured };
+}
 
 export async function loadSearch(q: string): Promise<SearchHit[]> {
-  const convexHits = await fetchQuery(api.catalog.searchCatalog, { q });
-  const spots = convexHits.filter((hit) => hit.kind === "spot");
-  return [...spots, ...searchWoonplaatsHits(q)];
+  return searchWoonplaatsHits(q);
 }
 
 export async function loadCityPage(citySlug: string): Promise<CityPageData | null> {
   const gazetteer = NL_CITIES.find((row) => row.slug === citySlug);
   if (!gazetteer) {
     return null;
-  }
-  const page = await fetchQuery(api.catalog.cityPage, { citySlug });
-  if (page) {
-    return page;
   }
   return {
     city: {
@@ -36,10 +47,30 @@ export async function loadCityPage(citySlug: string): Promise<CityPageData | nul
   };
 }
 
-export const loadSpotPage = (citySlug: string, spotSlug: string) =>
-  fetchQuery(api.catalog.spotPage, { citySlug, spotSlug });
+export async function loadSpotPage(
+  _citySlug: string,
+  _spotSlug: string,
+): Promise<SpotPageData | null> {
+  return null;
+}
 
-export const loadSitemap = () => fetchQuery(api.catalog.sitemapEntries, {});
+export async function loadSitemap(): Promise<SitemapEntry[]> {
+  return [
+    { path: "/" },
+    ...NL_CITIES.map((city) => ({ path: `/nl/${city.slug}` })),
+  ];
+}
 
-export const loadPassport = (slug: string) =>
-  fetchQuery(api.identity.passportBySlug, { slug });
+export async function loadPassport(slug: string): Promise<PassportData | null> {
+  const page = await fetchQuery(api.identity.passportBySlug, { slug });
+  if (!page) {
+    return null;
+  }
+  return {
+    ...page,
+    uniqueSpotCount: 0,
+    postsThisWeek: 0,
+    spots: [],
+    weekPosts: [],
+  };
+}

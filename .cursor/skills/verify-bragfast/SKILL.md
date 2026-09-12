@@ -66,7 +66,7 @@ Stable handles from this repo (Dutch default UI; English after locale POST):
 | Search form | `role="search"` named `Zoek een stad of plek` / `Search a city or spot`; input `#catalog-search` `name="q"`; submit `Zoek` / `Search` |
 | Language | `role="group"` named `Taal` / `Language`; buttons `nl` and `en` with `aria-pressed` |
 | Sign in | button `Inloggen` / `Sign in` → dialog title `Log in bij brag.fast` / `Sign in to brag.fast`; email `#email`; do **not** submit |
-| City filters | `Open nu`, `Met brags` as links with `aria-pressed`; query `open=1`, `brags=1` |
+| City filters | `Open nu` as a link with `aria-pressed`; query `open=1`. `Met brags` is retired. |
 | City view | group `Weergave` / `View`; links `Lijst` / `List` and `Kaart` / `Map`; `view=map` |
 | City sort | buttons `Naam` / `Name` and `Afstand` / `Distance` (`aria-current`) |
 | Spot share | button `Deel` / `Share` |
@@ -94,8 +94,7 @@ Standards:
 - Exercise the real seeker URL, not Convex queries or internal seed mutations.
 - Capture the action **and** the resulting page (status + HTML or screenshot/ARIA), not only the final pretty frame.
 - Side effects: locale cookie (`lang=en`/`nl`); search exact-city **307** to `/nl/{city}`; sitemap includes listed spots; JSON-LD on the spot page. File uploads, emails, and Convex writes are out of default scope — if you did not perform them, do not claim them.
-- Haarlem seed names are **must-include** (`Anne&Max Haarlem`, `STACH Haarlem`, `Jopenkerk`, `Bakkerij Honing`, `Koffielokaal Spaarne`). Live Places ingest may add more listed spots; extra cards are allowed. `De Oude Banketbakker` is a gravestone: on its URL, never on the city list.
-- Rank numbers live on the **spot** page (`#N` or `Nog niet op de board`). The city list marks bragged spots with `/brag_fast_egg.svg`, not a rank numeral. Do not fail a city page for missing `01`.
+- Empty woonplaats boards are the proof. Haarlem HTML contains `Nog geen plekken in deze stad.` (`noSpotsYet`) and does not contain `Anne&Max`. Old `/nl/haarlem/{spot}` URLs 404. Rank eggs and `Met brags` are gone. `Open nu` remains.
 
 ## Cleanup
 

@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useEffect, useMemo, useState } from "react";
+import { NL_CITIES } from "@/domain/cities";
+import { nearestCity } from "@/domain/geo";
+import { parseCitySlug } from "@/domain/ids";
 import { t, type Locale } from "@/domain/messages";
 import { Button } from "@/components/ui/button";
-import { SpotLinkCard } from "@/components/visual";
-import { stillFor } from "@/lib/scenes";
-
-const NEARBY_CAP = 3;
 
 export function NearMe({
   locale,
@@ -22,19 +19,24 @@ export function NearMe({
   );
   const [denied, setDenied] = useState(false);
   const [asking, setAsking] = useState(false);
-  const nearby = useQuery(
-    api.catalog.nearby,
-    origin ? { lat: origin.lat, lng: origin.lng } : "skip",
-  );
-
-  const loading = Boolean(origin) && nearby === undefined;
-  const spots = nearby?.spots.slice(0, NEARBY_CAP) ?? [];
-  const active = spots.length > 0;
 
   useEffect(() => {
-    onActiveChange?.(active);
+    onActiveChange?.(false);
     return () => onActiveChange?.(false);
-  }, [active, onActiveChange]);
+  }, [onActiveChange]);
+
+  const nearest = useMemo(() => {
+    if (!origin) {
+      return null;
+    }
+    const cities = NL_CITIES.map((city) => ({
+      slug: parseCitySlug(city.slug),
+      geo: { lat: city.lat, lng: city.lng },
+      nameNl: city.nameNl,
+      nameEn: city.nameEn,
+    }));
+    return nearestCity(origin, cities);
+  }, [origin]);
 
   function ask() {
     if (!navigator.geolocation) {
@@ -67,9 +69,7 @@ export function NearMe({
   }
 
   const nearestName =
-    nearby?.nearestCity &&
-    (locale === "en" ? nearby.nearestCity.nameEn : nearby.nearestCity.nameNl);
-  const busy = asking || loading;
+    nearest && (locale === "en" ? nearest.nameEn : nearest.nameNl);
 
   return (
     <div className="mt-5 max-w-xl">
@@ -77,13 +77,13 @@ export function NearMe({
         <Button
           type="button"
           variant="outline"
-          aria-busy={busy}
-          disabled={busy}
+          aria-busy={asking}
+          disabled={asking}
           onClick={ask}
         >
           {t(locale, "nearMe")}
         </Button>
-        {active || denied ? (
+        {nearest || denied ? (
           <Button
             type="button"
             variant="ghost"
@@ -99,11 +99,6 @@ export function NearMe({
           {t(locale, "nearMePending")}
         </p>
       ) : null}
-      {loading ? (
-        <p className="text-shadow-photo mt-3 text-sm font-semibold text-white" aria-live="polite">
-          {t(locale, "nearMeLoading")}
-        </p>
-      ) : null}
       {denied ? (
         <p className="text-shadow-photo mt-3 text-sm font-semibold text-white" role="status">
           {t(locale, "nearMeDenied")}{" "}
@@ -116,43 +111,17 @@ export function NearMe({
           </button>
         </p>
       ) : null}
-      {nearby ? (
+      {nearest && nearestName ? (
         <div className="mt-5">
-          {nearby.nearestCity && nearestName ? (
-            <p className="text-shadow-photo text-sm font-semibold text-white">
-              <span className="font-bold">{t(locale, "nearestCity")} </span>
-              <a
-                href={`/nl/${nearby.nearestCity.slug}`}
-                className="font-bold text-yolk underline-offset-2 hover:underline"
-              >
-                {nearestName}
-              </a>
-            </p>
-          ) : null}
-          {spots.length > 0 ? (
-            <>
-              <h2 className="text-shadow-photo mt-5 font-display text-xl tracking-wide text-white">
-                {t(locale, "nearbySpots")}
-              </h2>
-              <ul className="mt-3 grid gap-3">
-                {spots.map((spot) => {
-                  const cityName =
-                    locale === "en" ? spot.cityNameEn : spot.cityNameNl;
-                  return (
-                    <li key={`${spot.citySlug}-${spot.slug}`}>
-                      <SpotLinkCard
-                        href={`/nl/${spot.citySlug}/${spot.slug}`}
-                        src={stillFor(spot.slug)}
-                        title={spot.name}
-                        meta={cityName}
-                        className="min-h-36"
-                      />
-                    </li>
-                  );
-                })}
-              </ul>
-            </>
-          ) : null}
+          <p className="text-shadow-photo text-sm font-semibold text-white">
+            <span className="font-bold">{t(locale, "nearestCity")} </span>
+            <a
+              href={`/nl/${nearest.slug}`}
+              className="font-bold text-yolk underline-offset-2 hover:underline"
+            >
+              {nearestName}
+            </a>
+          </p>
         </div>
       ) : null}
     </div>

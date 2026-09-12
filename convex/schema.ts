@@ -4,11 +4,10 @@ import {
   openingHoursValidator,
   spotTypeValidator,
 } from "../domain/spot";
-import {
-  postBodyValidator,
-  postVisibilityValidator,
-  socialEmbedValidator,
-} from "../domain/post";
+
+function leftoverTable() {
+  return defineTable(v.any());
+}
 
 export default defineSchema({
   users: defineTable({
@@ -70,90 +69,14 @@ export default defineSchema({
       filterFields: ["country"],
     }),
 
-  posts: defineTable({
-    spotId: v.id("spots"),
-    makerKey: v.string(),
-    createdAt: v.number(),
-    visibility: postVisibilityValidator,
-    body: postBodyValidator,
-  })
-    .index("by_spot_created", ["spotId", "createdAt"])
-    .index("by_maker_spot", ["makerKey", "spotId", "createdAt"])
-    .index("by_maker_created", ["makerKey", "createdAt"])
-    .index("by_platform_media", ["body.embed.platformMediaId"]),
-
-  makerVotes: defineTable({
-    spotId: v.id("spots"),
-    makerKey: v.string(),
-    firstPostAt: v.number(),
-    latestVisiblePostAt: v.number(),
-  })
-    .index("by_spot_maker", ["spotId", "makerKey"])
-    .index("by_maker", ["makerKey", "latestVisiblePostAt"]),
-
-  aiMatchQueue: defineTable({
-    embed: socialEmbedValidator,
-    makerKey: v.string(),
-    caption: v.string(),
-    proposedSpotId: v.union(v.id("spots"), v.null()),
-    status: v.union(
-      v.literal("pending"),
-      v.literal("approved"),
-      v.literal("rejected"),
-    ),
-  })
-    .index("by_status", ["status"])
-    .index("by_maker_status", ["makerKey", "status"]),
-
-  spotAddQueue: defineTable({
-    placeId: v.string(),
-    name: v.string(),
-    address: v.string(),
-    geo: v.object({ lat: v.number(), lng: v.number() }),
-    types: v.array(v.string()),
-    citySlug: v.string(),
-    submittedBy: v.id("users"),
-    status: v.union(
-      v.literal("pending"),
-      v.literal("approved"),
-      v.literal("rejected"),
-    ),
-  })
-    .index("by_status", ["status"])
-    .index("by_placeId", ["placeId"]),
-
-  oauthStates: defineTable({
-    state: v.string(),
-    authId: v.string(),
-    displayName: v.string(),
-    avatarUrl: v.union(v.string(), v.null()),
-    expiresAt: v.number(),
-  }).index("by_state", ["state"]),
-
-  placesQuota: defineTable({
-    monthKey: v.string(),
-    detailsCount: v.number(),
-  }).index("by_monthKey", ["monthKey"]),
-
-  ingestCursor: defineTable({
-    key: v.string(),
-    cityIndex: v.number(),
-    citySlug: v.optional(v.string()),
-  }).index("by_key", ["key"]),
-
-  placesSeen: defineTable({
-    placeId: v.string(),
-    reason: v.optional(
-      v.union(
-        v.literal("fast-food"),
-        v.literal("not-hospitality"),
-        v.literal("unassigned"),
-        v.literal("closed-unknown"),
-        v.literal("invalid"),
-      ),
-    ),
-    seenAt: v.optional(v.number()),
-  }).index("by_placeId", ["placeId"]),
+  posts: leftoverTable(),
+  makerVotes: leftoverTable(),
+  aiMatchQueue: leftoverTable(),
+  spotAddQueue: leftoverTable(),
+  placesQuota: leftoverTable(),
+  ingestCursor: leftoverTable(),
+  placesSeen: leftoverTable(),
+  oauthStates: leftoverTable(),
 
   reports: defineTable({
     target: v.union(
