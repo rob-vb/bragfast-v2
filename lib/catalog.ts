@@ -3,6 +3,7 @@ import { api } from "@/convex/_generated/api";
 import { NL_CITIES } from "@/domain/cities";
 import { isMissingConvexFunction } from "@/domain/convexQuery";
 import { parseCitySlug } from "@/domain/ids";
+import { sortCityBoard } from "@/domain/like";
 import { searchWoonplaatsHits } from "@/domain/searchMatch";
 import type {
   CityPageData,
@@ -40,7 +41,16 @@ export async function loadCityPage(citySlug: string): Promise<CityPageData | nul
   }
   let spots: CityPageData["spots"] = [];
   try {
-    spots = await fetchQuery(api.catalog.listedSpotsByCity, { citySlug });
+    spots = sortCityBoard(
+      (await fetchQuery(api.catalog.listedSpotsByCity, { citySlug })).map(
+        (spot) => ({
+          ...spot,
+          likeCount: spot.likeCount ?? 0,
+          lastLikedAt: spot.lastLikedAt ?? 0,
+          addedAt: spot.addedAt ?? 0,
+        }),
+      ),
+    );
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;
@@ -62,7 +72,11 @@ export async function loadSpotPage(
   spotSlug: string,
 ): Promise<SpotPageData | null> {
   try {
-    return await fetchQuery(api.catalog.spotPage, { citySlug, spotSlug });
+    const page = await fetchQuery(api.catalog.spotPage, { citySlug, spotSlug });
+    if (!page) {
+      return null;
+    }
+    return { ...page, likeCount: page.likeCount ?? 0 };
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;

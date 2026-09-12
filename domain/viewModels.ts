@@ -3,6 +3,7 @@ import type { CitySlug, SpotSlug, UserSlug } from "./ids";
 import type { OpeningHours, SpotLifecycle, SpotType } from "./spot";
 
 export type CitySpotCard = {
+  id: GenericId<"spots">;
   slug: SpotSlug;
   citySlug: CitySlug;
   name: string;
@@ -11,6 +12,9 @@ export type CitySpotCard = {
   spotType: SpotType;
   geo: { lat: number; lng: number };
   photoUrl: string;
+  likeCount: number;
+  lastLikedAt: number;
+  addedAt: number;
 };
 
 export type CityCard = {
@@ -37,6 +41,7 @@ export type SpotPageData = {
   lifecycle: SpotLifecycle;
   licensedImage: { url: string } | null;
   canonicalPath: string;
+  likeCount: number;
 };
 
 export type SearchHit =

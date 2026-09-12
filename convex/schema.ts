@@ -56,6 +56,8 @@ export default defineSchema({
     placesRaw: v.any(),
     addedBy: v.optional(v.id("users")),
     photoId: v.optional(v.id("_storage")),
+    likeCount: v.optional(v.number()),
+    lastLikedAt: v.optional(v.number()),
   })
     .index("by_placeId", ["placeId"])
     .index("by_city_slug", ["citySlug", "slug"])
@@ -79,6 +81,13 @@ export default defineSchema({
   ingestCursor: leftoverTable(),
   placesSeen: leftoverTable(),
   oauthStates: leftoverTable(),
+
+  likes: defineTable({
+    userId: v.id("users"),
+    spotId: v.id("spots"),
+  })
+    .index("by_user_spot", ["userId", "spotId"])
+    .index("by_spot", ["spotId"]),
 
   reports: defineTable({
     target: v.union(

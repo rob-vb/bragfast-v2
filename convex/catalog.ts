@@ -5,6 +5,7 @@ import { NL_CITIES } from "../domain/cities";
 import { cityCentroid, nearestCity } from "../domain/geo";
 import { DomainParseError, parseCitySlug, parseSpotSlug } from "../domain/ids";
 import { searchWoonplaatsHits } from "../domain/searchMatch";
+import { sortCityBoard } from "../domain/like";
 import { parseSpot } from "../domain/spot";
 import type {
   CityCard,
@@ -55,6 +56,7 @@ async function listedVisitorSpots(
       continue;
     }
     cards.push({
+      id: row._id,
       slug: parseSpotSlug(row.slug),
       citySlug: parseCitySlug(row.citySlug),
       name: row.name,
@@ -63,9 +65,12 @@ async function listedVisitorSpots(
       spotType: row.spotType,
       geo: row.geo,
       photoUrl,
+      likeCount: row.likeCount ?? 0,
+      lastLikedAt: row.lastLikedAt ?? 0,
+      addedAt: row._creationTime,
     });
   }
-  return cards;
+  return sortCityBoard(cards);
 }
 
 async function loadCityPage(
@@ -207,6 +212,7 @@ export const spotPage = query({
       lifecycle: spot.lifecycle,
       licensedImage: photoUrl ? { url: photoUrl } : null,
       canonicalPath: `/nl/${city.slug}/${spot.slug}`,
+      likeCount: row.likeCount ?? 0,
     };
   },
 });
