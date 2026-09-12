@@ -28,6 +28,7 @@ import {
   slugifyPassportName,
 } from "./passport";
 import { openNow, planSpotUpsert } from "./spot";
+import { applyLikeCommand, likeCountFor, planLikeToggle, sortCityBoard } from "./like";
 import { foodEstablishmentJsonLd } from "./jsonld";
 
 test("slugs are parsed at the boundary", () => {
@@ -444,4 +445,82 @@ test("assignPlaceSlug maps a point to the woonplaats polygon", () => {
   assert.equal(assignPlaceSlug({ lat: 50.85, lng: 5.69 }), "maastricht");
   assert.equal(assignPlaceSlug({ lat: 52.3025, lng: 4.6889 }), "hoofddorp");
   assert.equal(assignPlaceSlug({ lat: 53.4, lng: 7.2 }), null);
+});
+
+test("planLikeToggle likes when no row and unlikes when a row exists", () => {
+  assert.deepEqual(planLikeToggle(null), { action: "like" });
+  assert.deepEqual(
+    planLikeToggle({ userId: "user-1", spotId: "spot-1" }),
+    { action: "unlike" },
+  );
+});
+
+test("two like commands collapse to one row for the same user and spot", () => {
+  const first = applyLikeCommand([], {
+    action: "like",
+    userId: "user-1",
+    spotId: "spot-1",
+  });
+  const second = applyLikeCommand(first, {
+    action: "like",
+    userId: "user-1",
+    spotId: "spot-1",
+  });
+  assert.deepEqual(second, [{ userId: "user-1", spotId: "spot-1" }]);
+  assert.equal(likeCountFor(second, "spot-1"), 1);
+});
+
+test("toggle twice from a liked row returns unlike then like", () => {
+  const liked = { userId: "user-1", spotId: "spot-1" };
+  const firstPlan = planLikeToggle(liked);
+  const afterUnlike = applyLikeCommand([liked], {
+    ...firstPlan,
+    userId: "user-1",
+    spotId: "spot-1",
+  });
+  const secondPlan = planLikeToggle(afterUnlike[0] ?? null);
+  const afterLike = applyLikeCommand(afterUnlike, {
+    ...secondPlan,
+    userId: "user-1",
+    spotId: "spot-1",
+  });
+  assert.deepEqual(firstPlan, { action: "unlike" });
+  assert.deepEqual(secondPlan, { action: "like" });
+  assert.deepEqual(afterUnlike, []);
+  assert.deepEqual(afterLike, [liked]);
+});
+
+test("city board orders by likeCount then recency of the last like", () => {
+  const low = {
+    slug: "low",
+    likeCount: 1,
+    lastLikedAt: 90,
+    addedAt: 80,
+  };
+  const high = {
+    slug: "high",
+    likeCount: 3,
+    lastLikedAt: 10,
+    addedAt: 5,
+  };
+  assert.deepEqual(
+    sortCityBoard([low, high]).map((spot) => spot.slug),
+    ["high", "low"],
+  );
+  const older = {
+    slug: "older",
+    likeCount: 2,
+    lastLikedAt: 20,
+    addedAt: 1,
+  };
+  const newer = {
+    slug: "newer",
+    likeCount: 2,
+    lastLikedAt: 40,
+    addedAt: 2,
+  };
+  assert.deepEqual(
+    sortCityBoard([older, newer]).map((spot) => spot.slug),
+    ["newer", "older"],
+  );
 });
