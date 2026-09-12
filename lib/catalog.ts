@@ -12,9 +12,7 @@ export function publicSiteUrl(): string {
 export const loadHomepage = () => fetchQuery(api.catalog.homepage, {});
 
 export async function loadSearch(q: string): Promise<SearchHit[]> {
-  const convexHits = await fetchQuery(api.catalog.searchCatalog, { q });
-  const spots = convexHits.filter((hit) => hit.kind === "spot");
-  return [...spots, ...searchWoonplaatsHits(q)];
+  return searchWoonplaatsHits(q);
 }
 
 export async function loadCityPage(citySlug: string): Promise<CityPageData | null> {
