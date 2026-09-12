@@ -23,7 +23,13 @@ function parseSlug<Name extends string>(name: Name, raw: string): Brand<string, 
 
 export const parseCitySlug = (raw: string): CitySlug => parseSlug("CitySlug", raw);
 export const parseSpotSlug = (raw: string): SpotSlug => parseSlug("SpotSlug", raw);
-export const parseUserSlug = (raw: string): UserSlug => parseSlug("UserSlug", raw);
+
+export function parseUserSlug(raw: string): UserSlug {
+  if (raw.length < 3) {
+    throw new DomainParseError("UserSlug", raw);
+  }
+  return parseSlug("UserSlug", raw);
+}
 
 export function parsePlaceId(raw: string): PlaceId {
   const value = raw.trim();

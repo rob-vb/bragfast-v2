@@ -8,6 +8,11 @@ export type PassportPlan =
   | { action: "keep"; slug: string; since: number }
   | { action: "mint"; since: number };
 
+export type MintPassportPlan =
+  | { action: "keep"; slug: string; since: number }
+  | { action: "mint"; slug: UserSlug; since: number }
+  | { action: "reject"; reason: "collision" };
+
 export function slugifyPassportName(displayName: string): string {
   const slug = displayName
     .normalize("NFKD")
@@ -35,6 +40,25 @@ export function planPassport(
     return { action: "keep", slug: existing.slug, since: existing.since };
   }
   return { action: "mint", since: now };
+}
+
+export function planMintPassport(input: {
+  existing: PassportRecord | null;
+  occupiedByOther: boolean;
+  slug: UserSlug;
+  now: number;
+}): MintPassportPlan {
+  if (input.existing) {
+    return {
+      action: "keep",
+      slug: input.existing.slug,
+      since: input.existing.since,
+    };
+  }
+  if (input.occupiedByOther) {
+    return { action: "reject", reason: "collision" };
+  }
+  return { action: "mint", slug: input.slug, since: input.now };
 }
 
 export function countPostsThisWeek(createdAts: number[], now: number): number {

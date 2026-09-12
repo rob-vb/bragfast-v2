@@ -1,6 +1,8 @@
-import type { Doc, Id } from "../_generated/dataModel";
+import { ConvexError } from "convex/values";
+import type { Doc } from "../_generated/dataModel";
 import type { MutationCtx } from "../_generated/server";
-import { passportSlugCandidate, planPassport } from "../../domain/passport";
+import type { UserSlug } from "../../domain/ids";
+import { planMintPassport } from "../../domain/passport";
 import { authComponent } from "../auth";
 
 export async function ensureUserByAuthId(
@@ -44,38 +46,62 @@ export async function ensureAppUser(ctx: MutationCtx): Promise<Doc<"users">> {
   });
 }
 
-export async function ensurePassport(
+export async function mintPassportFromUsername(
   ctx: MutationCtx,
-  userId: Id<"users">,
+  input: {
+    authId: string;
+    displayName: string;
+    avatarUrl: string | null;
+    slug: UserSlug;
+  },
 ): Promise<Doc<"users">> {
-  const user = await ctx.db.get(userId);
-  if (!user) {
-    throw new Error("User missing while minting passport");
-  }
+  const existing = await ctx.db
+    .query("users")
+    .withIndex("by_authId", (q) => q.eq("authId", input.authId))
+    .unique();
+  const occupied = await ctx.db
+    .query("users")
+    .withIndex("by_passport_slug", (q) => q.eq("passport.slug", input.slug))
+    .unique();
+  const occupiedByOther = occupied !== null && occupied._id !== existing?._id;
+  const plan = planMintPassport({
+    existing: existing?.passport ?? null,
+    occupiedByOther,
+    slug: input.slug,
+    now: Date.now(),
+  });
 
-  const plan = planPassport(user.passport, Date.now());
+  if (plan.action === "reject") {
+    throw new ConvexError("usernameTaken");
+  }
   if (plan.action === "keep") {
-    return user;
+    if (!existing) {
+      throw new Error("Passport keep without user");
+    }
+    return existing;
   }
 
-  for (let attempt = 1; attempt <= 50; attempt += 1) {
-    const slug = passportSlugCandidate(user.displayName, attempt);
-    const occupied = await ctx.db
-      .query("users")
-      .withIndex("by_passport_slug", (q) => q.eq("passport.slug", slug))
-      .unique();
-    if (occupied && occupied._id !== userId) {
-      continue;
-    }
-    await ctx.db.patch(userId, {
-      passport: { slug, since: plan.since },
+  if (existing) {
+    await ctx.db.patch(existing._id, {
+      passport: { slug: plan.slug, since: plan.since },
     });
-    const updated = await ctx.db.get(userId);
+    const updated = await ctx.db.get(existing._id);
     if (!updated) {
       throw new Error("Passport patch did not persist");
     }
     return updated;
   }
 
-  throw new Error("Passport slug attempts exhausted");
+  const id = await ctx.db.insert("users", {
+    authId: input.authId,
+    displayName: input.displayName,
+    avatarUrl: input.avatarUrl,
+    passport: { slug: plan.slug, since: plan.since },
+    igUserId: null,
+  });
+  const created = await ctx.db.get(id);
+  if (!created) {
+    throw new Error("App user insert did not persist");
+  }
+  return created;
 }

@@ -1,24 +1,29 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { betterAuth } from "better-auth/minimal";
-import { magicLink } from "better-auth/plugins";
+import { username } from "better-auth/plugins";
 import { ConvexError } from "convex/values";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
-import { query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import authConfig from "./auth.config";
-import { sendResendEmail } from "./mail";
+import { DomainParseError, parseUserSlug } from "../domain/ids";
+import { mintPassportFromUsername } from "./model/users";
 
 const siteUrl = process.env.SITE_URL!;
 
 export const authComponent = createClient<DataModel>(components.betterAuth);
 
-async function sendMagicLink(email: string, url: string): Promise<void> {
-  await sendResendEmail({
-    to: email,
-    subject: "Je inloglink voor brag.fast",
-    html: `<p><a href="${url}">Log in bij brag.fast</a></p>`,
-  });
+function isUserSlug(value: string): boolean {
+  try {
+    parseUserSlug(value);
+    return true;
+  } catch (error) {
+    if (error instanceof DomainParseError) {
+      return false;
+    }
+    throw error;
+  }
 }
 
 export const createAuth = (ctx: GenericCtx<DataModel>) => {
@@ -28,6 +33,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
+    emailAndPassword: { enabled: true },
     socialProviders:
       googleClientId && googleClientSecret
         ? {
@@ -38,8 +44,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
           }
         : {},
     plugins: [
-      magicLink({
-        sendMagicLink: ({ email, url }) => sendMagicLink(email, url),
+      username({
+        minUsernameLength: 3,
+        usernameValidator: isUserSlug,
       }),
       convex({ authConfig }),
     ],
@@ -57,5 +64,31 @@ export const getCurrentUser = query({
       }
       throw error;
     }
+  },
+});
+
+export const mintPassport = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const authUser = await authComponent.getAuthUser(ctx);
+    const raw =
+      typeof authUser.username === "string" ? authUser.username.trim() : "";
+    let slug;
+    try {
+      slug = parseUserSlug(raw);
+    } catch (error) {
+      if (error instanceof DomainParseError) {
+        throw new ConvexError("invalidUsername");
+      }
+      throw error;
+    }
+    const displayName =
+      (authUser.name ?? "").trim() || authUser.email || slug;
+    return mintPassportFromUsername(ctx, {
+      authId: authUser._id,
+      displayName,
+      avatarUrl: authUser.image ?? null,
+      slug,
+    });
   },
 });

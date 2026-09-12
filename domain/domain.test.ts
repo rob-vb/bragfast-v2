@@ -22,6 +22,7 @@ import {
   POSTS_WEEK_MS,
   countPostsThisWeek,
   passportSlugCandidate,
+  planMintPassport,
   planPassport,
   slugifyPassportName,
 } from "./passport";
@@ -31,6 +32,13 @@ import { foodEstablishmentJsonLd } from "./jsonld";
 test("slugs are parsed at the boundary", () => {
   assert.equal(parseCitySlug("den-haag"), "den-haag");
   assert.throws(() => parseCitySlug("Den Haag"));
+});
+
+test("user slugs require three characters, allow hyphens, and reject underscores", () => {
+  assert.throws(() => parseUserSlug("ab"));
+  assert.equal(parseUserSlug("abo"), "abo");
+  assert.throws(() => parseUserSlug("foo_bar"));
+  assert.equal(parseUserSlug("maker-a"), "maker-a");
 });
 
 test("openNow is timezone-aware and closed outside periods", () => {
@@ -117,6 +125,37 @@ test("planPassport keeps a minted slug and mints only when missing", () => {
     action: "mint",
     since: 99,
   });
+});
+
+test("planMintPassport keeps one passport, rejects a taken slug, and mints a free slug", () => {
+  const slug = parseUserSlug("maker-a");
+  assert.deepEqual(
+    planMintPassport({
+      existing: { slug: "kept-name", since: 10 },
+      occupiedByOther: true,
+      slug,
+      now: 99,
+    }),
+    { action: "keep", slug: "kept-name", since: 10 },
+  );
+  assert.deepEqual(
+    planMintPassport({
+      existing: null,
+      occupiedByOther: true,
+      slug,
+      now: 99,
+    }),
+    { action: "reject", reason: "collision" },
+  );
+  assert.deepEqual(
+    planMintPassport({
+      existing: null,
+      occupiedByOther: false,
+      slug,
+      now: 99,
+    }),
+    { action: "mint", slug, since: 99 },
+  );
 });
 
 test("posts this week include the rolling window boundary", () => {
