@@ -21,6 +21,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         <p className="font-display text-2xl">#bragfast</p>
       </div>
       <nav className="mx-auto mt-6 flex max-w-6xl gap-4 text-sm font-bold">
+        <Link href="/nl/leaderboard">{t(locale, "leaderboard")}</Link>
         <Link href="/privacy">{t(locale, "privacy")}</Link>
         <Link href="/privacy/data-deletion">{t(locale, "dataDeletion")}</Link>
       </nav>

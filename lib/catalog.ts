@@ -8,6 +8,7 @@ import { searchWoonplaatsHits } from "@/domain/searchMatch";
 import type {
   CityPageData,
   HomepageData,
+  LeaderboardData,
   PassportData,
   SearchHit,
   SitemapEntry,
@@ -88,20 +89,29 @@ export async function loadSpotPage(
 export async function loadSitemap(): Promise<SitemapEntry[]> {
   return [
     { path: "/" },
+    { path: "/nl/leaderboard" },
     ...NL_CITIES.map((city) => ({ path: `/nl/${city.slug}` })),
   ];
 }
 
+export async function loadLeaderboard(): Promise<LeaderboardData> {
+  try {
+    return { adders: await fetchQuery(api.leaderboard.rankedAdders, {}) };
+  } catch (error) {
+    if (!isMissingConvexFunction(error)) {
+      throw error;
+    }
+    return { adders: [] };
+  }
+}
+
 export async function loadPassport(slug: string): Promise<PassportData | null> {
-  const page = await fetchQuery(api.identity.passportBySlug, { slug });
-  if (!page) {
+  try {
+    return await fetchQuery(api.identity.passportBySlug, { slug });
+  } catch (error) {
+    if (!isMissingConvexFunction(error)) {
+      throw error;
+    }
     return null;
   }
-  return {
-    ...page,
-    uniqueSpotCount: 0,
-    postsThisWeek: 0,
-    spots: [],
-    weekPosts: [],
-  };
 }

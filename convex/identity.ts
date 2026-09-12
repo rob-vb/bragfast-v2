@@ -1,7 +1,13 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
-import { DomainParseError, parseUserSlug } from "../domain/ids";
-import type { PassportData } from "../domain/viewModels";
+import {
+  DomainParseError,
+  parseCitySlug,
+  parseSpotSlug,
+  parseUserSlug,
+} from "../domain/ids";
+import { listAddedSpots } from "../domain/passport";
+import type { PassportData, PassportSpotCard } from "../domain/viewModels";
 import { isOwnerEmail } from "../domain/moderation";
 import { ownerEmail } from "./model/owner";
 import { authComponent } from "./auth";
@@ -27,14 +33,36 @@ export const passportBySlug = query({
       return null;
     }
 
+    const rows = await ctx.db.query("spots").collect();
+    const added: PassportSpotCard[] = [];
+    for (const row of rows) {
+      if (row.addedBy !== user._id) {
+        continue;
+      }
+      try {
+        added.push({
+          slug: parseSpotSlug(row.slug),
+          citySlug: parseCitySlug(row.citySlug),
+          name: row.name,
+          addedAt: row._creationTime,
+          geo: row.geo,
+          closed: row.listingStatus === "gravestone",
+        });
+      } catch (error) {
+        if (error instanceof DomainParseError) {
+          continue;
+        }
+        throw error;
+      }
+    }
+    const spots = listAddedSpots(added);
+
     return {
       slug,
       displayName: user.displayName,
       avatarUrl: user.avatarUrl,
-      uniqueSpotCount: 0,
-      postsThisWeek: 0,
-      spots: [],
-      weekPosts: [],
+      uniqueSpotCount: spots.length,
+      spots,
     };
   },
 });

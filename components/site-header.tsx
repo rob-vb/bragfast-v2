@@ -37,6 +37,9 @@ export function SiteHeader({
               {t(locale, "viewAdmin")}
             </Link>
           ) : null}
+          <Link href="/nl/leaderboard" className="text-sm font-bold text-berry">
+            {t(locale, "leaderboard")}
+          </Link>
           <LanguageSwitch locale={locale} label={t(locale, "language")} />
           <AuthControl
             locale={locale}

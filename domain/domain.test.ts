@@ -20,15 +20,15 @@ import { bragLiveEmail } from "./notify";
 import { classifyPlaceTypes, planPlaceAdd, slugFromPlaceName } from "./placeAdd";
 import { isMissingConvexFunction } from "./convexQuery";
 import {
-  POSTS_WEEK_MS,
-  countPostsThisWeek,
   passportSlugCandidate,
   planMintPassport,
   planPassport,
   slugifyPassportName,
+  listAddedSpots,
 } from "./passport";
 import { openNow, planSpotUpsert } from "./spot";
 import { applyLikeCommand, likeCountFor, planLikeToggle, sortCityBoard } from "./like";
+import { rankAdders, rankedLeaderboard } from "./leaderboard";
 import { foodEstablishmentJsonLd } from "./jsonld";
 
 test("slugs are parsed at the boundary", () => {
@@ -179,15 +179,16 @@ test("planMintPassport keeps one passport, rejects a taken slug, and mints a fre
   );
 });
 
-test("posts this week include the rolling window boundary", () => {
-  const now = POSTS_WEEK_MS + 100;
-  assert.equal(
-    countPostsThisWeek(
-      [now, now - POSTS_WEEK_MS, now - POSTS_WEEK_MS - 1],
-      now,
-    ),
-    2,
+test("passport lists added spots newest first", () => {
+  const spots = [
+    { slug: "older", addedAt: 10 },
+    { slug: "newer", addedAt: 40 },
+  ];
+  assert.deepEqual(
+    listAddedSpots(spots).map((spot) => spot.slug),
+    ["newer", "older"],
   );
+  assert.deepEqual(listAddedSpots([]), []);
 });
 
 test("haversine puts Haarlem closer than Rotterdam from Amsterdam", () => {
@@ -522,5 +523,43 @@ test("city board orders by likeCount then recency of the last like", () => {
   assert.deepEqual(
     sortCityBoard([older, newer]).map((spot) => spot.slug),
     ["newer", "older"],
+  );
+});
+
+test("leaderboard ranks Alice above Bob when her spots have more likes", () => {
+  const ranked = rankedLeaderboard([
+    { username: "alice", likeCount: 3, addedAt: 10 },
+    { username: "alice", likeCount: 2, addedAt: 20 },
+    { username: "bob", likeCount: 2, addedAt: 5 },
+  ]);
+  assert.deepEqual(
+    ranked.map((row) => row.username),
+    ["alice", "bob"],
+  );
+  assert.equal(ranked[0]?.likeSum, 5);
+  assert.equal(ranked[1]?.likeSum, 2);
+});
+
+test("equal like sums break ties by spot count then earliest add", () => {
+  const ranked = rankAdders([
+    { username: "few", likeSum: 4, spotCount: 1, earliestAddAt: 1 },
+    { username: "many", likeSum: 4, spotCount: 3, earliestAddAt: 20 },
+    { username: "early", likeSum: 1, spotCount: 1, earliestAddAt: 10 },
+    { username: "late", likeSum: 1, spotCount: 1, earliestAddAt: 20 },
+  ]);
+  assert.deepEqual(
+    ranked.map((row) => row.username),
+    ["many", "few", "early", "late"],
+  );
+});
+
+test("zero-spot accounts are absent from the leaderboard", () => {
+  const ranked = rankAdders([
+    { username: "alice", likeSum: 5, spotCount: 1, earliestAddAt: 10 },
+    { username: "ghost", likeSum: 99, spotCount: 0, earliestAddAt: 1 },
+  ]);
+  assert.deepEqual(
+    ranked.map((row) => row.username),
+    ["alice"],
   );
 });
