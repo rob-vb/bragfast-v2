@@ -105,14 +105,8 @@ export function openingHoursFromPeriods(
   return { timezone: zone, periods: mapped };
 }
 
-export type BoardStanding = {
-  score: number;
-  latestBragAt: number;
-  windowExpiresAt: number;
-};
-
 export type SpotLifecycle =
-  | { kind: "listed"; standing: BoardStanding | null }
+  | { kind: "listed" }
   | { kind: "gravestone"; closedAt: number };
 
 export type Spot = {
@@ -127,7 +121,6 @@ export type Spot = {
   hours: OpeningHours | null;
   spotType: SpotType;
   lifecycle: SpotLifecycle;
-  allTimeMakers: number;
 };
 
 export type SpotDoc = {
@@ -151,12 +144,7 @@ export type SpotDoc = {
 
 function parseLifecycle(doc: SpotDoc): SpotLifecycle {
   if (doc.listingStatus === "gravestone") {
-    if (
-      doc.closedAt === undefined ||
-      doc.boardScore !== undefined ||
-      doc.latestBragAt !== undefined ||
-      doc.windowExpiresAt !== undefined
-    ) {
+    if (doc.closedAt === undefined) {
       throw new DomainParseError("SpotLifecycle", JSON.stringify(doc));
     }
     return { kind: "gravestone", closedAt: doc.closedAt };
@@ -166,30 +154,7 @@ function parseLifecycle(doc: SpotDoc): SpotLifecycle {
     throw new DomainParseError("SpotLifecycle", JSON.stringify(doc));
   }
 
-  if (doc.boardScore === undefined) {
-    if (doc.latestBragAt !== undefined || doc.windowExpiresAt !== undefined) {
-      throw new DomainParseError("SpotLifecycle", JSON.stringify(doc));
-    }
-    return { kind: "listed", standing: null };
-  }
-
-  if (
-    !Number.isInteger(doc.boardScore) ||
-    doc.boardScore < 1 ||
-    doc.latestBragAt === undefined ||
-    doc.windowExpiresAt === undefined
-  ) {
-    throw new DomainParseError("SpotLifecycle", JSON.stringify(doc));
-  }
-
-  return {
-    kind: "listed",
-    standing: {
-      score: doc.boardScore,
-      latestBragAt: doc.latestBragAt,
-      windowExpiresAt: doc.windowExpiresAt,
-    },
-  };
+  return { kind: "listed" };
 }
 
 export function parseSpot(doc: SpotDoc): Spot {
@@ -205,8 +170,49 @@ export function parseSpot(doc: SpotDoc): Spot {
     hours: doc.hours,
     spotType: doc.spotType,
     lifecycle: parseLifecycle(doc),
-    allTimeMakers: doc.allTimeMakers,
   };
+}
+
+const WEEKDAY_INDEX: Record<string, number> = {
+  Sun: 0,
+  Mon: 1,
+  Tue: 2,
+  Wed: 3,
+  Thu: 4,
+  Fri: 5,
+  Sat: 6,
+};
+
+export function openNow(hours: OpeningHours | null, now: Date): boolean {
+  if (!hours || hours.periods.length === 0) {
+    return false;
+  }
+
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: hours.timezone,
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+
+  const weekday = parts.find((part) => part.type === "weekday")?.value;
+  const hour = parts.find((part) => part.type === "hour")?.value;
+  const minute = parts.find((part) => part.type === "minute")?.value;
+  const day = weekday ? WEEKDAY_INDEX[weekday] : undefined;
+  if (day === undefined || hour === undefined || minute === undefined) {
+    return false;
+  }
+
+  const current = Number(hour) * 60 + Number(minute);
+  return hours.periods.some((period) => {
+    if (period.day !== day) {
+      return false;
+    }
+    const open = minutesFromClock(period.open);
+    const close = minutesFromClock(period.close);
+    return Number.isFinite(open) && Number.isFinite(close) && current >= open && current < close;
+  });
 }
 
 export function isSeedPlaceId(placeId: string): boolean {

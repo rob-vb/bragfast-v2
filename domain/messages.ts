@@ -2,8 +2,7 @@ export const nlMessages = {
   hero: "Ontbijt- en brunchplekken, per stad.",
   heroPhotoSoon: "Foto volgt",
   eyebrow: "Nederland aan de ontbijttafel",
-  intro:
-    "De board telt unieke makers in 90 dagen — geen sterren. Een brag is foto of video van je bezoek.",
+  intro: "Zoek een woonplaats. Bezoekers voegen ontbijtplekken toe.",
   searchLabel: "Zoek een stad of plek",
   searchPlaceholder: "Haarlem of een bakkerij",
   searchSubmit: "Zoek",
@@ -111,8 +110,7 @@ export const enMessages = {
   hero: "Breakfast and brunch spots, by city.",
   heroPhotoSoon: "Photo coming",
   eyebrow: "The Netherlands at breakfast",
-  intro:
-    "The board counts unique makers in 90 days — not stars. A brag is a photo or video of your visit.",
+  intro: "Search a woonplaats. Visitors add breakfast spots.",
   searchLabel: "Search a city or spot",
   searchPlaceholder: "Haarlem or a bakery",
   searchSubmit: "Search",

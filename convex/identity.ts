@@ -1,16 +1,7 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
-import { DomainParseError, parseCitySlug, parseSpotSlug, parseUserSlug } from "../domain/ids";
-import { serializeMakerKey } from "../domain/makerKey";
-import {
-  POSTS_WEEK_MS,
-  countPostsThisWeek,
-} from "../domain/passport";
-import type {
-  PassportData,
-  PassportSpotCard,
-  PassportWeekPost,
-} from "../domain/viewModels";
+import { DomainParseError, parseUserSlug } from "../domain/ids";
+import type { PassportData } from "../domain/viewModels";
 import { isOwnerEmail } from "../domain/moderation";
 import { ownerEmail } from "./model/owner";
 import { authComponent } from "./auth";
@@ -36,69 +27,14 @@ export const passportBySlug = query({
       return null;
     }
 
-    const makerKey = serializeMakerKey({ kind: "user", userId: user._id });
-    const now = Date.now();
-
-    const votes = await ctx.db
-      .query("makerVotes")
-      .withIndex("by_maker", (q) => q.eq("makerKey", makerKey))
-      .order("desc")
-      .collect();
-
-    const spots: PassportSpotCard[] = [];
-    for (const vote of votes) {
-      const spot = await ctx.db.get(vote.spotId);
-      if (!spot) {
-        continue;
-      }
-      spots.push({
-        slug: parseSpotSlug(spot.slug),
-        citySlug: parseCitySlug(spot.citySlug),
-        name: spot.name,
-        latestBragAt: vote.latestVisiblePostAt,
-        geo: spot.geo,
-        closed: spot.listingStatus === "gravestone",
-      });
-    }
-
-    const postRows = await ctx.db
-      .query("posts")
-      .withIndex("by_maker_created", (q) => q.eq("makerKey", makerKey))
-      .order("desc")
-      .collect();
-
-    const weekPosts: PassportWeekPost[] = [];
-    for (const row of postRows) {
-      if (row.visibility.kind !== "visible") {
-        continue;
-      }
-      if (row.createdAt < now - POSTS_WEEK_MS) {
-        break;
-      }
-      const spot = await ctx.db.get(row.spotId);
-      if (!spot) {
-        continue;
-      }
-      weekPosts.push({
-        postId: row._id,
-        createdAt: row.createdAt,
-        spotSlug: parseSpotSlug(spot.slug),
-        citySlug: parseCitySlug(spot.citySlug),
-        name: spot.name,
-      });
-    }
-
     return {
       slug,
       displayName: user.displayName,
       avatarUrl: user.avatarUrl,
-      uniqueSpotCount: spots.length,
-      postsThisWeek: countPostsThisWeek(
-        weekPosts.map((post) => post.createdAt),
-        now,
-      ),
-      spots,
-      weekPosts,
+      uniqueSpotCount: 0,
+      postsThisWeek: 0,
+      spots: [],
+      weekPosts: [],
     };
   },
 });

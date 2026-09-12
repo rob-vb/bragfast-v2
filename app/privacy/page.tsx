@@ -14,45 +14,32 @@ export default async function PrivacyPage() {
           <>
             <p>
               brag.fast is a breakfast directory. We store the account you create
-              (email or Google), spots you add, and brags you upload.
+              (email or Google), spots you add, and photos you upload onto those
+              spots.
             </p>
             <p>
-              If you connect Instagram we store your Instagram user id and an
-              access token so we can import your posts that include #bragfast.
-              We keep the permalink and show Instagram’s official embed. We do
-              not download or host Instagram photos or video.
+              Instagram connect is retired. We do not import Instagram posts and
+              we do not store Instagram tokens for new connections.
             </p>
             <p>
-              A location tag on those posts is matched to a catalog spot. A
-              caption-only post waits in the owner queue and is not a vote until
-              approved.
-            </p>
-            <p>
-              You can delete an in-app brag, disconnect Instagram, or ask us to
-              erase your account via the data deletion page. We do not sell data.
+              You can ask us to erase your account via the data deletion page. We
+              do not sell data.
             </p>
           </>
         ) : (
           <>
             <p>
               brag.fast is een ontbijt-directory. We bewaren het account dat je
-              aanmaakt (e-mail of Google), plekken die je toevoegt, en brags die
-              je uploadt.
+              aanmaakt (e-mail of Google), plekken die je toevoegt, en foto&apos;s
+              die je op die plekken zet.
             </p>
             <p>
-              Koppel je Instagram, dan bewaren we je Instagram-user-id en een
-              toegangstoken om je posts met #bragfast te importeren. We bewaren
-              de permalink en tonen de officiële embed. We downloaden of hosten
-              geen Instagram-foto of -video.
+              Instagram-koppelen is gestopt. We importeren geen Instagram-posts
+              en bewaren geen Instagram-tokens voor nieuwe koppelingen.
             </p>
             <p>
-              Een locatie-tag op die posts matchen we aan een catalogusplek. Een
-              post met alleen een caption gaat naar de owner-queue en telt niet
-              als stem tot die is goedgekeurd.
-            </p>
-            <p>
-              Je kunt een in-app brag verwijderen, Instagram ontkoppelen, of via
-              de gegevenswissen-pagina om wissing vragen. We verkopen geen data.
+              Je kunt via de gegevenswissen-pagina om wissing van je account
+              vragen. We verkopen geen data.
             </p>
           </>
         )}

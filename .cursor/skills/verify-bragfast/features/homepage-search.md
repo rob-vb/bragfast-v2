@@ -5,7 +5,7 @@ Search lets a seeker type a city or a tent name on `/`, land on results or the c
 ## Sub-features
 
 - `search-idle` shows the Dutch hero and a search form on `/` with featured city cards underneath.
-- `search-spot` for a non-city needle (`anne`) lists catalog hits including Anne&Max Haarlem.
+- `search-spot` for a non-city needle (`anne`) returns no catalog tents.
 - `search-exact-city` for `haarlem` redirects to `/nl/haarlem` instead of a result list.
 - `search-empty` for a nonsense needle shows the no-results copy and does not invent spots.
 - `search-clear` from results returns to `/` and the featured section.
@@ -23,16 +23,16 @@ Search lets a seeker type a city or a tent name on `/`, land on results or the c
 Preconditions:
 
 - Instance healthy at `http://127.0.0.1:3019/` after `doctor`.
-- Shared Convex still has Haarlem catalog spots (at least Anne&Max).
+- Shared Convex may still hold Haarlem catalog rows. Search must not return them.
 - Locale cookie unset or `nl`.
 
 - **Idle home.** Open `/`. Run `node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs http GET / --out artifacts/homepage-search/home.html`. Status `200`. HTML `lang="nl"`, `<title>brag.fast</title>`, h1 `Ontbijt- en brunchplekken, per stad.`, `role="search"` / `Zoek een stad of plek`, `#catalog-search`, submit `Zoek`, heading `Steden om te ontdekken`, and at least one `href="/nl/` city card. Header link `aria-label="brag.fast"`.
-- **Spot query.** Search `anne`. Run `… http GET '/?q=anne' --out artifacts/homepage-search/search-anne.html`. Status `200` on `/?q=anne` (no city redirect). Heading `Zoekresultaten`, link `href="/nl/haarlem/anne-max"`, visible name `Anne&amp;Max Haarlem` or `Anne&Max Haarlem`, and `Wis zoek` linking `/`.
+- **Spot query.** Search `anne`. Run `… http GET '/?q=anne' --out artifacts/homepage-search/search-anne.html`. Status `200` on `/?q=anne` (no city redirect). Heading `Zoekresultaten`. No `href="/nl/haarlem/anne-max"` and no `Anne&Max`. Empty-results copy is allowed.
 - **Exact city.** Search `haarlem` without following. Run `… http GET '/?q=haarlem' --no-follow`. Status `307`/`308` and `location` `/nl/haarlem`. Then `… http GET '/?q=haarlem' --out artifacts/homepage-search/search-haarlem.html` and confirm the Haarlem city h1, not `Zoekresultaten`.
 - **Empty query.** Search a missing name. Run `… http GET '/?q=zzzxqqt' --out artifacts/homepage-search/search-empty.html`. Status `200`, copy `Geen stad of plek met die naam. Probeer Haarlem of Amsterdam.`, no `href="/nl/haarlem/anne-max"`.
 - **Clear.** From results, follow `Wis zoek`. Run `… http GET / --out artifacts/homepage-search/cleared.html`. Featured heading is back; `Zoekresultaten` is gone.
 - **One-character hint.** Browser only. Run `… browser fill --selector '#catalog-search' --value a --path artifacts/homepage-search/hint.png` (no `--submit`). The page shows `Typ minstens 2 tekens.` and does not navigate.
-- **Proof.** Keep `home.html` plus either `search-anne.html` or a screenshot of the Anne&Max hit. The artifacts must show brag.fast and the query or featured cities, not a blank compile error.
+- **Proof.** Keep `home.html` plus `search-anne.html` with no catalog tent.
 
 ## Gotchas
 

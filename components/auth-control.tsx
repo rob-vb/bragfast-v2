@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Preloaded } from "convex/react";
 import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
-import { useMutation, useQuery, useAction } from "convex/react";
 import { Mail } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -40,12 +39,8 @@ export function AuthControl({
   passportSlug: string | null;
 }) {
   const user = usePreloadedAuthQuery(preloadedUser);
-  const instagram = useQuery(api.instagram.status);
-  const startConnect = useAction(api.instagram.startConnect);
-  const disconnectIg = useMutation(api.instagram.disconnect);
   const router = useRouter();
   const [state, setState] = useState<DialogState>(CLOSED);
-  const [igNotice, setIgNotice] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -120,40 +115,6 @@ export function AuthControl({
           >
             {t(locale, "viewPassport")}
           </Link>
-        ) : null}
-        {instagram?.linked ? (
-          <button
-            type="button"
-            className="text-sm font-bold text-blush"
-            onClick={() => {
-              void disconnectIg().then(() => router.refresh());
-            }}
-          >
-            {t(locale, "disconnectInstagram")}
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="text-sm font-bold text-blush"
-            onClick={() => {
-              if (!instagram?.configured) {
-                setIgNotice(true);
-                return;
-              }
-              void startConnect()
-                .then((result) => {
-                  window.location.href = result.url;
-                })
-                .catch(() => setIgNotice(true));
-            }}
-          >
-            {t(locale, "connectInstagram")}
-          </button>
-        )}
-        {igNotice ? (
-          <span role="alert" className="text-sm text-berry/75">
-            {t(locale, "instagramUnavailable")}
-          </span>
         ) : null}
         <span className="hidden max-w-40 truncate text-sm text-berry sm:inline">
           {user.name ?? user.email}

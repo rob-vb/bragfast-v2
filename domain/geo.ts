@@ -1,5 +1,5 @@
 import { NL_CITIES } from "./cities";
-import { assignGemeenteSlug } from "./gemeenten";
+import { assignPlaceSlug } from "./woonplaatsen";
 import type { CitySlug } from "./ids";
 
 export type GeoPoint = { lat: number; lng: number };
@@ -49,5 +49,5 @@ export function cityCentroid(slug: string): GeoPoint | null {
 }
 
 export function assignCitySlug(geo: GeoPoint): string | null {
-  return assignGemeenteSlug(geo);
+  return assignPlaceSlug(geo);
 }

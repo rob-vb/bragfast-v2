@@ -80,7 +80,6 @@ export function CitySpots({
               src={stillFor(spot.slug)}
               title={spot.name}
               meta={spot.address}
-              egg={spot.bragged !== null}
             />
           </li>
         ))}

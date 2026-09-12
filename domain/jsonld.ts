@@ -1,4 +1,3 @@
-import type { LicensedImage } from "./post";
 import type { OpeningHours, SpotType } from "./spot";
 
 const WEEKDAYS = [
@@ -26,7 +25,7 @@ export function foodEstablishmentJsonLd(input: {
   hours: OpeningHours | null;
   spotType: SpotType;
   url: string;
-  image: LicensedImage | null;
+  image: { url: string } | null;
 }): Record<string, unknown> {
   const node: Record<string, unknown> = {
     "@context": "https://schema.org",
