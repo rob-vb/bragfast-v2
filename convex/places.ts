@@ -2,7 +2,7 @@ import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
 import { action, internalMutation, query } from "./_generated/server";
 import { authComponent } from "./auth";
-import { applyPlaceAdd } from "./model/placeAdd";
+import { applyPlaceAdd, type PlaceAddCommit } from "./model/placeAdd";
 import { ensureUserByAuthId } from "./model/users";
 
 type PlaceSuggestion = { placeId: string; name: string; address: string };
@@ -169,8 +169,15 @@ export const autocomplete = action({
 });
 
 export const add = action({
-  args: { placeId: v.string(), citySlug: v.string() },
-  handler: async (ctx, args) => {
+  args: { placeId: v.string(), storageId: v.id("_storage") },
+  handler: async (
+    ctx,
+    args,
+  ): Promise<{
+    action: "live" | "redirect";
+    placeSlug: string;
+    spotSlug: string;
+  }> => {
     const authUser = await authComponent.getAuthUser(ctx);
     const key = placesKey();
     if (!key) {
@@ -181,18 +188,26 @@ export const add = action({
       (typeof authUser.name === "string" ? authUser.name.trim() : "") ||
       (typeof authUser.email === "string" ? authUser.email : "") ||
       "bragger";
-    await ctx.runMutation(internal.places.apply, {
+    const result = await ctx.runMutation(internal.places.apply, {
       placeId: details.placeId,
       name: details.name,
       address: details.address,
       geo: details.geo,
       types: details.types,
-      citySlug: args.citySlug,
+      storageId: args.storageId,
       authId: authUser._id,
       displayName,
       avatarUrl:
         typeof authUser.image === "string" ? authUser.image : null,
     });
+    if (result.action === "reject") {
+      throw new ConvexError(result.reason);
+    }
+    return {
+      action: result.action,
+      placeSlug: result.placeSlug,
+      spotSlug: result.spotSlug,
+    };
   },
 });
 
@@ -203,25 +218,25 @@ export const apply = internalMutation({
     address: v.string(),
     geo: v.object({ lat: v.number(), lng: v.number() }),
     types: v.array(v.string()),
-    citySlug: v.string(),
+    storageId: v.id("_storage"),
     authId: v.string(),
     displayName: v.string(),
     avatarUrl: v.union(v.string(), v.null()),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<PlaceAddCommit> => {
     const user = await ensureUserByAuthId(ctx, {
       authId: args.authId,
       displayName: args.displayName,
       avatarUrl: args.avatarUrl,
     });
-    await applyPlaceAdd(ctx, {
+    return await applyPlaceAdd(ctx, {
       placeId: args.placeId,
       name: args.name,
       address: args.address,
       geo: args.geo,
       types: args.types,
-      citySlug: args.citySlug,
-      submittedBy: user._id,
+      photoId: args.storageId,
+      addedBy: user._id,
     });
   },
 });

@@ -37,21 +37,22 @@ export async function loadCityPage(citySlug: string): Promise<CityPageData | nul
   if (!gazetteer) {
     return null;
   }
+  const spots = await fetchQuery(api.catalog.listedSpotsByCity, { citySlug });
   return {
     city: {
       slug: parseCitySlug(gazetteer.slug),
       nameNl: gazetteer.nameNl,
       nameEn: gazetteer.nameEn,
     },
-    spots: [],
+    spots,
   };
 }
 
 export async function loadSpotPage(
-  _citySlug: string,
-  _spotSlug: string,
+  citySlug: string,
+  spotSlug: string,
 ): Promise<SpotPageData | null> {
-  return null;
+  return await fetchQuery(api.catalog.spotPage, { citySlug, spotSlug });
 }
 
 export async function loadSitemap(): Promise<SitemapEntry[]> {

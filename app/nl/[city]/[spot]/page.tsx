@@ -71,7 +71,7 @@ export default async function SpotPage({
   });
   const isOpen = openNow(page.hours, new Date());
   const closed = page.lifecycle.kind === "gravestone";
-  const hero = cityScene(page.city.slug);
+  const hero = page.licensedImage?.url ?? cityScene(page.city.slug);
 
   return (
     <main>

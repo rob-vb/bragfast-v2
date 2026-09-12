@@ -1,12 +1,15 @@
 import { v } from "convex/values";
 import { query, type QueryCtx } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
+import { NL_CITIES } from "../domain/cities";
 import { cityCentroid, nearestCity } from "../domain/geo";
-import { DomainParseError, parseCitySlug } from "../domain/ids";
+import { DomainParseError, parseCitySlug, parseSpotSlug } from "../domain/ids";
 import { searchWoonplaatsHits } from "../domain/searchMatch";
+import { parseSpot } from "../domain/spot";
 import type {
   CityCard,
   CityPageData,
+  CitySpotCard,
   HomepageData,
   NearbyData,
   SearchHit,
@@ -22,6 +25,49 @@ function cityCard(row: Doc<"cities">): CityCard {
   };
 }
 
+function gazetteerCity(slug: string): CityCard | null {
+  const row = NL_CITIES.find((city) => city.slug === slug);
+  if (!row) {
+    return null;
+  }
+  return {
+    slug: parseCitySlug(row.slug),
+    nameNl: row.nameNl,
+    nameEn: row.nameEn,
+  };
+}
+
+async function listedVisitorSpots(
+  ctx: QueryCtx,
+  citySlug: string,
+): Promise<CitySpotCard[]> {
+  const rows = await ctx.db
+    .query("spots")
+    .withIndex("by_city_slug", (q) => q.eq("citySlug", citySlug))
+    .collect();
+  const cards: CitySpotCard[] = [];
+  for (const row of rows) {
+    if (row.listingStatus !== "listed" || row.photoId === undefined) {
+      continue;
+    }
+    const photoUrl = await ctx.storage.getUrl(row.photoId);
+    if (!photoUrl) {
+      continue;
+    }
+    cards.push({
+      slug: parseSpotSlug(row.slug),
+      citySlug: parseCitySlug(row.citySlug),
+      name: row.name,
+      address: row.address,
+      hours: row.hours,
+      spotType: row.spotType,
+      geo: row.geo,
+      photoUrl,
+    });
+  }
+  return cards;
+}
+
 async function loadCityPage(
   ctx: QueryCtx,
   slug: ReturnType<typeof parseCitySlug>,
@@ -33,7 +79,10 @@ async function loadCityPage(
   if (!city) {
     return null;
   }
-  return { city: cityCard(city), spots: [] };
+  return {
+    city: cityCard(city),
+    spots: await listedVisitorSpots(ctx, slug),
+  };
 }
 
 export const homepage = query({
@@ -101,10 +150,64 @@ export const cityPage = query({
   },
 });
 
+export const listedSpotsByCity = query({
+  args: { citySlug: v.string() },
+  handler: async (ctx, args): Promise<CitySpotCard[]> => {
+    try {
+      return await listedVisitorSpots(ctx, parseCitySlug(args.citySlug));
+    } catch (error) {
+      if (error instanceof DomainParseError) {
+        return [];
+      }
+      throw error;
+    }
+  },
+});
+
 export const spotPage = query({
   args: { citySlug: v.string(), spotSlug: v.string() },
-  handler: async (): Promise<SpotPageData | null> => {
-    return null;
+  handler: async (ctx, args): Promise<SpotPageData | null> => {
+    let citySlug;
+    let spotSlug;
+    try {
+      citySlug = parseCitySlug(args.citySlug);
+      spotSlug = parseSpotSlug(args.spotSlug);
+    } catch (error) {
+      if (error instanceof DomainParseError) {
+        return null;
+      }
+      throw error;
+    }
+    const row = await ctx.db
+      .query("spots")
+      .withIndex("by_city_slug", (q) =>
+        q.eq("citySlug", citySlug).eq("slug", spotSlug),
+      )
+      .unique();
+    if (!row || row.listingStatus !== "listed") {
+      return null;
+    }
+    const city = gazetteerCity(citySlug);
+    if (!city) {
+      return null;
+    }
+    const photoUrl = row.photoId
+      ? await ctx.storage.getUrl(row.photoId)
+      : null;
+    const spot = parseSpot(row);
+    return {
+      id: spot.id,
+      name: spot.name,
+      address: spot.address,
+      city,
+      slug: spot.slug,
+      geo: spot.geo,
+      hours: spot.hours,
+      spotType: spot.spotType,
+      lifecycle: spot.lifecycle,
+      licensedImage: photoUrl ? { url: photoUrl } : null,
+      canonicalPath: `/nl/${city.slug}/${spot.slug}`,
+    };
   },
 });
 
