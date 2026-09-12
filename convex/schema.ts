@@ -5,6 +5,10 @@ import {
   spotTypeValidator,
 } from "../domain/spot";
 
+function leftoverTable() {
+  return defineTable(v.any());
+}
+
 export default defineSchema({
   users: defineTable({
     authId: v.string(),
@@ -65,8 +69,20 @@ export default defineSchema({
       filterFields: ["country"],
     }),
 
+  posts: leftoverTable(),
+  makerVotes: leftoverTable(),
+  aiMatchQueue: leftoverTable(),
+  spotAddQueue: leftoverTable(),
+  placesQuota: leftoverTable(),
+  ingestCursor: leftoverTable(),
+  placesSeen: leftoverTable(),
+  oauthStates: leftoverTable(),
+
   reports: defineTable({
-    target: v.object({ kind: v.literal("spot"), spotId: v.id("spots") }),
+    target: v.union(
+      v.object({ kind: v.literal("post"), postId: v.id("posts") }),
+      v.object({ kind: v.literal("spot"), spotId: v.id("spots") }),
+    ),
     reason: v.string(),
     status: v.union(v.literal("open"), v.literal("resolved")),
   }).index("by_status", ["status"]),

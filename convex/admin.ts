@@ -30,6 +30,9 @@ export const queue = query({
 
     const reports: AdminReportRow[] = [];
     for (const report of openReports) {
+      if (report.target.kind !== "spot") {
+        continue;
+      }
       const spot = await ctx.db.get(report.target.spotId);
       if (!spot) {
         continue;
