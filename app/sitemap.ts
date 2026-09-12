@@ -4,7 +4,7 @@ import { publicSiteUrl } from "@/lib/catalog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const origin = publicSiteUrl();
-  const paths = ["/", ...NL_CITIES.map((city) => `/nl/${city.slug}`)];
+  const paths = ["/", "/nl/leaderboard", ...NL_CITIES.map((city) => `/nl/${city.slug}`)];
   return paths.map((path) => ({
     url: `${origin}${path}`,
     changeFrequency: "daily" as const,

@@ -1,5 +1,6 @@
 import type { GenericId } from "convex/values";
 import type { CitySlug, SpotSlug, UserSlug } from "./ids";
+import type { AdderRow } from "./leaderboard";
 import type { OpeningHours, SpotLifecycle, SpotType } from "./spot";
 
 export type CitySpotCard = {
@@ -103,16 +104,9 @@ export type PassportSpotCard = {
   slug: SpotSlug;
   citySlug: CitySlug;
   name: string;
-  latestBragAt: number;
+  addedAt: number;
   geo: { lat: number; lng: number };
   closed: boolean;
-};
-
-export type PassportWeekPost = {
-  createdAt: number;
-  spotSlug: SpotSlug;
-  citySlug: CitySlug;
-  name: string;
 };
 
 export type PassportData = {
@@ -120,7 +114,9 @@ export type PassportData = {
   displayName: string;
   avatarUrl: string | null;
   uniqueSpotCount: number;
-  postsThisWeek: number;
   spots: PassportSpotCard[];
-  weekPosts: PassportWeekPost[];
+};
+
+export type LeaderboardData = {
+  adders: AdderRow[];
 };

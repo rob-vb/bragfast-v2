@@ -14,6 +14,7 @@ import type * as catalog from "../catalog.js";
 import type * as crons from "../crons.js";
 import type * as http from "../http.js";
 import type * as identity from "../identity.js";
+import type * as leaderboard from "../leaderboard.js";
 import type * as likes from "../likes.js";
 import type * as mail from "../mail.js";
 import type * as model_owner from "../model/owner.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   http: typeof http;
   identity: typeof identity;
+  leaderboard: typeof leaderboard;
   likes: typeof likes;
   mail: typeof mail;
   "model/owner": typeof model_owner;

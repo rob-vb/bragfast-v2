@@ -36,4 +36,5 @@ Each feature file starts with an H1 and one paragraph of user-visible behavior, 
 - [City board](./city-board.md) covers empty woonplaats boards, Open nu, list vs map.
 - [Spot page](./spot-page.md) covers old catalog URLs 404ing.
 - [Language switch](./language-switch.md) covers nl/en chrome on the same URLs via the cookie.
-- [Passport](./passport.md) covers the public `/nl/u/{slug}` profile after a maker has bragged.
+- [Passport](./passport.md) covers the public `/nl/u/{slug}` profile of spots that account added.
+- Leaderboard `/nl/leaderboard` lists adders by the sum of likes on spots they added. Empty copy shows when nobody has added. The header links here. Signed-out visitors can read it. Ranked rows are verified-unreachable on an empty shared catalog.

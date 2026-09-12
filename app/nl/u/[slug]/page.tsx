@@ -3,12 +3,7 @@ import { notFound } from "next/navigation";
 import { CityMap } from "@/components/city-map-loader";
 import { loadPassport } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
-import {
-  postsThisWeekLabel,
-  t,
-  uniqueSpotsLabel,
-  type Locale,
-} from "@/domain/messages";
+import { t, uniqueSpotsLabel } from "@/domain/messages";
 import {
   PhotoFrame,
   SegmentLink,
@@ -19,7 +14,6 @@ import { HERO_SCENE, stillFor } from "@/lib/scenes";
 
 type Params = { slug: string };
 type Search = {
-  tab?: string;
   view?: string;
 };
 
@@ -42,25 +36,14 @@ export async function generateMetadata({
 
 function hrefFor(
   slug: string,
-  current: { tab: "spots" | "week"; view: "list" | "map" },
+  current: { view: "list" | "map" },
   patch: Partial<typeof current>,
 ): string {
   const next = { ...current, ...patch };
-  const params = new URLSearchParams();
-  if (next.tab === "week") {
-    params.set("tab", "week");
-  }
   if (next.view === "map") {
-    params.set("view", "map");
+    return `/nl/u/${slug}?view=map`;
   }
-  const query = params.toString();
-  return query ? `/nl/u/${slug}?${query}` : `/nl/u/${slug}`;
-}
-
-function weekDate(locale: Locale, createdAt: number): string {
-  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "nl-NL", {
-    dateStyle: "medium",
-  }).format(new Date(createdAt));
+  return `/nl/u/${slug}`;
 }
 
 export default async function PassportPage({
@@ -79,7 +62,6 @@ export default async function PassportPage({
   }
 
   const filters = {
-    tab: search.tab === "week" ? ("week" as const) : ("spots" as const),
     view: search.view === "map" ? ("map" as const) : ("list" as const),
   };
 
@@ -101,72 +83,31 @@ export default async function PassportPage({
           <p className="text-shadow-photo mt-3 text-lg text-white">
             {uniqueSpotsLabel(locale, page.uniqueSpotCount)}
           </p>
-          <p className="text-shadow-photo mt-1 text-lg text-white">
-            {postsThisWeekLabel(locale, page.postsThisWeek)}
-          </p>
         </div>
       </section>
 
       <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Segmented label={t(locale, "passportSpots")}>
-            <SegmentLink
-              href={hrefFor(page.slug, filters, { tab: "spots" })}
-              active={filters.tab === "spots"}
-            >
-              {t(locale, "passportSpots")}
-            </SegmentLink>
-            <SegmentLink
-              href={hrefFor(page.slug, filters, { tab: "week" })}
-              active={filters.tab === "week"}
-            >
-              {t(locale, "passportWeek")}
-            </SegmentLink>
-          </Segmented>
-          {filters.tab === "spots" ? (
-            <Segmented label={t(locale, "viewMode")}>
-              <SegmentLink
-                href={hrefFor(page.slug, filters, { view: "list" })}
-                active={filters.view === "list"}
-              >
-                {t(locale, "viewList")}
-              </SegmentLink>
-              <SegmentLink
-                href={hrefFor(page.slug, filters, { view: "map" })}
-                active={filters.view === "map"}
-              >
-                {t(locale, "viewMap")}
-              </SegmentLink>
-            </Segmented>
-          ) : null}
-        </div>
+        <Segmented label={t(locale, "viewMode")}>
+          <SegmentLink
+            href={hrefFor(page.slug, filters, { view: "list" })}
+            active={filters.view === "list"}
+          >
+            {t(locale, "viewList")}
+          </SegmentLink>
+          <SegmentLink
+            href={hrefFor(page.slug, filters, { view: "map" })}
+            active={filters.view === "map"}
+          >
+            {t(locale, "viewMap")}
+          </SegmentLink>
+        </Segmented>
 
-        {filters.tab === "week" ? (
-          page.weekPosts.length === 0 ? (
-            <p className="mt-8 text-berry/70">{t(locale, "thisWeekEmpty")}</p>
-          ) : (
-            <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-              {page.weekPosts.map((post) => (
-                <li key={`${post.citySlug}/${post.spotSlug}/${post.createdAt}`}>
-                  <SpotLinkCard
-                    href={`/nl/${post.citySlug}/${post.spotSlug}`}
-                    src={stillFor(post.spotSlug)}
-                    title={post.name}
-                    meta={weekDate(locale, post.createdAt)}
-                    egg
-                  />
-                </li>
-              ))}
-            </ul>
-          )
-        ) : filters.view === "map" ? (
-          page.spots.length === 0 ? (
-            <p className="mt-8 text-berry/70">{t(locale, "passportEmpty")}</p>
-          ) : (
-            <CityMap spots={page.spots} />
-          )
-        ) : page.spots.length === 0 ? (
+        {page.spots.length === 0 ? (
           <p className="mt-8 text-berry/70">{t(locale, "passportEmpty")}</p>
+        ) : filters.view === "map" ? (
+          <div className="mt-8">
+            <CityMap spots={page.spots} />
+          </div>
         ) : (
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {page.spots.map((spot) => (

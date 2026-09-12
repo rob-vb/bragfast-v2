@@ -1,7 +1,5 @@
 import { parseUserSlug, type UserSlug } from "./ids";
 
-export const POSTS_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-
 export type PassportRecord = { slug: string; since: number };
 
 export type PassportPlan =
@@ -61,7 +59,8 @@ export function planMintPassport(input: {
   return { action: "mint", slug: input.slug, since: input.now };
 }
 
-export function countPostsThisWeek(createdAts: number[], now: number): number {
-  const threshold = now - POSTS_WEEK_MS;
-  return createdAts.filter((createdAt) => createdAt >= threshold).length;
+export function listAddedSpots<T extends { addedAt: number }>(
+  spots: readonly T[],
+): T[] {
+  return [...spots].sort((a, b) => b.addedAt - a.addedAt);
 }

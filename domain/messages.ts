@@ -42,11 +42,11 @@ export const nlMessages = {
   viewList: "Lijst",
   viewMap: "Kaart",
   viewMode: "Weergave",
-  passportSpots: "Unieke plekken",
-  passportWeek: "Deze week",
   passportEmpty: "Nog geen plekken op dit paspoort.",
-  thisWeekEmpty: "Deze week nog geen brags.",
   viewPassport: "Paspoort",
+  leaderboard: "Klassement",
+  leaderboardIntro: "Adders, gerangschikt op likes op hun plekken.",
+  leaderboardEmpty: "Nog niemand heeft een plek toegevoegd.",
   nearMe: "Dichtbij",
   nearMeDenied: "Locatie niet beschikbaar. Sta locatie toe of kies een stad.",
   nearMePending: "Locatie ophalen…",
@@ -124,11 +124,11 @@ export const enMessages = {
   viewList: "List",
   viewMap: "Map",
   viewMode: "View",
-  passportSpots: "Unique spots",
-  passportWeek: "This week",
   passportEmpty: "No spots on this passport yet.",
-  thisWeekEmpty: "No brags this week.",
   viewPassport: "Passport",
+  leaderboard: "Leaderboard",
+  leaderboardIntro: "Adders, ranked by likes on spots they added.",
+  leaderboardEmpty: "Nobody has added a spot yet.",
   nearMe: "Near me",
   nearMeDenied: "Location not available. Allow location or pick a city.",
   nearMePending: "Getting your location…",
@@ -187,20 +187,20 @@ export function boardCityLabel(locale: Locale, count: number): string {
 export function uniqueSpotsLabel(locale: Locale, count: number): string {
   if (locale === "en") {
     if (count <= 0) {
-      return "No unique spots yet";
+      return "No spots yet";
     }
     if (count === 1) {
-      return "1 unique spot";
+      return "1 spot";
     }
-    return `${count} unique spots`;
+    return `${count} spots`;
   }
   if (count <= 0) {
-    return "Nog geen unieke plekken";
+    return "Nog geen plekken";
   }
   if (count === 1) {
-    return "1 unieke plek";
+    return "1 plek";
   }
-  return `${count} unieke plekken`;
+  return `${count} plekken`;
 }
 
 export function likeCountLabel(locale: Locale, count: number): string {
@@ -216,15 +216,3 @@ export function likeCountLabel(locale: Locale, count: number): string {
   return `${count} likes`;
 }
 
-export function postsThisWeekLabel(locale: Locale, count: number): string {
-  if (locale === "en") {
-    if (count === 1) {
-      return "1 brag this week";
-    }
-    return `${count} brags this week`;
-  }
-  if (count === 1) {
-    return "1 brag deze week";
-  }
-  return `${count} brags deze week`;
-}
