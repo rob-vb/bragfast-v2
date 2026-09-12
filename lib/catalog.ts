@@ -37,7 +37,12 @@ export async function loadCityPage(citySlug: string): Promise<CityPageData | nul
   if (!gazetteer) {
     return null;
   }
-  const spots = await fetchQuery(api.catalog.listedSpotsByCity, { citySlug });
+  let spots: CityPageData["spots"] = [];
+  try {
+    spots = await fetchQuery(api.catalog.listedSpotsByCity, { citySlug });
+  } catch {
+    spots = [];
+  }
   return {
     city: {
       slug: parseCitySlug(gazetteer.slug),
@@ -52,7 +57,11 @@ export async function loadSpotPage(
   citySlug: string,
   spotSlug: string,
 ): Promise<SpotPageData | null> {
-  return await fetchQuery(api.catalog.spotPage, { citySlug, spotSlug });
+  try {
+    return await fetchQuery(api.catalog.spotPage, { citySlug, spotSlug });
+  } catch {
+    return null;
+  }
 }
 
 export async function loadSitemap(): Promise<SitemapEntry[]> {

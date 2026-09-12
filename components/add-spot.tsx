@@ -109,7 +109,7 @@ export function AddSpot({ locale }: { locale: Locale }) {
     event.preventDefault();
   }
 
-  if (user === undefined || configured === undefined) {
+  if (user === undefined) {
     return null;
   }
 
@@ -121,6 +121,10 @@ export function AddSpot({ locale }: { locale: Locale }) {
         </Button>
       </div>
     );
+  }
+
+  if (configured === undefined) {
+    return null;
   }
 
   if (!configured) {
