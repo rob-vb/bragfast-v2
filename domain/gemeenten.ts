@@ -1,7 +1,10 @@
 import data from "./data/gemeenten.json";
 import populationFile from "./data/gemeente-population.json";
+import type { GazetteerCity } from "./cities";
 import { orderGemeentenForIngest } from "./ingestTurn";
 import { parseCitySlug } from "./ids";
+
+export type { GazetteerCity };
 
 export type BBox = {
   west: number;
@@ -10,19 +13,9 @@ export type BBox = {
   north: number;
 };
 
-export type GazetteerCity = {
-  slug: string;
-  nameNl: string;
-  nameEn: string;
-  lat: number;
-  lng: number;
-  featuredOrder?: number;
-};
-
 export type GazetteerGemeente = GazetteerCity & {
   code: string;
   population: number;
-  aliases: readonly string[];
   bbox: BBox;
   rings: readonly (readonly (readonly number[])[])[];
 };
@@ -50,19 +43,6 @@ export const NL_GEMEENTEN: readonly GazetteerGemeente[] = FILE.gemeenten.map(
 
 export const NL_INGEST_GEMEENTEN: readonly GazetteerGemeente[] =
   orderGemeentenForIngest(NL_GEMEENTEN);
-
-export const NL_CITIES: readonly GazetteerCity[] = NL_GEMEENTEN.map(
-  (gemeente) => ({
-    slug: gemeente.slug,
-    nameNl: gemeente.nameNl,
-    nameEn: gemeente.nameEn,
-    lat: gemeente.lat,
-    lng: gemeente.lng,
-    ...(gemeente.featuredOrder !== undefined
-      ? { featuredOrder: gemeente.featuredOrder }
-      : {}),
-  }),
-);
 
 const bySlug = new Map<string, GazetteerGemeente>();
 const byAlias = new Map<string, GazetteerGemeente>();
