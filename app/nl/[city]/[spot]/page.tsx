@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { foodEstablishmentJsonLd } from "@/domain/jsonld";
-import { canonicalCitySlug } from "@/domain/gemeenten";
-import { openNow } from "@/domain/ranking";
-import { makersLabel, t, type Locale } from "@/domain/messages";
+import { canonicalCitySlug } from "@/domain/cities";
+import { openNow } from "@/domain/spot";
+import { t, type Locale } from "@/domain/messages";
 import { loadSpotPage, publicSiteUrl } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
-import { SpotBrags } from "@/components/spot-brags";
 import { SpotShare } from "@/components/spot-share";
 import { PhotoFrame } from "@/components/visual";
 import { cityScene } from "@/lib/scenes";
@@ -97,23 +96,13 @@ export default async function SpotPage({
             <p className="mt-6 inline-flex w-fit rounded-full bg-blush px-4 py-2 font-bold text-berry">
               {t(locale, "closed")}
             </p>
-          ) : (
+          ) : isOpen ? (
             <div className="mt-6 flex flex-wrap gap-2 text-sm font-bold">
-              {isOpen ? (
-                <span className="rounded-full bg-yolk px-3 py-1 text-berry">
-                  {t(locale, "openNow")}
-                </span>
-              ) : null}
-              <span className="rounded-full bg-white/15 px-3 py-1 text-white backdrop-blur-sm">
-                {page.rankInCity
-                  ? `#${page.rankInCity}`
-                  : t(locale, "notOnBoard")}
-              </span>
-              <span className="rounded-full bg-white/15 px-3 py-1 text-white backdrop-blur-sm">
-                {makersLabel(locale, page.allTimeMakers)}
+              <span className="rounded-full bg-yolk px-3 py-1 text-berry">
+                {t(locale, "openNow")}
               </span>
             </div>
-          )}
+          ) : null}
         </div>
       </section>
 
@@ -141,13 +130,6 @@ export default async function SpotPage({
             <p className="mt-4 text-berry/55">{t(locale, "hoursUnknown")}</p>
           )}
         </section>
-
-        <SpotBrags
-          locale={locale}
-          spotId={page.id}
-          feed={page.feed}
-          closed={closed}
-        />
       </div>
     </main>
   );

@@ -10,8 +10,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test:domain": "tsx --test domain/*.test.ts",
-    "generate:gemeenten": "node scripts/generate-gemeenten.mjs",
-    "generate:gemeente-population": "node scripts/generate-gemeente-population.mjs"
+    "generate:woonplaatsen": "node scripts/generate-woonplaatsen.mjs"
   },
   "keywords": [],
   "author": "",

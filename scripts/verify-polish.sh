@@ -22,29 +22,27 @@ if "Dichtbij" not in home:
 for city in ("Haarlem", "Amsterdam", "Rotterdam", "Utrecht"):
     if city not in home:
         raise SystemExit(f"featured missing {city}")
+if "90 dagen" in home or "90 days" in home:
+    raise SystemExit("homepage still describes 90-day makers")
 
-status, brags = fetch("/nl/haarlem?brags=1")
+status, empty = fetch("/nl/haarlem")
 if status != 200:
-    raise SystemExit(f"/nl/haarlem?brags=1 status {status}")
-if "Anne&amp;Max" not in brags and "Anne&Max" not in brags:
-    raise SystemExit("brags filter missing Anne&Max")
-if "Nog niet gebragd" in brags:
-    raise SystemExit("brags filter leaked seed heading")
-if "Jopenkerk" in brags:
-    raise SystemExit("brags filter leaked Jopenkerk")
+    raise SystemExit(f"/nl/haarlem status {status}")
+if "Nog geen plekken in deze stad." not in empty:
+    raise SystemExit("Haarlem missing empty copy")
 
 status, open_now = fetch("/nl/haarlem?open=1")
 if status != 200:
     raise SystemExit(f"/nl/haarlem?open=1 status {status}")
+if "Nog geen plekken in deze stad." not in open_now:
+    raise SystemExit("open filter empty Haarlem missing empty copy")
 
 status, admin = fetch("/admin")
 if status != 404:
     raise SystemExit(f"/admin status {status}, expected 404")
 
 status, closed = fetch("/nl/haarlem/oude-banketbakker")
-if status != 200:
-    raise SystemExit(f"/nl/haarlem/oude-banketbakker status {status}")
-if "Gesloten" not in closed:
-    raise SystemExit("closed spot missing Gesloten")
+if status != 404:
+    raise SystemExit(f"/nl/haarlem/oude-banketbakker status {status}, expected 404")
 
 print("POLISH_VERIFIED")

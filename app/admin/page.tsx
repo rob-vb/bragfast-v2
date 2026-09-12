@@ -29,8 +29,6 @@ export default async function AdminPage() {
         locale={locale}
         reports={queue.reports}
         spots={queue.spots}
-        matches={queue.matches}
-        spotAdds={queue.spotAdds}
       />
     </main>
   );

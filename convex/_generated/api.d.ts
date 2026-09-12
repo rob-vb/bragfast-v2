@@ -15,23 +15,15 @@ import type * as catalog from "../catalog.js";
 import type * as crons from "../crons.js";
 import type * as http from "../http.js";
 import type * as identity from "../identity.js";
-import type * as ingest from "../ingest.js";
-import type * as instagram from "../instagram.js";
 import type * as mail from "../mail.js";
-import type * as model_hygiene from "../model/hygiene.js";
-import type * as model_instagram from "../model/instagram.js";
 import type * as model_owner from "../model/owner.js";
 import type * as model_placeAdd from "../model/placeAdd.js";
-import type * as model_social from "../model/social.js";
 import type * as model_spots from "../model/spots.js";
 import type * as model_users from "../model/users.js";
-import type * as model_votes from "../model/votes.js";
 import type * as notify from "../notify.js";
-import type * as osmHours from "../osmHours.js";
 import type * as places from "../places.js";
 import type * as seed from "../seed.js";
-import type * as social from "../social.js";
-import type * as standing from "../standing.js";
+import type * as wipe from "../wipe.js";
 
 import type {
   ApiFromModules,
@@ -47,23 +39,15 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   http: typeof http;
   identity: typeof identity;
-  ingest: typeof ingest;
-  instagram: typeof instagram;
   mail: typeof mail;
-  "model/hygiene": typeof model_hygiene;
-  "model/instagram": typeof model_instagram;
   "model/owner": typeof model_owner;
   "model/placeAdd": typeof model_placeAdd;
-  "model/social": typeof model_social;
   "model/spots": typeof model_spots;
   "model/users": typeof model_users;
-  "model/votes": typeof model_votes;
   notify: typeof notify;
-  osmHours: typeof osmHours;
   places: typeof places;
   seed: typeof seed;
-  social: typeof social;
-  standing: typeof standing;
+  wipe: typeof wipe;
 }>;
 
 /**

@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
-import { loadSitemap, publicSiteUrl } from "@/lib/catalog";
+import { NL_CITIES } from "@/domain/cities";
+import { publicSiteUrl } from "@/lib/catalog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const entries = await loadSitemap();
   const origin = publicSiteUrl();
-  return entries.map((entry) => ({
-    url: `${origin}${entry.path}`,
-    changeFrequency: "daily",
+  const paths = ["/", ...NL_CITIES.map((city) => `/nl/${city.slug}`)];
+  return paths.map((path) => ({
+    url: `${origin}${path}`,
+    changeFrequency: "daily" as const,
   }));
 }
