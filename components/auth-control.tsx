@@ -361,7 +361,7 @@ export function AuthControl({
           <ChevronDown className="size-4" aria-hidden="true" />
         </Menu.Trigger>
         <Menu.Portal>
-          <Menu.Positioner className="outline-none" sideOffset={8} align="end">
+          <Menu.Positioner className="isolate z-50 outline-none" sideOffset={8} align="end">
             <Menu.Popup className="min-w-40 origin-[var(--transform-origin)] rounded-xl border border-berry/15 bg-white py-1 shadow-lift outline-none transition-[scale,opacity] duration-100 data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
               {accountItems.map((item) =>
                 item.kind === "link" ? (
