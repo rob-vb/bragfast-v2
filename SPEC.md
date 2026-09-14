@@ -8,17 +8,17 @@ If this file and the code disagree, this file wins until a human changes it.
 
 A **website** (not a native app) that is the breakfast and brunch **directory** for the Netherlands. The question it answers is *where do I eat breakfast in woonplaats X*. The primary user is a seeker planning a weekend or already in town. TripAdvisor without the everything-else.
 
-**Spots** (cafés, bakeries, lunchrooms, hotels that sell breakfast and brunch) are the unit. Visitors add those spots. A **like** is how a spot climbs its woonplaats board. A live social feed is not the product.
+**Spots** (cafés, bakeries, lunchrooms, hotels that sell breakfast and brunch) are the unit. The app creates a spot when a user publishes the first photo of a Place (`api.places.publish`). The website has no add UI. A **like** is how a spot climbs its woonplaats board. A live social feed is not the product.
 
 The brand is English (`brag.fast`, hashtag `#bragfast`). The first market is NL because the owner lives there. More countries later via the same URL shape.
 
-Scraped Places catalogs and Instagram ingest are not the product. The iOS and Android app (same Convex catalog) attaches more photos to an existing spot. This website shows those photos in the spot gallery. Extra-upload stays in the app. Website add stays create-only.
+Scraped Places catalogs and Instagram ingest are not the product. The website is the seeker directory. Extra photos and the first-photo create stay in the app. The website gallery shows those photos.
 
 ## Leading words
 
 | Word | Meaning |
 |------|---------|
-| **Spot** | One hospitality venue, canonicalized by Google Place ID. A visitor adds it. |
+| **Spot** | One hospitality venue, canonicalized by Google Place ID. The app creates it from the first photo of a Place. |
 | **Woonplaats** | One Dutch BAG woonplaats board (stad or dorp). The URL slug is the name people type (`den-bosch`, `den-haag`, `hoofddorp`). CBS counts 2501 BAG woonplaatsen on 1 January 2024. |
 | **Like** | One signed-in visitor, one row per spot. Rank unit on the woonplaats board. |
 | **Adder** | The account that added the spot. |
@@ -35,8 +35,8 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 
 - Crawlable site, NL woonplaats boards, spot + profile + leaderboard pages
 - Homepage: woonplaats autocomplete over the BAG gazetteer, featured woonplaatsen. No near-me. No spot search on `/`.
-- Woonplaats page: list of visitor-added spots, empty state when none, list default, map toggle
-- Add CTA on an empty woonplaats. Signed-out click opens sign-in. Signed-in visitor adds a Place plus one photo.
+- Woonplaats page: list of spots added in the app, empty state when none, list default, map toggle when spots exist
+- Empty woonplaats: `noSpotsYet` and `emptyBoardAppHint`. No add control. No sort or map on empty.
 - Spot page: name, address, like count, the adder’s photo as hero, and a gallery of hosted photos on that spot. Hours stay in data and JSON-LD, not in seeker chrome.
 - Ranking: like count on the spot. Tie-break is the most recent like, then recency of the add
 - Auth: Better Auth with Google, Apple, and `emailAndPassword`. Unique public `username` (`UserSlug`) at signup. Password login accepts email or username. Google or Apple first login that lacks a username stays on the same dialog until the username is set. No magic link.
@@ -70,7 +70,7 @@ The owner sets the "idea is working" bar. Do not block v1 on a metric.
 7. Host only media the user uploaded on brag.fast.
 8. Claim (v2) is ownership and tools. Rank stays 100% likes. Paid extras are **additive** (CTA, official hero, Geclaimd mark). Unpaid pages keep the same board rules. Owners cannot hide visitor photos.
 9. LLM pitch = public, factual, crawlable pages + schema for **every** spot. No generated brochure copy. No guaranteed chatbot mentions. Do not give claimed spots an exclusive machine layer (`llms.txt`, extra schema, "AI visibility").
-10. Browse signed-out. Sign-in for add-spot, like, and passport identity. A signed-out like or add opens the sign-in dialog.
+10. Browse signed-out. Sign-in for like and passport identity. Signed-out like opens sign-in.
 
 ## URLs
 
@@ -138,9 +138,7 @@ One list of listed spots in that woonplaats. Default order is like count, then r
 Default view: list. Toggle: map. Header is berry (`#4a1534`) with the woonplaats name, no photograph.  
 v2 chips: Café/lunch · Bakker · Hotel · Overig (do not ship until a v2 task).
 
-When the woonplaats has zero spots, show `noSpotsYet` and the add control. The add control is not an empty-filter state. Empty boards have no sort selects.
-
-Signed-out add control fires `requestSignIn`. Signed-in add control mounts the Places field.
+When the woonplaats has zero spots, show `noSpotsYet` and `emptyBoardAppHint`. There is no add control. Empty boards have no sort selects and no map toggle. `?view=map` on an empty board still returns 200 with that empty state.
 
 ### Spot `/nl/{city}/{spot}`
 
@@ -176,14 +174,17 @@ Chrome page. Header and footer link here. Title only until the explainer copy la
 
 ## Add a spot
 
-- Sign-in required.
+The website has no add UI. The app creates a spot when a user publishes the first photo of a Place (`api.places.publish`). Extra photos stay in the app too.
+
+- Sign-in is required in the app.
 - Places autocomplete, then one Place Details call at confirm.
 - Point-in-polygon sets the woonplaats from geo. Do not trust the page `{city}` slug as the board.
-- Exactly one photo on create. Convex `_storage`. That write also inserts the first `photos` row. Website add of an existing Place ID still redirects and does not attach a gallery photo.
-- Honor system: the Place is a breakfast or brunch tent. No GPS required from the visitor.
+- Exactly one photo on create. Convex `_storage`. That write also inserts the first `photos` row.
+- Duplicate Place ID on an existing spot attaches a gallery photo from the app.
+- The Place is a breakfast or brunch tent on the honor system. No GPS required from the visitor.
 - User can delete their own gallery photo later (AVG). Deleting the hero promotes the oldest remaining photo, or leaves the hero empty. Report hides pending owner review.
 - No pre-moderation of every upload.
-- The iOS and Android app attaches more photos to an existing spot. The website gallery must show them. Do not add an extra-upload control on the website spot page.
+- The website gallery must show app photos. Do not add an extra-upload control on the website spot page.
 
 ## Likes
 
@@ -241,7 +242,7 @@ Geclaimd means "this page has a paying owner," not "we checked KvK" and not "thi
 
 Homepage one-liner: **Ontbijt- en brunchplekken, per stad.**  
 Hashtag in UI: `#bragfast`.  
-Board empty: **Nog geen plekken in deze stad.** (`noSpotsYet`)  
+Board empty: **Nog geen plekken in deze stad.** (`noSpotsYet`) plus `emptyBoardAppHint`.  
 Closed: **Gesloten**.  
 Leaderboard chrome (NL and EN): **Leaderboard**.  
 How it works chrome: **Hoe het werkt**. English UI: **How it works**.  
@@ -267,8 +268,8 @@ Stop each step when the criterion is true.
 4. **Auth.** Google + `emailAndPassword`, `UserSlug` at signup.  
    *Done:* the dialog has Google, username, password, and create-account. Magic-link copy is gone. `requestSignIn()` still opens it.
 
-5. **Add + photo.** Mount add on empty woonplaats pages. Point-in-polygon assigns the board. One photo required.  
-   *Done:* a signed-in visitor can create `/nl/{woonplaats}/{spot}` with that photo as the card image and the first gallery row.
+5. **App first photo.** The website has no add UI. Haarlem shows `emptyBoardAppHint`. The app publishes the first photo through `api.places.publish` and that write creates the spot.  
+   *Done:* Haarlem HTML includes `emptyBoardAppHint`. The website has no add UI.
 
 6. **Likes.** One per session per spot. Signed-out click opens sign-in.  
    *Done:* the woonplaats list orders by like count. Counts match the spot page.

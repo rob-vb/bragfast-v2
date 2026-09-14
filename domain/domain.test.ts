@@ -50,6 +50,8 @@ import {
 } from "./like";
 import { rankAdders, rankedLeaderboard } from "./leaderboard";
 import { foodEstablishmentJsonLd } from "./jsonld";
+import { boardFromListedSpots } from "./board";
+import type { CityCard, CitySpotCard } from "./viewModels";
 
 test("chrome links are marketing pages and legal stays out of the header", () => {
   assert.deepEqual(
@@ -79,6 +81,44 @@ test("locale flags keep autonyms", () => {
 test("slugs are parsed at the boundary", () => {
   assert.equal(parseCitySlug("den-haag"), "den-haag");
   assert.throws(() => parseCitySlug("Den Haag"));
+});
+
+test("boardFromListedSpots is empty when there are no spots", () => {
+  const city: CityCard = {
+    slug: parseCitySlug("haarlem"),
+    nameNl: "Haarlem",
+    nameEn: "Haarlem",
+  };
+  assert.deepEqual(boardFromListedSpots(city, []), { kind: "empty", city });
+});
+
+test("boardFromListedSpots is listed with a non-empty spots tuple", () => {
+  const city: CityCard = {
+    slug: parseCitySlug("haarlem"),
+    nameNl: "Haarlem",
+    nameEn: "Haarlem",
+  };
+  const first: CitySpotCard = {
+    id: "spots:anne-max" as GenericId<"spots">,
+    slug: parseSpotSlug("anne-max"),
+    citySlug: city.slug,
+    name: "Anne&Max",
+    address: "Grote Houtstraat 1, Haarlem",
+    hours: null,
+    spotType: "cafe",
+    geo: { lat: 52.38, lng: 4.63 },
+    photoUrl: "https://example.com/photo.jpg",
+    likeCount: 0,
+    lastLikedAt: 0,
+    addedAt: 1,
+  };
+  const board = boardFromListedSpots(city, [first]);
+  assert.deepEqual(board, { kind: "listed", city, spots: [first] });
+  assert.equal(board.kind, "listed");
+  if (board.kind === "listed") {
+    assert.equal(board.spots.length, 1);
+    assert.equal(board.spots[0], first);
+  }
 });
 
 test("user slugs require three characters, allow hyphens, and reject underscores", () => {

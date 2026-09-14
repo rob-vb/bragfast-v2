@@ -11,7 +11,7 @@ export type MapSpot = {
   geo: { lat: number; lng: number };
 };
 
-export function CityMap({ spots }: { spots: MapSpot[] }) {
+export function CityMap({ spots }: { spots: readonly MapSpot[] }) {
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

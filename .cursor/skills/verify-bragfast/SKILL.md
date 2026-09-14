@@ -5,7 +5,7 @@ description: Drive the brag.fast Next.js website (NL breakfast directory — hom
 
 # Verify brag.fast
 
-brag.fast is a **website**. Seekers browse signed-out: search a city in the homepage combobox, open a city board, open a spot page. Makers sign in to add. One owner uses `/admin`. There is no CLI product and no native app.
+brag.fast is a **website**. Seekers browse signed-out: search a city in the homepage combobox, open a city board, open a spot page. Sign-in is for like and passport identity. One owner uses `/admin`. There is no CLI product. The website has no add UI.
 
 This skill is for the next agent, mid-task, who has never seen the app. Read `features/README.md` before driving. Drive one mapped feature at a time from that map.
 

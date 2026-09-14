@@ -14,8 +14,8 @@ export default async function PrivacyPage() {
           <>
             <p>
               brag.fast is a breakfast directory. We store the account you create
-              (email, Google, or Apple), spots you add, and photos you upload onto those
-              spots.
+              (email, Google, or Apple), and the spots and photos published from the
+              app.
             </p>
             <p>
               Instagram connect is retired. We do not import Instagram posts and
@@ -30,8 +30,8 @@ export default async function PrivacyPage() {
           <>
             <p>
               brag.fast is een ontbijt-directory. We bewaren het account dat je
-              aanmaakt (e-mail, Google of Apple), plekken die je toevoegt, en foto&apos;s
-              die je op die plekken zet.
+              aanmaakt (e-mail, Google of Apple), en de plekken en foto&apos;s die via
+              de app binnenkomen.
             </p>
             <p>
               Instagram-koppelen is gestopt. We importeren geen Instagram-posts

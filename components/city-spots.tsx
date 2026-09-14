@@ -29,7 +29,7 @@ export function CitySpots({
 }: {
   locale: Locale;
   citySlug: CitySlug;
-  spots: CitySpotCard[];
+  spots: readonly [CitySpotCard, ...CitySpotCard[]];
   view: "list" | "map";
 }) {
   const [sort, setSort] = useState<CityBoardSort>(DEFAULT_CITY_BOARD_SORT);
