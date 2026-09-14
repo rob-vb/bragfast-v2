@@ -5,6 +5,8 @@ import { isMissingConvexFunction } from "@/domain/convexQuery";
 import { parseCitySlug } from "@/domain/ids";
 import { sortCityBoard } from "@/domain/like";
 import { boardFromListedSpots, type WoonplaatsBoard } from "@/domain/board";
+import { planAppStores, planLocalFavorites } from "@/domain/homepage";
+import { assignPlaceSlug } from "@/domain/woonplaatsen";
 import type {
   CitySpotCard,
   HomepageData,
@@ -13,21 +15,43 @@ import type {
   SitemapEntry,
   SpotPageData,
 } from "@/domain/viewModels";
+import { lookupGeoPoint, type GeoPointLookup } from "@/lib/geoip";
 
 export function publicSiteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "https://brag.fast";
 }
 
-export async function loadHomepage(): Promise<HomepageData> {
-  const featured = NL_CITIES.filter((city) => city.featuredOrder !== undefined)
-    .sort((a, b) => (a.featuredOrder ?? 0) - (b.featuredOrder ?? 0))
-    .map((city) => ({
-      slug: parseCitySlug(city.slug),
-      nameNl: city.nameNl,
-      nameEn: city.nameEn,
-      boardCount: 0,
-    }));
-  return { featured };
+export async function loadHomepage(
+  ip: string | null,
+  lookup: GeoPointLookup = lookupGeoPoint,
+): Promise<HomepageData> {
+  const stores = planAppStores({
+    ios: process.env.IOS_APP_STORE_URL,
+    android: process.env.ANDROID_PLAY_STORE_URL,
+  });
+  const omitted: HomepageData = {
+    localFavorites: { kind: "omit" },
+    stores,
+  };
+  if (ip === null) {
+    return omitted;
+  }
+  const point = await lookup(ip);
+  if (point === null) {
+    return omitted;
+  }
+  const slug = assignPlaceSlug(point);
+  if (!slug) {
+    return omitted;
+  }
+  const board = await loadCityPage(slug);
+  if (!board || board.kind === "empty") {
+    return omitted;
+  }
+  return {
+    localFavorites: planLocalFavorites(board.city, board.spots),
+    stores,
+  };
 }
 
 export async function loadCityPage(

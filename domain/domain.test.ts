@@ -52,6 +52,13 @@ import { rankAdders, rankedLeaderboard } from "./leaderboard";
 import { foodEstablishmentJsonLd } from "./jsonld";
 import { boardFromListedSpots } from "./board";
 import type { CityCard, CitySpotCard } from "./viewModels";
+import { clientIpFrom } from "./clientIp";
+import {
+  planAppStores,
+  planLocalFavorites,
+  planStoreButton,
+} from "./homepage";
+import { localFavoritesHeading, seeAllInCity } from "./messages";
 
 test("chrome links are marketing pages and legal stays out of the header", () => {
   assert.deepEqual(
@@ -932,4 +939,120 @@ test("zero-spot accounts are absent from the leaderboard", () => {
     ranked.map((row) => row.username),
     ["alice"],
   );
+});
+
+function favoriteSpot(name: string, likes: number): CitySpotCard {
+  return {
+    id: `spots:${name}` as GenericId<"spots">,
+    slug: parseSpotSlug(name),
+    citySlug: parseCitySlug("haarlem"),
+    name,
+    address: "Grote Houtstraat 1, Haarlem",
+    hours: null,
+    spotType: "cafe",
+    geo: { lat: 52.38, lng: 4.63 },
+    photoUrl: `https://example.com/${name}.jpg`,
+    likeCount: likes,
+    lastLikedAt: likes,
+    addedAt: likes,
+  };
+}
+
+test("planLocalFavorites omits boards with fewer than 3 spots", () => {
+  const city: CityCard = {
+    slug: parseCitySlug("haarlem"),
+    nameNl: "Haarlem",
+    nameEn: "Haarlem",
+  };
+  assert.deepEqual(planLocalFavorites(city, []), { kind: "omit" });
+  assert.deepEqual(planLocalFavorites(city, [favoriteSpot("one", 1)]), {
+    kind: "omit",
+  });
+  assert.deepEqual(
+    planLocalFavorites(city, [favoriteSpot("one", 1), favoriteSpot("two", 2)]),
+    { kind: "omit" },
+  );
+});
+
+test("planLocalFavorites keeps 3 to 6 cards and slices the rest", () => {
+  const city: CityCard = {
+    slug: parseCitySlug("haarlem"),
+    nameNl: "Haarlem",
+    nameEn: "Haarlem",
+  };
+  const three = planLocalFavorites(city, [
+    favoriteSpot("a", 3),
+    favoriteSpot("b", 2),
+    favoriteSpot("c", 1),
+  ]);
+  assert.equal(three.kind, "board");
+  if (three.kind === "board") {
+    assert.deepEqual(
+      three.spots.map((spot) => spot.slug),
+      ["a", "b", "c"],
+    );
+    assert.equal(three.spots[0]?.likeCount, 3);
+    assert.equal(three.spots[0]?.photoUrl, "https://example.com/a.jpg");
+  }
+  const seven = planLocalFavorites(
+    city,
+    ["a", "b", "c", "d", "e", "f", "g"].map((name, index) =>
+      favoriteSpot(name, 7 - index),
+    ),
+  );
+  assert.equal(seven.kind, "board");
+  if (seven.kind === "board") {
+    assert.deepEqual(
+      seven.spots.map((spot) => spot.slug),
+      ["a", "b", "c", "d", "e", "f"],
+    );
+  }
+});
+
+test("planStoreButton is live only for an http URL", () => {
+  assert.deepEqual(planStoreButton(undefined), { kind: "comingSoon" });
+  assert.deepEqual(planStoreButton(""), { kind: "comingSoon" });
+  assert.deepEqual(planStoreButton("  "), { kind: "comingSoon" });
+  assert.deepEqual(planStoreButton("apps.apple.com/x"), { kind: "comingSoon" });
+  assert.deepEqual(planStoreButton("https://apps.apple.com/app/x"), {
+    kind: "live",
+    href: "https://apps.apple.com/app/x",
+  });
+  assert.deepEqual(
+    planAppStores({ ios: "https://apps.apple.com/app/x" }),
+    {
+      ios: { kind: "live", href: "https://apps.apple.com/app/x" },
+      android: { kind: "comingSoon" },
+    },
+  );
+});
+
+test("clientIpFrom prefers X-Real-IP and skips private hops", () => {
+  assert.equal(
+    clientIpFrom({ get: (name) => (name === "x-real-ip" ? "83.96.1.1" : null) }),
+    "83.96.1.1",
+  );
+  assert.equal(
+    clientIpFrom({
+      get: (name) =>
+        name === "x-forwarded-for" ? "10.0.0.1, 83.96.1.2" : null,
+    }),
+    "83.96.1.2",
+  );
+  assert.equal(
+    clientIpFrom({ get: (name) => (name === "x-real-ip" ? "127.0.0.1" : null) }),
+    null,
+  );
+  assert.equal(
+    clientIpFrom({ get: (name) => (name === "x-real-ip" ? "10.1.2.3" : null) }),
+    null,
+  );
+  assert.equal(clientIpFrom({ get: () => null }), null);
+});
+
+test("homepage copy helpers name the woonplaats", () => {
+  assert.equal(localFavoritesHeading("nl", "Haarlem"), "Favorieten in Haarlem");
+  assert.equal(localFavoritesHeading("en", "Haarlem"), "Favorites in Haarlem");
+  assert.equal(seeAllInCity("nl", "Haarlem"), "Alle plekken in Haarlem");
+  assert.equal(seeAllInCity("en", "Haarlem"), "All spots in Haarlem");
 });

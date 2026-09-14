@@ -22,7 +22,7 @@ Preconditions:
 - Cookie jar empty at start (launch / cleanup resets `/tmp/bragfast-verify/cookies.json`).
 
 - **Default Dutch.** Run `… http GET / --out artifacts/language-switch/nl-home.html`. `html lang="nl"`, h1 `Ontbijt- en brunchplekken, per stad.`, search submit `Zoek`, sign-in `Inloggen`, language buttons include `nl` with `aria-pressed="true"`.
-- **Switch to English.** Run `… http POST /api/locale --json '{"locale":"en"}'` then `… http GET / --out artifacts/language-switch/en-home.html`. POST status `204`. GET `html lang="en"`, h1 `Breakfast and brunch spots, by city.`, submit `Search`, sign-in `Sign in`, `featuredCities` heading `Cities to explore`.
+- **Switch to English.** Run `… http POST /api/locale --json '{"locale":"en"}'` then `… http GET / --out artifacts/language-switch/en-home.html`. POST status `204`. GET `html lang="en"`, h1 `Breakfast and brunch spots, by city.`, submit `Search`, sign-in `Sign in`, app row `Be first to brag`. No `Cities to explore`.
 - **Same city URL.** With `lang=en` still in the jar, run `… http GET /nl/haarlem --out artifacts/language-switch/en-haarlem.html`. Path remains `/nl/haarlem`. Empty copy is English (`No spots in this city yet.`). No `/en/haarlem`.
 - **Switch back.** Run `… http POST /api/locale --json '{"locale":"nl"}'` then `… http GET /nl/haarlem --out artifacts/language-switch/nl-haarlem.html`. Empty copy is Dutch again. Spot names such as `Anne&Max Haarlem` are unchanged.
 - **Proof.** Pair `nl-home.html` and `en-home.html` from the same instance. Both are `/`. The difference is chrome copy and `html lang`.

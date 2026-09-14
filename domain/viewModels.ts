@@ -60,24 +60,39 @@ export type SearchHit = {
   nameEn: string;
 };
 
-export type HomepageData = {
-  featured: CityCard[];
+export type StoreButton =
+  | { kind: "live"; href: string }
+  | { kind: "comingSoon" };
+
+export type AppStores = {
+  ios: StoreButton;
+  android: StoreButton;
 };
 
-export type NearbySpotCard = {
+export type LocalFavoriteCard = {
   slug: SpotSlug;
   citySlug: CitySlug;
   name: string;
-  address: string;
-  geo: { lat: number; lng: number };
-  meters: number;
-  cityNameNl: string;
-  cityNameEn: string;
+  photoUrl: string;
+  likeCount: number;
 };
 
-export type NearbyData = {
-  nearestCity: CityCard | null;
-  spots: NearbySpotCard[];
+export type LocalFavorites =
+  | { kind: "omit" }
+  | {
+      kind: "board";
+      city: CityCard;
+      spots: readonly [
+        LocalFavoriteCard,
+        LocalFavoriteCard,
+        LocalFavoriteCard,
+        ...LocalFavoriteCard[],
+      ];
+    };
+
+export type HomepageData = {
+  localFavorites: LocalFavorites;
+  stores: AppStores;
 };
 
 export type AdminReportRow = {
