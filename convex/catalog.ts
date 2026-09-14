@@ -7,6 +7,7 @@ import { DomainParseError, parseCitySlug, parseSpotSlug } from "../domain/ids";
 import { searchWoonplaatsHits } from "../domain/searchMatch";
 import { sortCityBoard } from "../domain/like";
 import { parseSpot } from "../domain/spot";
+import { listSpotPhotoDocs } from "./model/photos";
 import type {
   CityCard,
   CityPageData,
@@ -199,6 +200,14 @@ export const spotPage = query({
     const photoUrl = row.photoId
       ? await ctx.storage.getUrl(row.photoId)
       : null;
+    const gallery: SpotPageData["gallery"] = [];
+    for (const photo of await listSpotPhotoDocs(ctx, row._id)) {
+      const url = await ctx.storage.getUrl(photo.storageId);
+      if (!url) {
+        continue;
+      }
+      gallery.push({ id: photo._id, url });
+    }
     const spot = parseSpot(row);
     return {
       id: spot.id,
@@ -211,6 +220,7 @@ export const spotPage = query({
       spotType: spot.spotType,
       lifecycle: spot.lifecycle,
       licensedImage: photoUrl ? { url: photoUrl } : null,
+      gallery,
       canonicalPath: `/nl/${city.slug}/${spot.slug}`,
       likeCount: row.likeCount ?? 0,
     };

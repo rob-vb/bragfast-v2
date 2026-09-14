@@ -3,6 +3,10 @@ import { internal } from "./_generated/api";
 import { action, internalMutation, query } from "./_generated/server";
 import { authComponent } from "./auth";
 import { applyPlaceAdd, type PlaceAddCommit } from "./model/placeAdd";
+import {
+  applyPhotoPublish,
+  type PhotoPublishCommit,
+} from "./model/photos";
 import { ensureUserByAuthId } from "./model/users";
 
 type PlaceSuggestion = { placeId: string; name: string; address: string };
@@ -108,6 +112,7 @@ function parseDetails(payload: unknown): PlaceDetails {
 async function fetchSuggestions(
   q: string,
   key: string,
+  bias: { lat: number; lng: number } | null,
 ): Promise<PlaceSuggestion[]> {
   const response = await fetch(
     "https://places.googleapis.com/v1/places:autocomplete",
@@ -121,6 +126,16 @@ async function fetchSuggestions(
         input: q,
         includedRegionCodes: ["nl"],
         languageCode: "nl",
+        ...(bias
+          ? {
+              locationBias: {
+                circle: {
+                  center: { latitude: bias.lat, longitude: bias.lng },
+                  radius: 25000.0,
+                },
+              },
+            }
+          : {}),
       }),
     },
   );
@@ -153,8 +168,12 @@ export const placesConfigured = query({
 });
 
 export const autocomplete = action({
-  args: { q: v.string() },
-  handler: async (ctx, { q }): Promise<PlaceSuggestion[]> => {
+  args: {
+    q: v.string(),
+    lat: v.optional(v.number()),
+    lng: v.optional(v.number()),
+  },
+  handler: async (ctx, { q, lat, lng }): Promise<PlaceSuggestion[]> => {
     await authComponent.getAuthUser(ctx);
     const key = placesKey();
     if (!key) {
@@ -164,7 +183,9 @@ export const autocomplete = action({
     if (needle.length < 2) {
       return [];
     }
-    return await fetchSuggestions(needle, key);
+    const bias =
+      lat !== undefined && lng !== undefined ? { lat, lng } : null;
+    return await fetchSuggestions(needle, key, bias);
   },
 });
 
@@ -211,6 +232,52 @@ export const add = action({
   },
 });
 
+export const publish = action({
+  args: { placeId: v.string(), storageId: v.id("_storage") },
+  handler: async (
+    ctx,
+    args,
+  ): Promise<{
+    action: "live" | "attach";
+    placeSlug: string;
+    spotSlug: string;
+  }> => {
+    const authUser = await authComponent.getAuthUser(ctx);
+    const key = placesKey();
+    if (!key) {
+      throw new ConvexError("Places is not configured");
+    }
+    const details = await fetchDetails(args.placeId, key);
+    const displayName =
+      (typeof authUser.name === "string" ? authUser.name.trim() : "") ||
+      (typeof authUser.email === "string" ? authUser.email : "") ||
+      "bragger";
+    const result = await ctx.runMutation(internal.places.applyPublish, {
+      placeId: details.placeId,
+      name: details.name,
+      address: details.address,
+      geo: details.geo,
+      types: details.types,
+      storageId: args.storageId,
+      authId: authUser._id,
+      displayName,
+      avatarUrl:
+        typeof authUser.image === "string" ? authUser.image : null,
+    });
+    if (result.action === "reject") {
+      throw new ConvexError(result.reason);
+    }
+    if (result.action === "redirect") {
+      throw new ConvexError("redirect");
+    }
+    return {
+      action: result.action,
+      placeSlug: result.placeSlug,
+      spotSlug: result.spotSlug,
+    };
+  },
+});
+
 export const apply = internalMutation({
   args: {
     placeId: v.string(),
@@ -230,6 +297,37 @@ export const apply = internalMutation({
       avatarUrl: args.avatarUrl,
     });
     return await applyPlaceAdd(ctx, {
+      placeId: args.placeId,
+      name: args.name,
+      address: args.address,
+      geo: args.geo,
+      types: args.types,
+      photoId: args.storageId,
+      addedBy: user._id,
+    });
+  },
+});
+
+export const applyPublish = internalMutation({
+  args: {
+    placeId: v.string(),
+    name: v.string(),
+    address: v.string(),
+    geo: v.object({ lat: v.number(), lng: v.number() }),
+    types: v.array(v.string()),
+    storageId: v.id("_storage"),
+    authId: v.string(),
+    displayName: v.string(),
+    avatarUrl: v.union(v.string(), v.null()),
+  },
+  handler: async (ctx, args): Promise<PhotoPublishCommit> => {
+    const user = await ensureUserByAuthId(ctx, {
+      authId: args.authId,
+      displayName: args.displayName,
+      avatarUrl: args.avatarUrl,
+    });
+    return await applyPhotoPublish(ctx, {
+      channel: "app",
       placeId: args.placeId,
       name: args.name,
       address: args.address,

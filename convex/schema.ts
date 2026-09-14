@@ -82,6 +82,16 @@ export default defineSchema({
   placesSeen: leftoverTable(),
   oauthStates: leftoverTable(),
 
+  photos: defineTable({
+    spotId: v.id("spots"),
+    storageId: v.id("_storage"),
+    uploadedBy: v.id("users"),
+    createdAt: v.number(),
+  })
+    .index("by_spot", ["spotId"])
+    .index("by_spot_created", ["spotId", "createdAt"])
+    .index("by_user", ["uploadedBy"]),
+
   likes: defineTable({
     userId: v.id("users"),
     spotId: v.id("spots"),

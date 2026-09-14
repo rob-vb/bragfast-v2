@@ -70,7 +70,7 @@ export async function applyPlaceAdd(
     return { action: "reject", reason: "photo-required" };
   }
   const slug = await uniqueSpotSlug(ctx, plan.placeSlug, input.name);
-  await upsertSpot(ctx, {
+  const spotId = await upsertSpot(ctx, {
     placeId,
     slug,
     citySlug: plan.placeSlug,
@@ -82,6 +82,12 @@ export async function applyPlaceAdd(
     listingStatus: "listed",
     photoId,
     addedBy: input.addedBy,
+  });
+  await ctx.db.insert("photos", {
+    spotId,
+    storageId: photoId,
+    uploadedBy: input.addedBy,
+    createdAt: Date.now(),
   });
   return { ...plan, spotSlug: slug };
 }
