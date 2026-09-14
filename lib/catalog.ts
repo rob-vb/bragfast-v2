@@ -4,8 +4,9 @@ import { NL_CITIES } from "@/domain/cities";
 import { isMissingConvexFunction } from "@/domain/convexQuery";
 import { parseCitySlug } from "@/domain/ids";
 import { sortCityBoard } from "@/domain/like";
+import { boardFromListedSpots, type WoonplaatsBoard } from "@/domain/board";
 import type {
-  CityPageData,
+  CitySpotCard,
   HomepageData,
   LeaderboardData,
   PassportData,
@@ -29,12 +30,14 @@ export async function loadHomepage(): Promise<HomepageData> {
   return { featured };
 }
 
-export async function loadCityPage(citySlug: string): Promise<CityPageData | null> {
+export async function loadCityPage(
+  citySlug: string,
+): Promise<WoonplaatsBoard | null> {
   const gazetteer = NL_CITIES.find((row) => row.slug === citySlug);
   if (!gazetteer) {
     return null;
   }
-  let spots: CityPageData["spots"] = [];
+  let spots: CitySpotCard[] = [];
   try {
     spots = sortCityBoard(
       (await fetchQuery(api.catalog.listedSpotsByCity, { citySlug })).map(
@@ -52,14 +55,14 @@ export async function loadCityPage(citySlug: string): Promise<CityPageData | nul
     }
     spots = [];
   }
-  return {
-    city: {
+  return boardFromListedSpots(
+    {
       slug: parseCitySlug(gazetteer.slug),
       nameNl: gazetteer.nameNl,
       nameEn: gazetteer.nameEn,
     },
     spots,
-  };
+  );
 }
 
 export async function loadSpotPage(

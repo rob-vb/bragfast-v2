@@ -233,28 +233,6 @@ async function publishPlace(
   };
 }
 
-export const add = action({
-  args: { placeId: v.string(), storageId: v.id("_storage") },
-  handler: async (
-    ctx,
-    args,
-  ): Promise<{
-    action: "live" | "redirect";
-    placeSlug: string;
-    spotSlug: string;
-  }> => {
-    const result = await publishPlace(ctx, args, "web");
-    if (result.action === "live" || result.action === "redirect") {
-      return {
-        action: result.action,
-        placeSlug: result.placeSlug,
-        spotSlug: result.spotSlug,
-      };
-    }
-    throw new ConvexError("web-add-cannot-attach");
-  },
-});
-
 export const publish = action({
   args: { placeId: v.string(), storageId: v.id("_storage") },
   handler: async (

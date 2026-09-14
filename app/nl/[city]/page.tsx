@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { CitySpots } from "@/components/city-spots";
-import { AddSpot } from "@/components/add-spot";
+import { EmptyCityBoard } from "@/components/empty-city-board";
 import { loadCityPage } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
-import { t } from "@/domain/messages";
 import type { Locale } from "@/domain/messages";
 import { canonicalCitySlug } from "@/domain/cities";
 
@@ -23,12 +22,12 @@ export async function generateMetadata({
   if (canonical && canonical !== city) {
     redirect(`/nl/${canonical}`);
   }
-  const page = await loadCityPage(city);
-  if (!page) {
+  const board = await loadCityPage(city);
+  if (!board) {
     return { title: "brag.fast" };
   }
   const locale = await getLocale();
-  const name = locale === "en" ? page.city.nameEn : page.city.nameNl;
+  const name = locale === "en" ? board.city.nameEn : board.city.nameNl;
   return { title: `${name} · brag.fast` };
 }
 
@@ -53,13 +52,12 @@ export default async function CityPage({
   if (canonical && canonical !== city) {
     redirect(`/nl/${canonical}`);
   }
-  const page = await loadCityPage(city);
-  if (!page) {
+  const board = await loadCityPage(city);
+  if (!board) {
     notFound();
   }
 
-  const view = search.view === "map" ? ("map" as const) : ("list" as const);
-  const name = cityName(locale, page.city);
+  const name = cityName(locale, board.city);
 
   return (
     <main>
@@ -72,17 +70,14 @@ export default async function CityPage({
       </section>
 
       <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
-        {page.spots.length === 0 ? (
-          <>
-            <p className="mt-8 text-berry/70">{t(locale, "noSpotsYet")}</p>
-            <AddSpot locale={locale} />
-          </>
+        {board.kind === "empty" ? (
+          <EmptyCityBoard locale={locale} />
         ) : (
           <CitySpots
             locale={locale}
-            citySlug={page.city.slug}
-            spots={page.spots}
-            view={view}
+            citySlug={board.city.slug}
+            spots={board.spots}
+            view={search.view === "map" ? "map" : "list"}
           />
         )}
       </div>
