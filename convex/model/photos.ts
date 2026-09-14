@@ -110,12 +110,18 @@ export async function applyPhotoPublish(
 export async function applyPhotoDelete(
   ctx: MutationCtx,
   input: { photoId: Id<"photos">; userId: Id<"users"> },
-): Promise<{ action: "delete" } | { action: "reject"; reason: "not-owner" }> {
+): Promise<
+  | { action: "delete" }
+  | { action: "reject"; reason: "not-owner" | "missing" }
+> {
   const photo = await ctx.db.get(input.photoId);
-  if (!photo) {
-    throw new ConvexError("not-owner");
+  const plan = planPhotoDelete({
+    exists: photo !== null,
+    owner: photo !== null && photo.uploadedBy === input.userId,
+  });
+  if (photo === null) {
+    return plan;
   }
-  const plan = planPhotoDelete({ owner: photo.uploadedBy === input.userId });
   if (plan.action === "reject") {
     return plan;
   }

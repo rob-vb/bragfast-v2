@@ -467,10 +467,16 @@ test("planPhotoPublish attaches from the app and still redirects on the web", ()
 });
 
 test("planPhotoDelete only lets the uploader remove the row", () => {
-  assert.deepEqual(planPhotoDelete({ owner: true }), { action: "delete" });
-  assert.deepEqual(planPhotoDelete({ owner: false }), {
+  assert.deepEqual(planPhotoDelete({ exists: true, owner: true }), {
+    action: "delete",
+  });
+  assert.deepEqual(planPhotoDelete({ exists: true, owner: false }), {
     action: "reject",
     reason: "not-owner",
+  });
+  assert.deepEqual(planPhotoDelete({ exists: false, owner: true }), {
+    action: "reject",
+    reason: "missing",
   });
 });
 

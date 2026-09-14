@@ -15,10 +15,7 @@ export function SpotGallery({
   spotId: Id<"spots">;
   photos: { id: Id<"photos">; url: string }[];
 }) {
-  const live = useQuery(
-    api.photos.listForSpot,
-    photos.length > 0 ? { spotId } : "skip",
-  );
+  const live = useQuery(api.photos.listForSpot, { spotId });
   const deleteOwn = useMutation(api.photos.deleteOwn);
   const rows =
     live ??

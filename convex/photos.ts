@@ -77,7 +77,7 @@ export const deleteOwn = mutation({
   },
 });
 
-export const backfillFromHeroes = internalMutation({
+export const backfillHeroes = internalMutation({
   args: {},
   handler: async (ctx) => {
     return await backfillHeroPhotos(ctx);
