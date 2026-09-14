@@ -11,7 +11,7 @@ A woonplaats page lists breakfast spots added in the app. Empty copy is the proo
 
 ## How to get to it (user POV)
 
-- Open `/nl/haarlem` (combobox pick, featured card, or type the URL).
+- Open `/nl/haarlem` (combobox pick or type the URL).
 - Aliases redirect to the canonical slug (`/nl/{alias}` → `/nl/{canonical}`).
 - On a non-empty board, sort selects sit to the left of Lijst/Kaart.
 

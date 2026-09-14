@@ -17,9 +17,10 @@ def fetch(path: str) -> tuple[int, str]:
 status, home = fetch("/")
 if status != 200:
     raise SystemExit(f"/ status {status}")
-for city in ("Haarlem", "Amsterdam", "Rotterdam", "Utrecht"):
-    if city not in home:
-        raise SystemExit(f"featured missing {city}")
+if "Steden om te ontdekken" in home or "Cities to explore" in home:
+    raise SystemExit("homepage still ships featured woonplaatsen")
+if "Brag als eerste" not in home or "Coming soon" not in home:
+    raise SystemExit("homepage missing app rows")
 if "90 dagen" in home or "90 days" in home:
     raise SystemExit("homepage still describes 90-day makers")
 
