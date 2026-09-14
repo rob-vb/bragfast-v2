@@ -9,8 +9,8 @@ import { loadSpotPage, publicSiteUrl } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import { SpotShare } from "@/components/spot-share";
 import { LikeButton } from "@/components/like-button";
+import { SpotGallery } from "@/components/spot-gallery";
 import { PhotoFrame } from "@/components/visual";
-import { cityScene } from "@/lib/scenes";
 
 type Params = { city: string; spot: string };
 
@@ -72,7 +72,7 @@ export default async function SpotPage({
   });
   const isOpen = openNow(page.hours, new Date());
   const closed = page.lifecycle.kind === "gravestone";
-  const hero = page.licensedImage?.url ?? cityScene(page.city.slug);
+  const hero = page.licensedImage?.url ?? null;
 
   return (
     <main>
@@ -80,8 +80,10 @@ export default async function SpotPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <section className="relative -mt-16 min-h-[58svh] sm:-mt-[4.5rem]">
-        <PhotoFrame src={hero} className="absolute inset-0" />
+      <section className="relative -mt-16 min-h-[58svh] bg-berry sm:-mt-[4.5rem]">
+        {hero ? (
+          <PhotoFrame src={hero} className="absolute inset-0" />
+        ) : null}
         <div className="relative mx-auto flex min-h-[58svh] max-w-3xl flex-col justify-end px-5 pb-10 pt-28 sm:px-8">
           <h1 className="text-shadow-photo font-display text-[clamp(2.4rem,8vw,5.5rem)] leading-[0.92] tracking-wide text-white">
             {page.name}
@@ -138,6 +140,11 @@ export default async function SpotPage({
             <p className="mt-4 text-berry/55">{t(locale, "hoursUnknown")}</p>
           )}
         </section>
+        <SpotGallery
+          locale={locale}
+          spotId={page.id}
+          photos={page.gallery}
+        />
       </div>
     </main>
   );

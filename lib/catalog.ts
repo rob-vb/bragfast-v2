@@ -77,7 +77,7 @@ export async function loadSpotPage(
     if (!page) {
       return null;
     }
-    return { ...page, likeCount: page.likeCount ?? 0 };
+    return { ...page, likeCount: page.likeCount ?? 0, gallery: page.gallery ?? [] };
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;

@@ -58,22 +58,24 @@ export function PhotoFrame({
   ken,
   children,
 }: {
-  src: string;
-  alt?: string;
+    src?: string | null;
+    alt?: string;
   className?: string;
   ken?: boolean;
   children?: ReactNode;
 }) {
   return (
     <div className={cn("relative overflow-hidden", className)}>
-      <img
-        src={src}
-        alt={alt}
-        className={cn(
-          "absolute inset-0 h-full w-full object-cover",
-          ken && "hero-ken",
-        )}
-      />
+      {src ? (
+        <img
+          src={src}
+          alt={alt}
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover",
+            ken && "hero-ken",
+          )}
+        />
+      ) : null}
       {children}
     </div>
   );

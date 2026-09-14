@@ -22,7 +22,7 @@ export const nlMessages = {
   signIn: "Inloggen",
   signOut: "Uitloggen",
   signInTitle: "Log in bij brag.fast",
-  signInIntro: "Log in met Google, of met je gebruikersnaam en wachtwoord.",
+  signInIntro: "Log in met Apple, Google, of met je gebruikersnaam en wachtwoord.",
   emailLabel: "E-mailadres",
   emailPlaceholder: "jij@voorbeeld.nl",
   identifierLabel: "E-mail of gebruikersnaam",
@@ -36,9 +36,11 @@ export const nlMessages = {
   usernameTaken: "Die gebruikersnaam is al in gebruik.",
   or: "of",
   continueGoogle: "Ga verder met Google",
+  continueApple: "Ga verder met Apple",
   close: "Sluiten",
   language: "Taal",
   googleUnavailable: "Google is nog niet ingesteld.",
+  appleUnavailable: "Apple is nog niet ingesteld.",
   viewList: "Lijst",
   viewMap: "Kaart",
   viewMode: "Weergave",
@@ -76,6 +78,8 @@ export const nlMessages = {
   linkCopied: "Link gekopieerd",
   shareFailed: "Delen lukte niet",
   like: "Leuk",
+  gallery: "Foto's",
+  deletePhoto: "Wis foto",
 } as const;
 
 export type MessageKey = keyof typeof nlMessages;
@@ -104,7 +108,7 @@ export const enMessages = {
   signIn: "Sign in",
   signOut: "Sign out",
   signInTitle: "Sign in to brag.fast",
-  signInIntro: "Sign in with Google, or with your username and password.",
+  signInIntro: "Sign in with Apple, Google, or with your username and password.",
   emailLabel: "Email address",
   emailPlaceholder: "you@example.com",
   identifierLabel: "Email or username",
@@ -118,9 +122,11 @@ export const enMessages = {
   usernameTaken: "That username is already taken.",
   or: "or",
   continueGoogle: "Continue with Google",
+  continueApple: "Continue with Apple",
   close: "Close",
   language: "Language",
   googleUnavailable: "Google is not configured yet.",
+  appleUnavailable: "Apple is not configured yet.",
   viewList: "List",
   viewMap: "Map",
   viewMode: "View",
@@ -158,6 +164,8 @@ export const enMessages = {
   linkCopied: "Link copied",
   shareFailed: "Could not share",
   like: "Like",
+  gallery: "Photos",
+  deletePhoto: "Delete photo",
 } as const satisfies Record<MessageKey, string>;
 
 export type Locale = "nl" | "en";

@@ -14,7 +14,7 @@ export default async function PrivacyPage() {
           <>
             <p>
               brag.fast is a breakfast directory. We store the account you create
-              (email or Google), spots you add, and photos you upload onto those
+              (email, Google, or Apple), spots you add, and photos you upload onto those
               spots.
             </p>
             <p>
@@ -30,7 +30,7 @@ export default async function PrivacyPage() {
           <>
             <p>
               brag.fast is een ontbijt-directory. We bewaren het account dat je
-              aanmaakt (e-mail of Google), plekken die je toevoegt, en foto&apos;s
+              aanmaakt (e-mail, Google of Apple), plekken die je toevoegt, en foto&apos;s
               die je op die plekken zet.
             </p>
             <p>

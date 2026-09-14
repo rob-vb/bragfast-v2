@@ -41,6 +41,7 @@ export type SpotPageData = {
   spotType: SpotType;
   lifecycle: SpotLifecycle;
   licensedImage: { url: string } | null;
+  gallery: { id: GenericId<"photos">; url: string }[];
   canonicalPath: string;
   likeCount: number;
 };
