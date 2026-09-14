@@ -8,6 +8,9 @@ export function boardFromListedSpots(
   city: CityCard,
   spots: readonly CitySpotCard[],
 ): WoonplaatsBoard {
-  if (spots.length === 0) return { kind: "empty", city };
-  return { kind: "listed", city, spots: spots as readonly [CitySpotCard, ...CitySpotCard[]] };
+  const [first, ...rest] = spots;
+  if (first === undefined) {
+    return { kind: "empty", city };
+  }
+  return { kind: "listed", city, spots: [first, ...rest] };
 }
