@@ -119,6 +119,12 @@ test("boardFromListedSpots is listed with a non-empty spots tuple", () => {
     assert.equal(board.spots.length, 1);
     assert.equal(board.spots[0], first);
   }
+  const second = { ...first, slug: parseSpotSlug("stach") };
+  const two = boardFromListedSpots(city, [first, second]);
+  assert.equal(two.kind, "listed");
+  if (two.kind === "listed") {
+    assert.deepEqual([...two.spots], [first, second]);
+  }
 });
 
 test("user slugs require three characters, allow hyphens, and reject underscores", () => {
