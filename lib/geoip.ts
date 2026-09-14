@@ -1,13 +1,16 @@
+import "server-only";
 import geoip from "geoip-lite";
 import type { GeoPoint } from "@/domain/geo";
 
-export type GeoPointLookup = (ip: string) => GeoPoint | null;
+export type GeoPointLookup = (
+  ip: string,
+) => GeoPoint | null | Promise<GeoPoint | null>;
 
-export function lookupGeoPoint(ip: string): GeoPoint | null {
+export async function lookupGeoPoint(ip: string): Promise<GeoPoint | null> {
   try {
     const hit = geoip.lookup(ip);
     const pair = hit?.ll;
-    if (!pair || pair.length < 2) {
+    if (!pair) {
       return null;
     }
     const [lat, lng] = pair;

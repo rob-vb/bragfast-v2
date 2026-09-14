@@ -12,5 +12,5 @@ export function stillFor(slug: string): string {
   for (let i = 0; i < slug.length; i += 1) {
     n = (n + slug.charCodeAt(i) * 17) % STILLS.length;
   }
-  return STILLS[n] ?? STILLS[0]!;
+  return STILLS[n];
 }

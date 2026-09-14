@@ -41,7 +41,7 @@ export async function loadHomepage(
     return omitted;
   }
   const slug = assignPlaceSlug(point);
-  if (!slug) {
+  if (slug === null) {
     return omitted;
   }
   const board = await loadCityPage(slug);

@@ -991,7 +991,10 @@ test("planLocalFavorites keeps 3 to 6 cards and slices the rest", () => {
       three.spots.map((spot) => spot.slug),
       ["a", "b", "c"],
     );
-    assert.equal(three.spots[0]?.likeCount, 3);
+    assert.deepEqual(
+      three.spots.map((spot) => spot.likeCount),
+      [3, 2, 1],
+    );
     assert.equal(three.spots[0]?.photoUrl, "https://example.com/a.jpg");
   }
   const seven = planLocalFavorites(
@@ -1005,6 +1008,10 @@ test("planLocalFavorites keeps 3 to 6 cards and slices the rest", () => {
     assert.deepEqual(
       seven.spots.map((spot) => spot.slug),
       ["a", "b", "c", "d", "e", "f"],
+    );
+    assert.deepEqual(
+      seven.spots.map((spot) => spot.likeCount),
+      [7, 6, 5, 4, 3, 2],
     );
   }
 });
@@ -1040,11 +1047,24 @@ test("clientIpFrom prefers X-Real-IP and skips private hops", () => {
     "83.96.1.2",
   );
   assert.equal(
+    clientIpFrom({
+      get: (name) =>
+        name === "x-forwarded-for" ? "203.0.113.1, 10.0.0.1" : null,
+    }),
+    "203.0.113.1",
+  );
+  assert.equal(
     clientIpFrom({ get: (name) => (name === "x-real-ip" ? "127.0.0.1" : null) }),
     null,
   );
   assert.equal(
     clientIpFrom({ get: (name) => (name === "x-real-ip" ? "10.1.2.3" : null) }),
+    null,
+  );
+  assert.equal(
+    clientIpFrom({
+      get: (name) => (name === "x-real-ip" ? "::ffff:127.0.0.1" : null),
+    }),
     null,
   );
   assert.equal(clientIpFrom({ get: () => null }), null);
