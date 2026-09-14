@@ -3,7 +3,7 @@ import Link from "next/link";
 import { loadLeaderboard } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import { likeCountLabel, t, uniqueSpotsLabel } from "@/domain/messages";
-import { Egg, PhotoFrame } from "@/components/visual";
+import { PhotoFrame } from "@/components/visual";
 import { HERO_SCENE } from "@/lib/scenes";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -43,7 +43,6 @@ export default async function LeaderboardPage() {
                   <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-yolk font-display text-xl tracking-wide">
                     {index + 1}
                   </span>
-                  <Egg size={36} className="rotate-[8deg]" />
                   <span className="font-display text-2xl tracking-wide">
                     {adder.username}
                   </span>

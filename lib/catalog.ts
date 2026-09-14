@@ -4,19 +4,17 @@ import { NL_CITIES } from "@/domain/cities";
 import { isMissingConvexFunction } from "@/domain/convexQuery";
 import { parseCitySlug } from "@/domain/ids";
 import { sortCityBoard } from "@/domain/like";
-import { searchWoonplaatsHits } from "@/domain/searchMatch";
 import type {
   CityPageData,
   HomepageData,
   LeaderboardData,
   PassportData,
-  SearchHit,
   SitemapEntry,
   SpotPageData,
 } from "@/domain/viewModels";
 
 export function publicSiteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://77.42.31.66";
+  return process.env.NEXT_PUBLIC_SITE_URL ?? "https://brag.fast";
 }
 
 export async function loadHomepage(): Promise<HomepageData> {
@@ -29,10 +27,6 @@ export async function loadHomepage(): Promise<HomepageData> {
       boardCount: 0,
     }));
   return { featured };
-}
-
-export async function loadSearch(q: string): Promise<SearchHit[]> {
-  return searchWoonplaatsHits(q);
 }
 
 export async function loadCityPage(citySlug: string): Promise<CityPageData | null> {
@@ -77,7 +71,7 @@ export async function loadSpotPage(
     if (!page) {
       return null;
     }
-    return { ...page, likeCount: page.likeCount ?? 0 };
+    return { ...page, likeCount: page.likeCount ?? 0, photos: page.photos ?? [] };
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;

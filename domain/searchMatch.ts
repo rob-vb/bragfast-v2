@@ -6,10 +6,8 @@ export function searchNeedle(query: string): string {
   return query.trim().toLowerCase();
 }
 
-type CityHit = Extract<SearchHit, { kind: "city" }>;
-
 type IndexedCity = {
-  hit: CityHit;
+  hit: SearchHit;
   hay: string;
 };
 
@@ -47,17 +45,6 @@ for (const row of SEARCH_INDEX) {
   }
 }
 
-export function isExactCityQuery(
-  query: string,
-  city: { slug: string; nameNl: string; nameEn: string },
-): boolean {
-  const needle = searchNeedle(query);
-  if (needle.length < 2) {
-    return false;
-  }
-  return canonicalCitySlug(query) === city.slug;
-}
-
 export function exactCitySlugFromHits(
   query: string,
   hits: SearchHit[],
@@ -67,7 +54,7 @@ export function exactCitySlugFromHits(
     return null;
   }
   for (const hit of hits) {
-    if (hit.kind === "city" && hit.slug === slug) {
+    if (hit.slug === slug) {
       return slug;
     }
   }
@@ -87,5 +74,59 @@ export function searchWoonplaatsHits(query: string): SearchHit[] {
     }
   }
   return hits;
+}
+
+export type WoonplaatsSuggest =
+  | { kind: "closed" }
+  | { kind: "none"; query: string }
+  | {
+      kind: "list";
+      query: string;
+      hits: readonly SearchHit[];
+      active: SearchHit;
+    };
+
+export function woonplaatsSuggest(query: string): WoonplaatsSuggest {
+  const needle = searchNeedle(query);
+  if (needle.length < 2) {
+    return { kind: "closed" };
+  }
+  const hits = searchWoonplaatsHits(query);
+  // Gram order is not rank. An exact BAG slug must be active so Enter opens that city.
+  const exactSlug = canonicalCitySlug(query);
+  const exact = exactSlug
+    ? hits.find((hit) => hit.slug === exactSlug)
+    : undefined;
+  const ordered =
+    exact === undefined
+      ? hits
+      : [exact, ...hits.filter((hit) => hit.slug !== exact.slug)];
+  const active = ordered[0];
+  if (active === undefined) {
+    return { kind: "none", query };
+  }
+  return { kind: "list", query, hits: ordered, active };
+}
+
+export function moveWoonplaatsSuggest(
+  state: Extract<WoonplaatsSuggest, { kind: "list" }>,
+  delta: 1 | -1,
+): Extract<WoonplaatsSuggest, { kind: "list" }> {
+  const length = state.hits.length;
+  const i = state.hits.findIndex((hit) => hit.slug === state.active.slug);
+  const next = state.hits[(i + delta + length) % length];
+  if (next === undefined) {
+    return state;
+  }
+  return { ...state, active: next };
+}
+
+export function pickWoonplaatsHref(
+  state: WoonplaatsSuggest,
+): `/nl/${string}` | null {
+  if (state.kind === "list") {
+    return `/nl/${state.active.slug}`;
+  }
+  return null;
 }
 

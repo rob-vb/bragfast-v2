@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Locale } from "@/domain/messages";
 import { t } from "@/domain/messages";
+import { LEGAL_LINKS, chromeLinks } from "@/domain/chrome";
 import { Egg } from "@/components/visual";
 
 export function SiteFooter({ locale }: { locale: Locale }) {
@@ -20,10 +21,17 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         </div>
         <p className="font-display text-2xl">#bragfast</p>
       </div>
-      <nav className="mx-auto mt-6 flex max-w-6xl gap-4 text-sm font-bold">
-        <Link href="/nl/leaderboard">{t(locale, "leaderboard")}</Link>
-        <Link href="/privacy">{t(locale, "privacy")}</Link>
-        <Link href="/privacy/data-deletion">{t(locale, "dataDeletion")}</Link>
+      <nav className="mx-auto mt-6 flex max-w-6xl flex-wrap gap-4 text-sm font-bold">
+        {chromeLinks("footer").map((item) => (
+          <Link key={item.href} href={item.href}>
+            {t(locale, item.label)}
+          </Link>
+        ))}
+        {LEGAL_LINKS.map((item) => (
+          <Link key={item.href} href={item.href}>
+            {t(locale, item.label)}
+          </Link>
+        ))}
       </nav>
     </footer>
   );

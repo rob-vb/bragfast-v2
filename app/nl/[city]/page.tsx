@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { CityMap } from "@/components/city-map-loader";
 import { CitySpots } from "@/components/city-spots";
 import { AddSpot } from "@/components/add-spot";
 import { loadCityPage } from "@/lib/catalog";
@@ -8,19 +7,9 @@ import { getLocale } from "@/lib/i18n";
 import { t } from "@/domain/messages";
 import type { Locale } from "@/domain/messages";
 import { canonicalCitySlug } from "@/domain/cities";
-import { openNow } from "@/domain/spot";
-import type { CitySpotCard } from "@/domain/viewModels";
-import {
-  FilterToggle,
-  PhotoFrame,
-  SegmentLink,
-  Segmented,
-} from "@/components/visual";
-import { cityScene } from "@/lib/scenes";
 
 type Params = { city: string };
 type Search = {
-  open?: string;
   view?: string;
 };
 
@@ -50,33 +39,6 @@ function cityName(
   return locale === "en" ? city.nameEn : city.nameNl;
 }
 
-function matches(
-  spot: { hours: CitySpotCard["hours"] },
-  filters: { open: boolean },
-): boolean {
-  if (filters.open && !openNow(spot.hours, new Date())) {
-    return false;
-  }
-  return true;
-}
-
-function hrefFor(
-  citySlug: string,
-  current: { open: boolean; view: "list" | "map" },
-  patch: Partial<typeof current>,
-): string {
-  const next = { ...current, ...patch };
-  const params = new URLSearchParams();
-  if (next.open) {
-    params.set("open", "1");
-  }
-  if (next.view === "map") {
-    params.set("view", "map");
-  }
-  const query = params.toString();
-  return query ? `/nl/${citySlug}?${query}` : `/nl/${citySlug}`;
-}
-
 export default async function CityPage({
   params,
   searchParams,
@@ -96,72 +58,32 @@ export default async function CityPage({
     notFound();
   }
 
-  const filters = {
-    open: search.open === "1",
-    view: search.view === "map" ? ("map" as const) : ("list" as const),
-  };
-
-  const spots = page.spots.filter((spot) => matches(spot, filters));
+  const view = search.view === "map" ? ("map" as const) : ("list" as const);
   const name = cityName(locale, page.city);
-  const empty = spots.length === 0;
-  const boardEmpty = page.spots.length === 0;
 
   return (
     <main>
-      <section className="relative -mt-16 min-h-[52svh] sm:-mt-[4.5rem]">
-        <PhotoFrame src={cityScene(page.city.slug)} className="absolute inset-0" />
+      <section className="relative -mt-16 min-h-[52svh] bg-berry sm:-mt-[4.5rem]">
         <div className="relative mx-auto flex min-h-[52svh] max-w-6xl flex-col justify-end px-5 pb-10 pt-28 sm:px-8">
-          <h1 className="text-shadow-photo font-display text-[clamp(3rem,10vw,7rem)] leading-[0.9] tracking-wide text-white">
+          <h1 className="font-display text-[clamp(3rem,10vw,7rem)] leading-[0.9] tracking-wide text-white">
             {name}
           </h1>
         </div>
       </section>
 
       <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              id="city-filters-label"
-              className="text-xs font-bold text-berry/55"
-            >
-              {t(locale, "filters")}
-            </span>
-            <Segmented labelledBy="city-filters-label" className="gap-1.5">
-              <FilterToggle
-                href={hrefFor(page.city.slug, filters, { open: !filters.open })}
-                active={filters.open}
-              >
-                {t(locale, "openNow")}
-              </FilterToggle>
-            </Segmented>
-          </div>
-          <Segmented label={t(locale, "viewMode")}>
-            <SegmentLink
-              href={hrefFor(page.city.slug, filters, { view: "list" })}
-              active={filters.view === "list"}
-            >
-              {t(locale, "viewList")}
-            </SegmentLink>
-            <SegmentLink
-              href={hrefFor(page.city.slug, filters, { view: "map" })}
-              active={filters.view === "map"}
-            >
-              {t(locale, "viewMap")}
-            </SegmentLink>
-          </Segmented>
-        </div>
-
-        {empty ? (
+        {page.spots.length === 0 ? (
           <>
             <p className="mt-8 text-berry/70">{t(locale, "noSpotsYet")}</p>
-            {boardEmpty ? (
-              <AddSpot locale={locale} />
-            ) : null}
+            <AddSpot locale={locale} />
           </>
-        ) : filters.view === "map" ? (
-          <CityMap spots={spots} />
         ) : (
-          <CitySpots locale={locale} spots={spots} />
+          <CitySpots
+            locale={locale}
+            citySlug={page.city.slug}
+            spots={page.spots}
+            view={view}
+          />
         )}
       </div>
     </main>

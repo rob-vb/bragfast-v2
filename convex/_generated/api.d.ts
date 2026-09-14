@@ -18,6 +18,7 @@ import type * as leaderboard from "../leaderboard.js";
 import type * as likes from "../likes.js";
 import type * as mail from "../mail.js";
 import type * as model_owner from "../model/owner.js";
+import type * as model_photos from "../model/photos.js";
 import type * as model_placeAdd from "../model/placeAdd.js";
 import type * as model_spots from "../model/spots.js";
 import type * as model_users from "../model/users.js";
@@ -44,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   likes: typeof likes;
   mail: typeof mail;
   "model/owner": typeof model_owner;
+  "model/photos": typeof model_photos;
   "model/placeAdd": typeof model_placeAdd;
   "model/spots": typeof model_spots;
   "model/users": typeof model_users;

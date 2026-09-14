@@ -1,96 +1,133 @@
 "use client";
 
-import { useState } from "react";
-import { sortByDistance } from "@/domain/geo";
+import { useMemo, useState } from "react";
+import {
+  applyCityBoardSort,
+  DEFAULT_CITY_BOARD_SORT,
+  parseCityBoardSort,
+  type CityBoardSort,
+} from "@/domain/like";
 import { t, type Locale } from "@/domain/messages";
+import type { CitySlug } from "@/domain/ids";
 import type { CitySpotCard } from "@/domain/viewModels";
+import { CityMap } from "@/components/city-map-loader";
 import { LikeButton } from "@/components/like-button";
-import { SegmentButton, Segmented, SpotLinkCard } from "@/components/visual";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SegmentLink, Segmented, SpotLinkCard } from "@/components/visual";
 
 export function CitySpots({
   locale,
+  citySlug,
   spots,
+  view,
 }: {
   locale: Locale;
+  citySlug: CitySlug;
   spots: CitySpotCard[];
+  view: "list" | "map";
 }) {
-  const [sort, setSort] = useState<"name" | "distance">("name");
-  const [origin, setOrigin] = useState<{ lat: number; lng: number } | null>(
-    null,
+  const [sort, setSort] = useState<CityBoardSort>(DEFAULT_CITY_BOARD_SORT);
+  const collator = useMemo(
+    () => new Intl.Collator(locale === "en" ? "en" : "nl", { sensitivity: "base" }),
+    [locale],
   );
-  const [denied, setDenied] = useState(false);
-
-  function chooseDistance() {
-    if (origin) {
-      setSort("distance");
-      setDenied(false);
-      return;
-    }
-    if (!navigator.geolocation) {
-      setDenied(true);
-      setSort("name");
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setOrigin({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-        setSort("distance");
-        setDenied(false);
-      },
-      () => {
-        setDenied(true);
-        setSort("name");
-      },
-    );
-  }
-
-  const ordered =
-    sort === "distance" && origin ? sortByDistance(origin, spots) : spots;
-
-  if (spots.length === 0) {
-    return <p className="mt-8 text-berry/70">{t(locale, "noSpotsYet")}</p>;
-  }
+  const ordered = applyCityBoardSort(spots, sort, collator);
+  const listHref = `/nl/${citySlug}`;
+  const mapHref = `/nl/${citySlug}?view=map`;
+  const keyItems = [
+    { value: "likes", label: t(locale, "sortByLikes") },
+    { value: "name", label: t(locale, "sortByName") },
+  ];
+  const dirItems = [
+    { value: "desc", label: t(locale, "sortDirDesc") },
+    { value: "asc", label: t(locale, "sortDirAsc") },
+  ];
 
   return (
-    <section className="mt-8">
-      <div className="flex justify-end">
-        <Segmented label={t(locale, "sortByName")}>
-          <SegmentButton
-            active={sort === "name"}
-            onClick={() => setSort("name")}
+    <>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex gap-2">
+          <Select
+            items={keyItems}
+            value={sort.key}
+            onValueChange={(value) => {
+              if (value) {
+                setSort(parseCityBoardSort(value, sort.dir));
+              }
+            }}
           >
-            {t(locale, "sortByName")}
-          </SegmentButton>
-          <SegmentButton active={sort === "distance"} onClick={chooseDistance}>
-            {t(locale, "sortByDistance")}
-          </SegmentButton>
+            <SelectTrigger size="sm" aria-label={t(locale, "sortKey")}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {keyItems.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            items={dirItems}
+            value={sort.dir}
+            onValueChange={(value) => {
+              if (value) {
+                setSort(parseCityBoardSort(sort.key, value));
+              }
+            }}
+          >
+            <SelectTrigger size="sm" aria-label={t(locale, "sortDir")}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {dirItems.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <Segmented label={t(locale, "viewMode")}>
+          <SegmentLink href={listHref} active={view === "list"}>
+            {t(locale, "viewList")}
+          </SegmentLink>
+          <SegmentLink href={mapHref} active={view === "map"}>
+            {t(locale, "viewMap")}
+          </SegmentLink>
         </Segmented>
       </div>
-      {denied ? (
-        <p className="mt-3 text-sm text-berry/70">{t(locale, "nearMeDenied")}</p>
-      ) : null}
-      <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {ordered.map((spot) => (
-          <li key={spot.slug}>
-            <SpotLinkCard
-              href={`/nl/${spot.citySlug}/${spot.slug}`}
-              src={spot.photoUrl}
-              title={spot.name}
-              meta={spot.address}
-              action={
-                <LikeButton
-                  locale={locale}
-                  spotId={spot.id}
-                  likeCount={spot.likeCount}
-                />
-              }
-            />
-          </li>
-        ))}
-      </ul>
-    </section>
+      {view === "map" ? (
+        <div className="mt-8">
+          <CityMap spots={spots} />
+        </div>
+      ) : (
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {ordered.map((spot) => (
+            <li key={spot.slug}>
+              <SpotLinkCard
+                href={`/nl/${spot.citySlug}/${spot.slug}`}
+                src={spot.photoUrl}
+                title={spot.name}
+                meta={spot.address}
+                action={
+                  <LikeButton
+                    locale={locale}
+                    spotId={spot.id}
+                    likeCount={spot.likeCount}
+                  />
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 }

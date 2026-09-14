@@ -186,15 +186,15 @@ components:
 
 **Creative North Star: "Kawaii egg on strawberry milk"**
 
-Every public surface of brag.fast still opens inside a photograph. The still is the product. Chrome around it is strawberry-milk ground, berry ink, blush cheeks, yolk stickers. Cocoa brown stays on the egg SVG only. The lockup is `/brag_fast_logo.svg`. The mascot is `/brag_fast_egg.svg`. Do not recreate either with CSS gradient text.
+Home, leaderboard, and spot still open inside a photograph. City and passport headers are berry slabs (`#4a1534`) with no photograph. Chrome around either is strawberry-milk ground, berry ink, blush cheeks, yolk stickers. Cocoa brown stays on the egg SVG only. The lockup is `/brag_fast_logo.svg`. The mascot is `/brag_fast_egg.svg`. Do not recreate either with CSS gradient text.
 
 The header is pink milk (`#ffe5f0`). Content sits on white. Ink is berry (`#4a1534`), never cocoa brown, never black, never indigo. The candy set is candy pink, blush coral, yolk, and mint. Buttons and selected chips are flat blush, no gradient. Rank is a yolk oval with a blush outline and blush cheeks, not a 12-point burst. The footer is blush, not a brown slab.
 
 Density stays generous and rounded. Controls are flat colour pills. Panels are 28px slabs. Dutch is the default UI language. The atmosphere stamp reads **Sfeerbeeld**. Anti-references: indigo ink, cool sky-white foam, Lilita One, Pacifico, Figtree, painted `/wordmark.png`, circular rank badges, directory thumbnail-plus-column cards, full-bleed cocoa hero overlays.
 
 **Key Characteristics:**
-- Photo-first: hero, city and spot headers are full-bleed stills with no overlay. Copy uses `text-shadow-photo`.
-- Wordmark is the SVG lockup. Header and hero use `<Logo>`. Favicon and footer use `<Egg>`.
+- Photo-first on home, leaderboard, and spot. City and passport headers are berry slabs (`#4a1534`) with no photograph.
+- Wordmark is the SVG lockup. Header and hero use `<Logo>`. Favicon and footer use `<Egg>`. Spot cards and leaderboard rows do not wear the egg overlay.
 - Pink header, white content: milk nav, white page, white panels, shell wells.
 - Flat blush pills for primary buttons, selected chips, and the pressed language side. No button gradient.
 - Cocoa ink on light surfaces. White Bagel Fat One with `text-shadow-photo` on photographs.
@@ -263,19 +263,19 @@ A cold, pale base with indigo ink and a candy set, where the photograph supplies
 
 The page is a stack of full-width bands inside a single `max-w-6xl` (72rem) column with 20px side padding on mobile and 32px from `sm` (640px). Spot pages narrow the reading column to `max-w-3xl` (48rem).
 
-Every public page opens with a photo band that pulls up under the translucent header: the header is 64px (72px from `sm`) and the band applies a matching negative top margin so the still runs behind the nav. Band heights are viewport-relative: home `min-h-[92svh]`, spot `58svh`, city `52svh`, passport `42svh`. Content inside the band is bottom-aligned with `pt-28` (112px) clearing the header and `pb-10`–`pb-20` (40–80px) at the foot. On the spot page the back-to-city link sits below the address, not above the h1.
+Every public page opens with a band that pulls up under the translucent header: the header is 64px (72px from `sm`) and the band applies a matching negative top margin. Home, leaderboard, and spot bands are photographs. City and passport bands are berry (`#4a1534`) with white type and no `PhotoFrame`. Band heights are viewport-relative: home `min-h-[92svh]`, spot `58svh`, city `52svh`, passport `42svh`. Content inside the band is bottom-aligned with `pt-28` (112px) clearing the header and `pb-10`–`pb-20` (40–80px) at the foot. On the spot page the back-to-city link sits below the address, not above the h1.
 
 Below the still, sections sit at `py-10`–`py-14` on mobile and `py-20` (80px) from `sm`. Section heads are followed by `mt-6`–`mt-8` before their grid. Photo-card grids use `gap-4` (16px): one column on mobile, two from `sm`, four from `lg` for city grids, where the first city spans two columns and two rows. Candy keys sit in `gap-2` rows; filter rows and view toggles share a `justify-between` line that wraps on narrow screens.
 
 Breakpoints are Tailwind defaults: `sm` 640px, `md` 768px, `lg` 1024px.
 
-**The Still First Rule.** No public page starts with a heading on a flat ground. The first viewport is a photograph with the title and, on home, the search pill placed on it.
+**The Still First Rule.** Home, leaderboard, and spot open on a photograph. City and passport open on a berry slab (`bg-berry`, `#4a1534`) with the title in white Bagel Fat One and no `text-shadow-photo`.
 
 ## Elevation & Depth
 
 Depth is made four ways: local text-shadow on photographs, a frosted-glass header, 3D candy-key feet, and two families of soft coloured glow. There are no full-bleed indigo overlays and no grey drop shadows.
 
-Hero, city, spot and passport bands have no scrim. Legibility comes from `text-shadow-photo`. Photo cards put the name on a milk caption under the still, not on the photograph.
+Hero, spot and leaderboard bands have no scrim. Legibility on photographs comes from `text-shadow-photo`. City and passport type sits on berry without that shadow. Photo cards put the name on a milk caption under the still, not on the photograph.
 
 ### Shadow Vocabulary
 - **Photo copy** (`text-shadow: 0 1px 1px rgba(27,21,64,0.4), 0 10px 28px rgba(27,21,64,0.32)`): every line of type on a still.
@@ -309,7 +309,7 @@ Borders are night at 8–15% alpha on white and foam surfaces, or white at 35–
 Candy-coloured pills: fat, round, and flat.
 - **Shape:** full pill; 40px tall with 20px side padding by default, 32px / 12px at `sm` (12px type), 48px / 28px at `lg` (16px type), 40px square for icon-only.
 - **Primary:** solid blush fill, white 700 label. Hover brightens to 110%. Sign-in, search submit, and other main actions share this.
-- **Outline:** white fill, berry/15 border, berry label. Hover turns border and label blush. Secondary on foam and on the hero ("Dichtbij").
+- **Outline:** white fill, berry/15 border, berry label. Hover turns border and label blush. Secondary on foam.
 - **Ghost:** no fill, berry label. Hover fills milk.
 - **Focus:** 2px yolk ring, offset 2px. Disabled: 50% opacity, no pointer.
 
@@ -324,13 +324,13 @@ A white pill tray (`p-0.5`, berry/12 border) holding pill links at 14px × 6px. 
 ### Photo card
 A 28px slab. The still fills the top of the card (`object-cover`, `min-h-36`–`min-h-72`). Name and meta sit on a milk caption under the photo, in berry Bagel Fat One / Nunito, not painted in white on the still. The image scales to 105% over 700ms on hover. Focus draws the yolk ring.
 
-City tiles use that city's still. Spot cards use a hashed breakfast still (`stillFor(slug)`), never the city still. Bragged spots wear the logo egg (`/brag_fast_egg.svg`), 44px, 8° tilt, top-right on the photo, with the sticker drop-shadow. City tiles have neither egg nor rank. Rank numbers live on the spot page, not on the city list.
+City tiles use that city's still. Spot cards use a hashed breakfast still (`stillFor(slug)`), never the city still. Spot cards and leaderboard rows do not wear the egg overlay. City tiles have neither egg nor rank. Rank numbers live on the spot page, not on the city list.
 
 ### Rank burst
 Used on the spot page standing, not on city cards. A 4.35rem yolk ellipse sticker, −12° rotation, berry two-digit number.
 
 ### Atmosphere stamp
-Retired on spot cards. The egg marks a bragged spot. City stills stay unlabeled.
+Retired on spot cards. The egg SVG is the favicon and the footer lockup. City stills stay unlabeled.
 
 ### Search pill
 The hero's one control. 64px tall pill, white at 92% with a white/40 border, ink-lift shadow, 20px side padding, a flare accent at left and a transparent 16px Figtree input with night/45 placeholder.
@@ -363,11 +363,11 @@ The home still drifts: `scale(1.04) → scale(1.14)` over 22s, ease-out, alterna
 ## Do's and Don'ts
 
 ### Do:
-- **Do** open every public page with a full-bleed still pulled under the translucent night header, title bottom-left in white Lilita with `.photo-copy`.
+- **Do** open home, leaderboard, and spot with a full-bleed still pulled under the translucent night header, title bottom-left in white Lilita with `.photo-copy`. City and passport headers are berry `#4a1534` slabs with white type and no photograph.
 - **Do** use the painted `/wordmark.png` in the hero and the header.
 - **Do** use solid blush on primary buttons, selected chips, and the pressed language side.
 - **Do** make filters and segments colour pills (candy / mint / yolk at rest, blush when pressed) and every content container a 28px slab.
-- **Do** mark bragged spot cards with the logo egg, top-right on the still.
+- **Do** keep the egg SVG on the footer and favicon. Do not overlay it on spot cards or leaderboard rows.
 - **Do** show maker name and time on every brag card; keep seed placeholder images in the DOM as `sr-only` behind a sky fallback.
 - **Do** put the back-to-city link below the spot address.
 - **Do** use sun for links and focus rings on photographs and night grounds; flare for selected state.

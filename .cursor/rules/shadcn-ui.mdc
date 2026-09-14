@@ -1,0 +1,21 @@
+---
+description: Use shadcn for UI primitives. Add missing ones under components/ui.
+alwaysApply: true
+---
+
+# shadcn UI primitives
+
+Interactive chrome (buttons, inputs, dialogs, selects, checkboxes, dropdowns, toasts) comes from shadcn in `components/ui/`. This app uses `components.json` style `base-vega` (Base UI, not Radix).
+
+- Import from `@/components/ui/*`. Do not invent a parallel primitive.
+- If the control is missing, add it with `npx shadcn@latest add <name>`, then restyle to berry / milk / blush / yolk like `button.tsx` and `input.tsx`.
+- Fix CLI leftovers. Import `cn` from `@/lib/utils`, never from the npm package `cn`. Do not leave default oklch/dark-mode classes on a new primitive.
+- Native `<select>`, `<button>`, and raw dialog markup are not substitutes when a shadcn primitive exists or can be added.
+
+```tsx
+// BAD
+<select value={sort} onChange={...}><option>Likes</option></select>
+
+// GOOD
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+```

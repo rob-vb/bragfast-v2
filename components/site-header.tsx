@@ -1,10 +1,12 @@
 import Link from "next/link";
+import type { Preloaded } from "convex/react";
 import { t } from "@/domain/messages";
+import { chromeLinks } from "@/domain/chrome";
 import { Logo } from "@/components/visual";
 import { LanguageSwitch } from "@/components/language-switch";
 import { AuthControl } from "@/components/auth-control";
-import type { Preloaded } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { cn } from "@/lib/utils";
 import type { Locale } from "@/domain/messages";
 
 export function SiteHeader({
@@ -32,14 +34,23 @@ export function SiteHeader({
           #bragfast
         </span>
         <div className="ml-auto flex items-center gap-2 sm:gap-4">
+          {chromeLinks("header").map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "text-sm font-bold whitespace-nowrap text-berry",
+                item.href === "/how-it-works" && "hidden sm:inline",
+              )}
+            >
+              {t(locale, item.label)}
+            </Link>
+          ))}
           {isOwner ? (
-            <Link href="/admin" className="text-sm font-bold text-berry">
+            <Link href="/admin" className="text-sm font-bold whitespace-nowrap text-berry">
               {t(locale, "viewAdmin")}
             </Link>
           ) : null}
-          <Link href="/nl/leaderboard" className="text-sm font-bold text-berry">
-            {t(locale, "leaderboard")}
-          </Link>
           <LanguageSwitch locale={locale} label={t(locale, "language")} />
           <AuthControl
             locale={locale}

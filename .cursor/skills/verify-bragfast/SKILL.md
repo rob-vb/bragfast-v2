@@ -5,7 +5,7 @@ description: Drive the brag.fast Next.js website (NL breakfast directory — hom
 
 # Verify brag.fast
 
-brag.fast is a **website**. Seekers browse signed-out: search a city or spot, open a city board, open a spot page. Makers sign in to brag. One owner uses `/admin`. There is no CLI product and no native app.
+brag.fast is a **website**. Seekers browse signed-out: search a city in the homepage combobox, open a city board, open a spot page. Makers sign in to add. One owner uses `/admin`. There is no CLI product and no native app.
 
 This skill is for the next agent, mid-task, who has never seen the app. Read `features/README.md` before driving. Drive one mapped feature at a time from that map.
 
@@ -47,12 +47,10 @@ Pass means: pid in `run.json` is alive, it owns :3019 (or a child does), `GET /`
 
 ## Drive
 
-Primary harness is **HTTP against the launched origin**. Public pages are server-rendered. City filters, list/map, passport tabs, and search submit are URLs. Language is `POST /api/locale` then a cookie. Use the helper so requests cannot silently hit the owner preview.
+Primary harness is **HTTP against the launched origin**. Public pages are server-rendered. List/map and passport views are URLs. Language is `POST /api/locale` then a cookie. Use the helper so requests cannot silently hit the owner preview.
 
 ```bash
 node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs http GET / --out artifacts/home/home.html
-node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs http GET '/?q=anne' --out artifacts/home/search-anne.html
-node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs http GET '/?q=haarlem' --no-follow
 node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs http POST /api/locale --json '{"locale":"en"}'
 ```
 
@@ -63,22 +61,19 @@ Stable handles from this repo (Dutch default UI; English after locale POST):
 | Control | Handle |
 | --- | --- |
 | Header home | link `aria-label="brag.fast"` → `/` |
-| Search form | `role="search"` named `Zoek een stad of plek` / `Search a city or spot`; input `#catalog-search` `name="q"`; submit `Zoek` / `Search` |
+| Search combobox | `#catalog-search` `role="combobox"` named `Zoek een woonplaats` / `Search a city`; listbox of woonplaats names; submit `Zoek` / `Search` navigates to `/nl/{slug}` |
 | Language | `role="group"` named `Taal` / `Language`; buttons `nl` and `en` with `aria-pressed` |
 | Sign in | button `Inloggen` / `Sign in` → dialog title `Log in bij brag.fast` / `Sign in to brag.fast`; email `#email`; do **not** submit |
-| City filters | `Open nu` as a link with `aria-pressed`; query `open=1`. `Met brags` is retired. |
-| City view | group `Weergave` / `View`; links `Lijst` / `List` and `Kaart` / `Map`; `view=map` |
-| City sort | buttons `Naam` / `Name` and `Afstand` / `Distance` (`aria-current`) |
+| City view | group `Weergave` / `View`; links `Lijst` / `List` and `Kaart` / `Map`; `view=map` (non-empty board) |
+| City sort | shadcn Select triggers labelled `Sorteren` / `Sort` (Likes, Naam/Name) and `Richting` / `Direction` (Aflopend/Descending, Oplopend/Ascending). Present when the board has spots. |
 | Spot share | button `Deel` / `Share` |
-| Login-to-brag | button `Log in om te braggen` / `Log in to brag` (signed-out spot page) |
-| Passport tabs | `Unieke plekken` / `Unique spots` vs `Deze week` / `This week` (`tab=week`) |
 
-Client-only paths (search hint at 1 character, near-me geolocation, sign-in dialog, Leaflet map tiles, share clipboard) need the browser helper. Chrome lives at `$CHROME_PATH` or `/root/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome`; playwright-core at `/tmp/pw-repro/node_modules/playwright-core` when present. Wait for `load`, not `networkidle` — Convex's websocket keeps the document "busy".
+Client-only paths (combobox listbox, sign-in dialog, Leaflet map tiles, share clipboard) need the browser helper. Chrome lives at `$CHROME_PATH` or `/root/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome`; playwright-core at `/tmp/pw-repro/node_modules/playwright-core` when present. Wait for `load`, not `networkidle` — Convex's websocket keeps the document "busy".
 
 ```bash
 node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs browser snapshot --goto / --path artifacts/home/home.aria.txt
 node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs browser screenshot --goto / --path artifacts/home/home.png
-node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs browser fill --selector '#catalog-search' --value anne --submit --path artifacts/home/search-anne.png
+node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs browser fill --selector '#catalog-search' --value haarlem --path artifacts/home/suggest.png
 ```
 
 Map view is not in the SSR HTML (Leaflet is `ssr: false`). Proving `Kaart` requires the browser: wait for `.leaflet-container` and a popup link to a spot. Proving `Lijst` is HTTP.
@@ -93,8 +88,8 @@ Standards:
 
 - Exercise the real seeker URL, not Convex queries or internal seed mutations.
 - Capture the action **and** the resulting page (status + HTML or screenshot/ARIA), not only the final pretty frame.
-- Side effects: locale cookie (`lang=en`/`nl`); search exact-city **307** to `/nl/{city}`; sitemap includes listed spots; JSON-LD on the spot page. File uploads, emails, and Convex writes are out of default scope — if you did not perform them, do not claim them.
-- Empty woonplaats boards are the proof. Haarlem HTML contains `Nog geen plekken in deze stad.` (`noSpotsYet`) and does not contain `Anne&Max`. Old `/nl/haarlem/{spot}` URLs 404. Rank eggs and `Met brags` are gone. `Open nu` remains.
+- Side effects: locale cookie (`lang=en`/`nl`); sitemap includes listed spots; JSON-LD on the spot page. File uploads, emails, and Convex writes are out of default scope — if you did not perform them, do not claim them.
+- Empty woonplaats boards are the proof. Haarlem HTML contains `Nog geen plekken in deze stad.` (`noSpotsYet`) and does not contain `Anne&Max`. Old `/nl/haarlem/{spot}` URLs 404. Rank eggs, `Met brags`, `Dichtbij`, `Open nu`, distance sort, and GET `/?q=` search are gone.
 
 ## Cleanup
 

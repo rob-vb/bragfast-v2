@@ -1,9 +1,16 @@
 import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
-import { action, internalMutation, query } from "./_generated/server";
+import {
+  action,
+  internalMutation,
+  query,
+  type ActionCtx,
+} from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
 import { authComponent } from "./auth";
 import { applyPlaceAdd, type PlaceAddCommit } from "./model/placeAdd";
 import { ensureUserByAuthId } from "./model/users";
+import type { PhotoPublishChannel } from "../domain/photo";
 
 type PlaceSuggestion = { placeId: string; name: string; address: string };
 
@@ -168,6 +175,47 @@ export const autocomplete = action({
   },
 });
 
+async function publishPlace(
+  ctx: ActionCtx,
+  args: { placeId: string; storageId: Id<"_storage"> },
+  channel: PhotoPublishChannel,
+): Promise<{
+  action: "live" | "redirect" | "attach";
+  placeSlug: string;
+  spotSlug: string;
+}> {
+  const authUser = await authComponent.getAuthUser(ctx);
+  const key = placesKey();
+  if (!key) {
+    throw new ConvexError("Places is not configured");
+  }
+  const details = await fetchDetails(args.placeId, key);
+  const displayName =
+    (typeof authUser.name === "string" ? authUser.name.trim() : "") ||
+    (typeof authUser.email === "string" ? authUser.email : "") ||
+    "bragger";
+  const result = await ctx.runMutation(internal.places.apply, {
+    placeId: details.placeId,
+    name: details.name,
+    address: details.address,
+    geo: details.geo,
+    types: details.types,
+    storageId: args.storageId,
+    authId: authUser._id,
+    displayName,
+    avatarUrl: typeof authUser.image === "string" ? authUser.image : null,
+    channel,
+  });
+  if (result.action === "reject") {
+    throw new ConvexError(result.reason);
+  }
+  return {
+    action: result.action,
+    placeSlug: result.placeSlug,
+    spotSlug: result.spotSlug,
+  };
+}
+
 export const add = action({
   args: { placeId: v.string(), storageId: v.id("_storage") },
   handler: async (
@@ -178,36 +226,29 @@ export const add = action({
     placeSlug: string;
     spotSlug: string;
   }> => {
-    const authUser = await authComponent.getAuthUser(ctx);
-    const key = placesKey();
-    if (!key) {
-      throw new ConvexError("Places is not configured");
+    const result = await publishPlace(ctx, args, "web");
+    if (result.action === "live" || result.action === "redirect") {
+      return {
+        action: result.action,
+        placeSlug: result.placeSlug,
+        spotSlug: result.spotSlug,
+      };
     }
-    const details = await fetchDetails(args.placeId, key);
-    const displayName =
-      (typeof authUser.name === "string" ? authUser.name.trim() : "") ||
-      (typeof authUser.email === "string" ? authUser.email : "") ||
-      "bragger";
-    const result = await ctx.runMutation(internal.places.apply, {
-      placeId: details.placeId,
-      name: details.name,
-      address: details.address,
-      geo: details.geo,
-      types: details.types,
-      storageId: args.storageId,
-      authId: authUser._id,
-      displayName,
-      avatarUrl:
-        typeof authUser.image === "string" ? authUser.image : null,
-    });
-    if (result.action === "reject") {
-      throw new ConvexError(result.reason);
-    }
-    return {
-      action: result.action,
-      placeSlug: result.placeSlug,
-      spotSlug: result.spotSlug,
-    };
+    throw new ConvexError("web-add-cannot-attach");
+  },
+});
+
+export const publish = action({
+  args: { placeId: v.string(), storageId: v.id("_storage") },
+  handler: async (
+    ctx,
+    args,
+  ): Promise<{
+    action: "live" | "redirect" | "attach";
+    placeSlug: string;
+    spotSlug: string;
+  }> => {
+    return await publishPlace(ctx, args, "app");
   },
 });
 
@@ -222,6 +263,9 @@ export const apply = internalMutation({
     authId: v.string(),
     displayName: v.string(),
     avatarUrl: v.union(v.string(), v.null()),
+    channel: v.optional(
+      v.union(v.literal("web"), v.literal("app")),
+    ),
   },
   handler: async (ctx, args): Promise<PlaceAddCommit> => {
     const user = await ensureUserByAuthId(ctx, {
@@ -237,6 +281,7 @@ export const apply = internalMutation({
       types: args.types,
       photoId: args.storageId,
       addedBy: user._id,
+      channel: args.channel ?? "web",
     });
   },
 });

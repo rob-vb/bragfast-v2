@@ -3,6 +3,7 @@ import { internalMutation, type MutationCtx } from "./_generated/server";
 
 const WIPE_TABLES = [
   "spots",
+  "photos",
   "posts",
   "makerVotes",
   "aiMatchQueue",

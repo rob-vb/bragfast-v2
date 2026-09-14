@@ -4,13 +4,8 @@ import { CityMap } from "@/components/city-map-loader";
 import { loadPassport } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import { t, uniqueSpotsLabel } from "@/domain/messages";
-import {
-  PhotoFrame,
-  SegmentLink,
-  Segmented,
-  SpotLinkCard,
-} from "@/components/visual";
-import { HERO_SCENE, stillFor } from "@/lib/scenes";
+import { SegmentLink, Segmented, SpotLinkCard } from "@/components/visual";
+import { stillFor } from "@/lib/scenes";
 
 type Params = { slug: string };
 type Search = {
@@ -29,7 +24,7 @@ export async function generateMetadata({
   }
   const indexable = page.uniqueSpotCount > 0;
   return {
-    title: `${page.displayName} · brag.fast`,
+    title: `${page.slug} · brag.fast`,
     robots: { index: indexable, follow: indexable },
   };
 }
@@ -67,20 +62,12 @@ export default async function PassportPage({
 
   return (
     <main>
-      <section className="relative -mt-16 min-h-[42svh] sm:-mt-[4.5rem]">
-        <PhotoFrame src={HERO_SCENE} className="absolute inset-0" />
+      <section className="relative -mt-16 min-h-[42svh] bg-berry sm:-mt-[4.5rem]">
         <div className="relative mx-auto flex min-h-[42svh] max-w-6xl flex-col justify-end px-5 pb-10 pt-28 sm:px-8">
-          {page.avatarUrl ? (
-            <img
-              src={page.avatarUrl}
-              alt=""
-              className="mb-4 size-20 rounded-full object-cover ring-4 ring-yolk"
-            />
-          ) : null}
-          <h1 className="text-shadow-photo font-display text-[clamp(2.4rem,8vw,5.5rem)] leading-[0.92] tracking-wide text-white">
-            {page.displayName}
+          <h1 className="font-display text-[clamp(2.4rem,8vw,5.5rem)] leading-[0.92] tracking-wide text-white">
+            {page.slug}
           </h1>
-          <p className="text-shadow-photo mt-3 text-lg text-white">
+          <p className="mt-3 text-lg text-white">
             {uniqueSpotsLabel(locale, page.uniqueSpotCount)}
           </p>
         </div>
@@ -114,10 +101,9 @@ export default async function PassportPage({
               <li key={`${spot.citySlug}/${spot.slug}`}>
                 <SpotLinkCard
                   href={`/nl/${spot.citySlug}/${spot.slug}`}
-                  src={stillFor(spot.slug)}
+                  src={spot.photoUrl ?? stillFor(spot.slug)}
                   title={spot.name}
                   meta={spot.closed ? t(locale, "closed") : undefined}
-                  egg
                 />
               </li>
             ))}

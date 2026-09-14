@@ -37,15 +37,6 @@ status, grave = fetch("/nl/haarlem/oude-banketbakker")
 if status != 404:
     raise SystemExit(f"gravestone URL status {status}, expected 404")
 
-search = html("/?q=anne")
-if 'href="/nl/haarlem/anne-max"' in search:
-    raise SystemExit("search still returns a catalog tent")
-if "Anne&amp;Max" in search or "Anne&Max" in search:
-    raise SystemExit("search still names Anne&Max")
-
-if 'href="/nl/haarlem"' not in html("/?q=haarlem"):
-    raise SystemExit("search missed Haarlem")
-
 sitemap = html("/sitemap.xml")
 if "/nl/haarlem" not in sitemap:
     raise SystemExit("sitemap missed woonplaats Haarlem")

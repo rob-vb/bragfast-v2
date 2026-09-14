@@ -9,6 +9,8 @@ import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { SIGN_IN_EVENT } from "@/lib/sign-in-signal";
+import { Menu } from "@base-ui/react/menu";
+import { ChevronDown } from "lucide-react";
 import { DomainParseError, parseUserSlug } from "@/domain/ids";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
@@ -16,6 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { Locale, MessageKey } from "@/domain/messages";
 import { t } from "@/domain/messages";
+
+const MENU_ITEM_CLASS =
+  "flex cursor-default px-3 py-2 text-sm font-bold text-berry outline-none select-none data-highlighted:bg-milk data-highlighted:text-blush";
 
 type DialogState =
   | { phase: "closed" }
@@ -313,23 +318,56 @@ export function AuthControl({
   }
 
   if (user && username) {
+    const accountItems = [
+      ...(passportSlug
+        ? [
+            {
+              kind: "link" as const,
+              href: `/nl/u/${passportSlug}`,
+              labelKey: "viewPassport" as const,
+            },
+          ]
+        : []),
+      { kind: "command" as const, command: "sign-out" as const, labelKey: "signOut" as const },
+    ];
+
     return (
-      <div className="flex items-center gap-3">
-        {passportSlug ? (
-          <Link
-            href={`/nl/u/${passportSlug}`}
-            className="text-sm font-bold text-blush"
-          >
-            {t(locale, "viewPassport")}
-          </Link>
-        ) : null}
-        <span className="hidden max-w-40 truncate text-sm text-berry sm:inline">
-          {user.name ?? user.email}
-        </span>
-        <Button type="button" variant="outline" size="sm" onClick={signOut}>
-          {t(locale, "signOut")}
-        </Button>
-      </div>
+      <Menu.Root modal={false}>
+        <Menu.Trigger className="inline-flex items-center gap-1 text-sm font-bold text-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk">
+          {t(locale, "myProfile")}
+          <ChevronDown className="size-4" aria-hidden="true" />
+        </Menu.Trigger>
+        <Menu.Portal>
+          <Menu.Positioner className="outline-none" sideOffset={8} align="end">
+            <Menu.Popup className="min-w-40 origin-[var(--transform-origin)] rounded-xl border border-berry/15 bg-white py-1 shadow-lift outline-none transition-[scale,opacity] duration-100 data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
+              {accountItems.map((item) =>
+                item.kind === "link" ? (
+                  <Menu.LinkItem
+                    key={item.labelKey}
+                    render={<Link href={item.href} />}
+                    closeOnClick
+                    className={MENU_ITEM_CLASS}
+                  >
+                    {t(locale, item.labelKey)}
+                  </Menu.LinkItem>
+                ) : (
+                  <Menu.Item
+                    key={item.labelKey}
+                    className={MENU_ITEM_CLASS}
+                    onClick={() => {
+                      if (item.command === "sign-out") {
+                        void signOut();
+                      }
+                    }}
+                  >
+                    {t(locale, item.labelKey)}
+                  </Menu.Item>
+                ),
+              )}
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>
     );
   }
 

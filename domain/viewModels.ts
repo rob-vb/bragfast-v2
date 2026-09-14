@@ -30,6 +30,13 @@ export type CityPageData = {
   spots: CitySpotCard[];
 };
 
+export type SpotPagePhoto = {
+  id: GenericId<"photos">;
+  url: string;
+  uploadedBy: GenericId<"users">;
+  createdAt: number;
+};
+
 export type SpotPageData = {
   id: GenericId<"spots">;
   name: string;
@@ -41,25 +48,17 @@ export type SpotPageData = {
   spotType: SpotType;
   lifecycle: SpotLifecycle;
   licensedImage: { url: string } | null;
+  photos: SpotPagePhoto[];
   canonicalPath: string;
   likeCount: number;
 };
 
-export type SearchHit =
-  | {
-      kind: "spot";
-      name: string;
-      slug: SpotSlug;
-      citySlug: CitySlug;
-      cityNameNl: string;
-      cityNameEn: string;
-    }
-  | {
-      kind: "city";
-      slug: CitySlug;
-      nameNl: string;
-      nameEn: string;
-    };
+export type SearchHit = {
+  kind: "city";
+  slug: CitySlug;
+  nameNl: string;
+  nameEn: string;
+};
 
 export type HomepageData = {
   featured: CityCard[];
@@ -107,12 +106,11 @@ export type PassportSpotCard = {
   addedAt: number;
   geo: { lat: number; lng: number };
   closed: boolean;
+  photoUrl: string | null;
 };
 
 export type PassportData = {
   slug: UserSlug;
-  displayName: string;
-  avatarUrl: string | null;
   uniqueSpotCount: number;
   spots: PassportSpotCard[];
 };

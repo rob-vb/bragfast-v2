@@ -8,7 +8,7 @@ export default async function PrivacyPage() {
       <h1 className="font-display text-4xl tracking-wide">
         {en ? "Privacy" : "Privacy"}
       </h1>
-      <p className="mt-6 text-sm text-berry/55">brag.fast · http://77.42.31.66/</p>
+      <p className="mt-6 text-sm text-berry/55">brag.fast · https://brag.fast/</p>
       <div className="mt-8 space-y-5 text-base leading-7 text-berry/80">
         {en ? (
           <>

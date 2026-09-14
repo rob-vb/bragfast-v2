@@ -56,3 +56,39 @@ export function sortCityBoard<T extends CityBoardRank>(spots: readonly T[]): T[]
     return b.addedAt - a.addedAt;
   });
 }
+
+export type CityBoardSortKey = "likes" | "name";
+export type CityBoardSortDir = "desc" | "asc";
+
+export type CityBoardSort = {
+  readonly key: CityBoardSortKey;
+  readonly dir: CityBoardSortDir;
+};
+
+export const DEFAULT_CITY_BOARD_SORT: CityBoardSort = {
+  key: "likes",
+  dir: "desc",
+};
+
+export type CityBoardSortable = CityBoardRank & { name: string };
+
+export function parseCityBoardSort(key: string, dir: string): CityBoardSort {
+  return {
+    key: key === "name" || key === "likes" ? key : "likes",
+    dir: dir === "asc" || dir === "desc" ? dir : "desc",
+  };
+}
+
+export function applyCityBoardSort<T extends CityBoardSortable>(
+  spots: readonly T[],
+  sort: CityBoardSort,
+  collator: Intl.Collator,
+): T[] {
+  if (sort.key === "likes") {
+    const ranked = sortCityBoard(spots);
+    return sort.dir === "desc" ? ranked : ranked.reverse();
+  }
+  const copy = [...spots];
+  copy.sort((a, b) => collator.compare(a.name, b.name));
+  return sort.dir === "asc" ? copy : copy.reverse();
+}

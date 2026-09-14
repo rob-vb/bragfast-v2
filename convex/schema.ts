@@ -73,6 +73,16 @@ export default defineSchema({
       filterFields: ["country"],
     }),
 
+  photos: defineTable({
+    spotId: v.id("spots"),
+    storageId: v.id("_storage"),
+    uploadedBy: v.id("users"),
+    createdAt: v.number(),
+  })
+    .index("by_spot", ["spotId"])
+    .index("by_spot_created", ["spotId", "createdAt"])
+    .index("by_user", ["uploadedBy"]),
+
   posts: leftoverTable(),
   makerVotes: leftoverTable(),
   aiMatchQueue: leftoverTable(),

@@ -8,7 +8,7 @@ web
 
 ## Users
 
-Primary user is a seeker planning a weekend breakfast or already in a Dutch woonplaats, asking where to eat. Secondary users are adders who list a tent and upload one photo, visitors who like a spot after they sign in, and one owner who reviews reports and closed spots. Inferred from `SPEC.md`.
+Primary user is a seeker planning a weekend breakfast or already in a Dutch woonplaats, asking where to eat. Secondary users are adders who list a tent and upload one photo, visitors who like a spot after they sign in, visitors who attach more photos from the iOS and Android app, and one owner who reviews reports and closed spots. Inferred from `SPEC.md`.
 
 ## Product Purpose
 
@@ -20,11 +20,11 @@ TripAdvisor without the everything-else. Rank is like count, not dishes, not sta
 
 ## Operating Context
 
-Public pages are server-rendered Next.js on a VPS. The owner-facing preview is http://77.42.31.66/ (nginx → pm2 `next start` on 3002). Never localhost. UI changes are not live until `next build` and a pm2 restart. Data lives in Convex. Dutch is the default UI language on the same URLs as English. Brand is English (`brag.fast`, `#bragfast`). First market is NL. Owner lives there.
+Public pages are server-rendered Next.js on a VPS. The owner-facing site is https://brag.fast/ (nginx → pm2 `next start` on 3002). Never localhost. UI changes are not live until `next build` and a pm2 restart. Data lives in Convex. Dutch is the default UI language on the same URLs as English. Brand is English (`brag.fast`, `#bragfast`). First market is NL. Owner lives there.
 
 ## Capabilities and Constraints
 
-Specified in `SPEC.md`, not all shipped yet: woonplaats boards for every Dutch BAG woonplaats, visitor-add with Places autocomplete and one required photo, signed-in likes (one per spot), adder leaderboard, Better Auth Google + `emailAndPassword`.
+Specified in `SPEC.md`, not all shipped yet: woonplaats boards for every Dutch BAG woonplaats, visitor-add with Places autocomplete and one required photo, a spot gallery of hosted photos (app attaches extras), signed-in likes (one per spot), adder leaderboard, Better Auth Google + `emailAndPassword`.
 
 Shipped in the current tree and still true until later PRs land: homepage search and featured cities, near-me, city list, map toggle, open-now filter, spot page with hours, sign-in chrome, admin reports.
 
@@ -32,7 +32,7 @@ Type chips (Café/Bakker/Hotel/Overig) were removed on purpose. Do not put them 
 
 Live Google Places autocomplete is live when `GOOGLE_PLACES_API_KEY` is set on the Convex deployment. Use it only as the add helper.
 
-Not v1: native app, Stripe/claim, pay-to-rank, TikTok/YouTube OAuth, Instagram, magic link, maker votes, nightly Places crawl, comments, followers, cuisine taxonomy, AI spot articles, national spot board, Apple login.
+Not v1: Stripe/claim, pay-to-rank, TikTok/YouTube OAuth, Instagram, magic link, maker votes, nightly Places crawl, comments, followers, cuisine taxonomy, AI spot articles, national spot board. Extra-upload on the website spot page is out. Apple login lands with the app slice.
 
 Do not host third-party UGC. Do not invent Google ratings. Do not invent a nationwide ticker.
 

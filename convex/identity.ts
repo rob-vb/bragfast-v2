@@ -40,6 +40,10 @@ export const passportBySlug = query({
         continue;
       }
       try {
+        const photoUrl =
+          row.photoId !== undefined
+            ? await ctx.storage.getUrl(row.photoId)
+            : null;
         added.push({
           slug: parseSpotSlug(row.slug),
           citySlug: parseCitySlug(row.citySlug),
@@ -47,6 +51,7 @@ export const passportBySlug = query({
           addedAt: row._creationTime,
           geo: row.geo,
           closed: row.listingStatus === "gravestone",
+          photoUrl,
         });
       } catch (error) {
         if (error instanceof DomainParseError) {
@@ -59,8 +64,6 @@ export const passportBySlug = query({
 
     return {
       slug,
-      displayName: user.displayName,
-      avatarUrl: user.avatarUrl,
       uniqueSpotCount: spots.length,
       spots,
     };

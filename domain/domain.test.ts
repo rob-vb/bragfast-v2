@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import type { GenericId } from "convex/values";
 import { parseCitySlug, parseSpotSlug, parseUserSlug } from "./ids";
-import { exactCitySlugFromHits } from "./searchMatch";
+import { LEGAL_LINKS, LOCALE_FLAGS, chromeLinks } from "./chrome";
+import {
+  exactCitySlugFromHits,
+  moveWoonplaatsSuggest,
+  pickWoonplaatsHref,
+  woonplaatsSuggest,
+} from "./searchMatch";
 import {
   cityCentroid,
   haversineMeters,
@@ -18,6 +24,11 @@ import {
 } from "./moderation";
 import { bragLiveEmail } from "./notify";
 import { classifyPlaceTypes, planPlaceAdd, slugFromPlaceName } from "./placeAdd";
+import {
+  planHeroAfterDelete,
+  planPhotoDelete,
+  planPhotoPublish,
+} from "./photo";
 import { isMissingConvexFunction } from "./convexQuery";
 import {
   passportSlugCandidate,
@@ -27,9 +38,41 @@ import {
   listAddedSpots,
 } from "./passport";
 import { openNow, planSpotUpsert } from "./spot";
-import { applyLikeCommand, likeCountFor, planLikeToggle, sortCityBoard } from "./like";
+import {
+  applyCityBoardSort,
+  applyLikeCommand,
+  likeCountFor,
+  parseCityBoardSort,
+  planLikeToggle,
+  sortCityBoard,
+} from "./like";
 import { rankAdders, rankedLeaderboard } from "./leaderboard";
 import { foodEstablishmentJsonLd } from "./jsonld";
+
+test("chrome links are marketing pages and legal stays out of the header", () => {
+  assert.deepEqual(
+    chromeLinks("header").map((link) => link.href),
+    ["/how-it-works", "/nl/leaderboard"],
+  );
+  assert.deepEqual(
+    chromeLinks("footer").map((link) => link.href),
+    ["/how-it-works", "/nl/leaderboard"],
+  );
+  assert.deepEqual(
+    LEGAL_LINKS.map((link) => link.href),
+    ["/privacy", "/privacy/data-deletion"],
+  );
+});
+
+test("locale flags keep autonyms", () => {
+  assert.deepEqual(
+    LOCALE_FLAGS.map((flag) => [flag.locale, flag.autonym]),
+    [
+      ["nl", "Nederlands"],
+      ["en", "English"],
+    ],
+  );
+});
 
 test("slugs are parsed at the boundary", () => {
   assert.equal(parseCitySlug("den-haag"), "den-haag");
@@ -402,6 +445,103 @@ test("planPlaceAdd lives a café, redirects a duplicate placeId, and rejects fas
   );
 });
 
+test("planPhotoPublish attaches from the app and still redirects on the web", () => {
+  const haarlem = { lat: 52.3812, lng: 4.636 };
+  const existing = { spotSlug: "zoete-kruimels", placeSlug: "oldenzaal" };
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "web",
+      types: ["cafe"],
+      geo: haarlem,
+      photo: true,
+      existing,
+    }),
+    {
+      action: "redirect",
+      spotSlug: "zoete-kruimels",
+      placeSlug: "oldenzaal",
+    },
+  );
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "app",
+      types: ["cafe"],
+      geo: haarlem,
+      photo: true,
+      existing,
+    }),
+    { action: "attach" },
+  );
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "app",
+      types: ["cafe"],
+      geo: haarlem,
+      photo: false,
+      existing,
+    }),
+    { action: "reject", reason: "photo-required" },
+  );
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "app",
+      types: ["cafe"],
+      geo: haarlem,
+      photo: true,
+      existing: null,
+    }),
+    { action: "live", spotType: "cafe", placeSlug: "haarlem" },
+  );
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "app",
+      types: ["fast_food"],
+      geo: haarlem,
+      photo: true,
+      existing: null,
+    }),
+    { action: "reject", reason: "disallowed-type" },
+  );
+});
+
+test("planPhotoDelete only lets the uploader remove the row", () => {
+  assert.deepEqual(planPhotoDelete({ owner: true }), { action: "delete" });
+  assert.deepEqual(planPhotoDelete({ owner: false }), {
+    action: "reject",
+    reason: "not-owner",
+  });
+});
+
+test("planHeroAfterDelete promotes the oldest remaining photo", () => {
+  assert.deepEqual(
+    planHeroAfterDelete({
+      deletingStorageId: "hero",
+      heroStorageId: "hero",
+      remaining: [
+        { storageId: "newer", createdAt: 20 },
+        { storageId: "older", createdAt: 10 },
+      ],
+    }),
+    { kind: "promote", storageId: "older" },
+  );
+  assert.deepEqual(
+    planHeroAfterDelete({
+      deletingStorageId: "extra",
+      heroStorageId: "hero",
+      remaining: [{ storageId: "hero", createdAt: 1 }],
+    }),
+    { kind: "keep", storageId: "hero" },
+  );
+  assert.deepEqual(
+    planHeroAfterDelete({
+      deletingStorageId: "hero",
+      heroStorageId: "hero",
+      remaining: [],
+    }),
+    { kind: "empty" },
+  );
+});
+
 test("exact city search matches slug and localized names only", () => {
   const haarlem = {
     kind: "city" as const,
@@ -523,6 +663,141 @@ test("city board orders by likeCount then recency of the last like", () => {
   assert.deepEqual(
     sortCityBoard([older, newer]).map((spot) => spot.slug),
     ["newer", "older"],
+  );
+});
+
+test("woonplaatsSuggest is closed below two characters", () => {
+  assert.deepEqual(woonplaatsSuggest("h"), { kind: "closed" });
+  assert.deepEqual(woonplaatsSuggest(" "), { kind: "closed" });
+});
+
+test("woonplaatsSuggest lists Haarlem with Haarlem active", () => {
+  const suggest = woonplaatsSuggest("haarlem");
+  assert.equal(suggest.kind, "list");
+  assert.equal(suggest.kind === "list" ? suggest.active.slug : null, "haarlem");
+  assert.equal(suggest.kind === "list" ? suggest.active.nameNl : null, "Haarlem");
+  assert.equal(pickWoonplaatsHref(suggest), "/nl/haarlem");
+});
+
+test("woonplaatsSuggest is none when the gazetteer has no hit", () => {
+  const suggest = woonplaatsSuggest("zzzxqqt");
+  assert.deepEqual(suggest, { kind: "none", query: "zzzxqqt" });
+  assert.equal(pickWoonplaatsHref(suggest), null);
+  assert.equal(pickWoonplaatsHref({ kind: "closed" }), null);
+});
+
+test("moveWoonplaatsSuggest wraps around the hit list", () => {
+  const list = woonplaatsSuggest("ha");
+  assert.equal(list.kind, "list");
+  if (list.kind !== "list") {
+    return;
+  }
+  assert.ok(list.hits.length >= 2);
+  const first = list.active.slug;
+  const down = moveWoonplaatsSuggest(list, 1);
+  assert.equal(down.active.slug, list.hits[1]?.slug);
+  const wrappedUp = moveWoonplaatsSuggest(list, -1);
+  assert.equal(wrappedUp.active.slug, list.hits[list.hits.length - 1]?.slug);
+  const wrappedDown = moveWoonplaatsSuggest(wrappedUp, 1);
+  assert.equal(wrappedDown.active.slug, first);
+});
+
+test("parseCityBoardSort collapses junk HTML values to likes or desc", () => {
+  assert.deepEqual(parseCityBoardSort("distance", "desc"), {
+    key: "likes",
+    dir: "desc",
+  });
+  assert.deepEqual(parseCityBoardSort("name", "up"), {
+    key: "name",
+    dir: "desc",
+  });
+  assert.deepEqual(parseCityBoardSort("likes", "asc"), {
+    key: "likes",
+    dir: "asc",
+  });
+});
+
+test("applyCityBoardSort likes desc matches sortCityBoard and asc reverses it", () => {
+  const collator = new Intl.Collator("nl", { sensitivity: "base" });
+  const low = {
+    name: "Low",
+    slug: "low",
+    likeCount: 1,
+    lastLikedAt: 90,
+    addedAt: 80,
+  };
+  const high = {
+    name: "High",
+    slug: "high",
+    likeCount: 3,
+    lastLikedAt: 10,
+    addedAt: 5,
+  };
+  const older = {
+    name: "Older",
+    slug: "older",
+    likeCount: 2,
+    lastLikedAt: 20,
+    addedAt: 1,
+  };
+  const newer = {
+    name: "Newer",
+    slug: "newer",
+    likeCount: 2,
+    lastLikedAt: 40,
+    addedAt: 2,
+  };
+  assert.deepEqual(
+    applyCityBoardSort([low, high], { key: "likes", dir: "desc" }, collator).map(
+      (spot) => spot.slug,
+    ),
+    ["high", "low"],
+  );
+  assert.deepEqual(
+    applyCityBoardSort([low, high], { key: "likes", dir: "asc" }, collator).map(
+      (spot) => spot.slug,
+    ),
+    ["low", "high"],
+  );
+  assert.deepEqual(
+    applyCityBoardSort([older, newer], { key: "likes", dir: "desc" }, collator).map(
+      (spot) => spot.slug,
+    ),
+    ["newer", "older"],
+  );
+  assert.deepEqual(
+    applyCityBoardSort([older, newer], { key: "likes", dir: "asc" }, collator).map(
+      (spot) => spot.slug,
+    ),
+    ["older", "newer"],
+  );
+});
+
+test("applyCityBoardSort by name is alphabetic and ignores likeCount", () => {
+  const collator = new Intl.Collator("nl", { sensitivity: "base" });
+  const zebra = {
+    name: "Zebra",
+    likeCount: 99,
+    lastLikedAt: 1,
+    addedAt: 1,
+  };
+  const appel = {
+    name: "Appel",
+    likeCount: 0,
+    lastLikedAt: 0,
+    addedAt: 0,
+  };
+  assert.deepEqual(
+    applyCityBoardSort([zebra, appel], { key: "name", dir: "asc" }, collator).map(
+      (spot) => spot.name,
+    ),
+    ["Appel", "Zebra"],
+  );
+  assert.deepEqual(
+    applyCityBoardSort([zebra, appel], { key: "name", dir: "desc" }, collator).map(
+      (spot) => spot.name,
+    ),
+    ["Zebra", "Appel"],
   );
 });
 

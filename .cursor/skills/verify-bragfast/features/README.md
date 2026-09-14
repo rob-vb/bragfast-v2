@@ -32,9 +32,9 @@ Each feature file starts with an H1 and one paragraph of user-visible behavior, 
 
 ## Features
 
-- [Homepage search](./homepage-search.md) covers the hero search box, exact-city redirect, spot hits, empty results, and featured cities.
-- [City board](./city-board.md) covers empty woonplaats boards, Open nu, list vs map.
+- [Homepage search](./homepage-search.md) covers the hero combobox, woonplaats listbox, and featured cities. No GET `/?q=`.
+- [City board](./city-board.md) covers empty woonplaats boards, likes/name sort selects when spots exist, list vs map.
 - [Spot page](./spot-page.md) covers old catalog URLs 404ing.
 - [Language switch](./language-switch.md) covers nl/en chrome on the same URLs via the cookie.
-- [Passport](./passport.md) covers the public `/nl/u/{slug}` profile of spots that account added.
+- [Passport](./passport.md) covers the public `/nl/u/{slug}` profile of spots that account added. Heading is the username slug.
 - Leaderboard `/nl/leaderboard` lists adders by the sum of likes on spots they added. Empty copy shows when nobody has added. The header links here. Signed-out visitors can read it. Ranked rows are verified-unreachable on an empty shared catalog.

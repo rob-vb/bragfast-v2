@@ -17,8 +17,6 @@ def fetch(path: str) -> tuple[int, str]:
 status, home = fetch("/")
 if status != 200:
     raise SystemExit(f"/ status {status}")
-if "Dichtbij" not in home:
-    raise SystemExit("homepage missing Dichtbij")
 for city in ("Haarlem", "Amsterdam", "Rotterdam", "Utrecht"):
     if city not in home:
         raise SystemExit(f"featured missing {city}")
@@ -30,12 +28,6 @@ if status != 200:
     raise SystemExit(f"/nl/haarlem status {status}")
 if "Nog geen plekken in deze stad." not in empty:
     raise SystemExit("Haarlem missing empty copy")
-
-status, open_now = fetch("/nl/haarlem?open=1")
-if status != 200:
-    raise SystemExit(f"/nl/haarlem?open=1 status {status}")
-if "Nog geen plekken in deze stad." not in open_now:
-    raise SystemExit("open filter empty Haarlem missing empty copy")
 
 status, admin = fetch("/admin")
 if status != 404:

@@ -16,6 +16,7 @@ import type {
   SearchHit,
   SitemapEntry,
   SpotPageData,
+  SpotPagePhoto,
 } from "../domain/viewModels";
 
 function cityCard(row: Doc<"cities">): CityCard {
@@ -199,6 +200,24 @@ export const spotPage = query({
     const photoUrl = row.photoId
       ? await ctx.storage.getUrl(row.photoId)
       : null;
+    const photoRows = await ctx.db
+      .query("photos")
+      .withIndex("by_spot_created", (q) => q.eq("spotId", row._id))
+      .collect();
+    photoRows.sort((a, b) => a.createdAt - b.createdAt);
+    const photos: SpotPagePhoto[] = [];
+    for (const photo of photoRows) {
+      const url = await ctx.storage.getUrl(photo.storageId);
+      if (!url) {
+        continue;
+      }
+      photos.push({
+        id: photo._id,
+        url,
+        uploadedBy: photo.uploadedBy,
+        createdAt: photo.createdAt,
+      });
+    }
     const spot = parseSpot(row);
     return {
       id: spot.id,
@@ -211,6 +230,7 @@ export const spotPage = query({
       spotType: spot.spotType,
       lifecycle: spot.lifecycle,
       licensedImage: photoUrl ? { url: photoUrl } : null,
+      photos,
       canonicalPath: `/nl/${city.slug}/${spot.slug}`,
       likeCount: row.likeCount ?? 0,
     };
