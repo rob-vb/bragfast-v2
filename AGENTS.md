@@ -4,7 +4,7 @@ Product and v1 build rules: `SPEC.md`. Read it before implementing or changing p
 
 If `SPEC.md` and the code disagree, `SPEC.md` wins until a human edits it.
 
-Boards are Dutch BAG woonplaatsen (stad and dorp). Visitors add spots. Rank is like count. Auth is Better Auth Google plus `emailAndPassword`. The app attaches extra photos. The website gallery shows them. Instagram, magic link, maker votes, and the Places catalog crawl are out of v1.
+Boards are Dutch BAG woonplaatsen (stad and dorp). Visitors add spots. Rank is like count. Auth is Better Auth Google, Apple, and `emailAndPassword`. The app attaches extra photos. The website gallery shows them. Instagram, magic link, maker votes, and the Places catalog crawl are out of v1.
 
 This tree lives on a VPS. The owner-facing site is **https://brag.fast/** (nginx → `127.0.0.1:3002` → henk's pm2 process `bragfast` running `next start`). Never send the human to `localhost` or `127.0.0.1`. A Cursor `next dev` on 3010 is not what the owner sees. After UI changes: `next build` then `sudo -u henk -H pm2 restart bragfast`.
 

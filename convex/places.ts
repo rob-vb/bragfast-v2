@@ -115,6 +115,7 @@ function parseDetails(payload: unknown): PlaceDetails {
 async function fetchSuggestions(
   q: string,
   key: string,
+  bias: { lat: number; lng: number } | null,
 ): Promise<PlaceSuggestion[]> {
   const response = await fetch(
     "https://places.googleapis.com/v1/places:autocomplete",
@@ -128,6 +129,16 @@ async function fetchSuggestions(
         input: q,
         includedRegionCodes: ["nl"],
         languageCode: "nl",
+        ...(bias
+          ? {
+              locationBias: {
+                circle: {
+                  center: { latitude: bias.lat, longitude: bias.lng },
+                  radius: 25000.0,
+                },
+              },
+            }
+          : {}),
       }),
     },
   );
@@ -160,8 +171,12 @@ export const placesConfigured = query({
 });
 
 export const autocomplete = action({
-  args: { q: v.string() },
-  handler: async (ctx, { q }): Promise<PlaceSuggestion[]> => {
+  args: {
+    q: v.string(),
+    lat: v.optional(v.number()),
+    lng: v.optional(v.number()),
+  },
+  handler: async (ctx, { q, lat, lng }): Promise<PlaceSuggestion[]> => {
     await authComponent.getAuthUser(ctx);
     const key = placesKey();
     if (!key) {
@@ -171,7 +186,9 @@ export const autocomplete = action({
     if (needle.length < 2) {
       return [];
     }
-    return await fetchSuggestions(needle, key);
+    const bias =
+      lat !== undefined && lng !== undefined ? { lat, lng } : null;
+    return await fetchSuggestions(needle, key, bias);
   },
 });
 

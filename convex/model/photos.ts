@@ -36,13 +36,16 @@ export async function photosOnSpot(
 export async function deleteOwnPhoto(
   ctx: MutationCtx,
   input: { photoId: Id<"photos">; userId: Id<"users"> },
-): Promise<{ action: "delete" } | { action: "reject"; reason: "not-owner" }> {
+): Promise<
+  | { action: "delete" }
+  | { action: "reject"; reason: "not-owner" | "missing" }
+> {
   const row = await ctx.db.get(input.photoId);
-  if (!row) {
-    return { action: "reject", reason: "not-owner" };
-  }
-  const plan = planPhotoDelete({ owner: row.uploadedBy === input.userId });
-  if (plan.action === "reject") {
+  const plan = planPhotoDelete({
+    exists: row !== null,
+    owner: row !== null && row.uploadedBy === input.userId,
+  });
+  if (row === null || plan.action === "reject") {
     return plan;
   }
   const spot = await ctx.db.get(row.spotId);

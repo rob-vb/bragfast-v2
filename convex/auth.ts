@@ -29,20 +29,31 @@ function isUserSlug(value: string): boolean {
 export const createAuth = (ctx: GenericCtx<DataModel>) => {
   const googleClientId = process.env.GOOGLE_CLIENT_ID;
   const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  const appleClientId = process.env.APPLE_CLIENT_ID;
+  const appleClientSecret = process.env.APPLE_CLIENT_SECRET;
+
+  const socialProviders: {
+    google?: { clientId: string; clientSecret: string };
+    apple?: { clientId: string; clientSecret: string };
+  } = {};
+  if (googleClientId && googleClientSecret) {
+    socialProviders.google = {
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
+    };
+  }
+  if (appleClientId && appleClientSecret) {
+    socialProviders.apple = {
+      clientId: appleClientId,
+      clientSecret: appleClientSecret,
+    };
+  }
 
   return betterAuth({
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
     emailAndPassword: { enabled: true },
-    socialProviders:
-      googleClientId && googleClientSecret
-        ? {
-            google: {
-              clientId: googleClientId,
-              clientSecret: googleClientSecret,
-            },
-          }
-        : {},
+    socialProviders,
     plugins: [
       username({
         minUsernameLength: 3,

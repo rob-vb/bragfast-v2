@@ -1,7 +1,11 @@
 import type { Id } from "../_generated/dataModel";
 import type { MutationCtx } from "../_generated/server";
 import { parseCitySlug, parsePlaceId, parseSpotSlug } from "../../domain/ids";
-import { planPhotoPublish, type PhotoPublishChannel } from "../../domain/photo";
+import {
+  planPhotoPublish,
+  unusedPublishBlob,
+  type PhotoPublishChannel,
+} from "../../domain/photo";
 import { slugFromPlaceName, type PlaceAddPlan } from "../../domain/placeAdd";
 import { insertSpotPhoto } from "./photos";
 import { upsertSpot } from "./spots";
@@ -70,6 +74,9 @@ export async function applyPlaceAdd(
   });
   if (plan.action === "attach") {
     if (!byPlaceId || photoId === null) {
+      if (photoId !== null) {
+        await ctx.storage.delete(photoId);
+      }
       return { action: "reject", reason: "photo-required" };
     }
     await insertSpotPhoto(ctx, {
@@ -86,7 +93,10 @@ export async function applyPlaceAdd(
       placeSlug: parseCitySlug(byPlaceId.citySlug),
     };
   }
-  if (plan.action !== "live") {
+  if (unusedPublishBlob(plan)) {
+    if (photoId !== null) {
+      await ctx.storage.delete(photoId);
+    }
     return plan;
   }
   if (photoId === null) {

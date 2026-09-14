@@ -39,7 +39,7 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 - Add CTA on an empty woonplaats. Signed-out click opens sign-in. Signed-in visitor adds a Place plus one photo.
 - Spot page: name, address, like count, the adder’s photo as hero, and a gallery of hosted photos on that spot. Hours stay in data and JSON-LD, not in seeker chrome.
 - Ranking: like count on the spot. Tie-break is the most recent like, then recency of the add
-- Auth: Better Auth with Google + `emailAndPassword`. Unique public `username` (`UserSlug`) at signup. Password login accepts email or username. Google first login that lacks a username stays on the same dialog until the username is set. No magic link.
+- Auth: Better Auth with Google, Apple, and `emailAndPassword`. Unique public `username` (`UserSlug`) at signup. Password login accepts email or username. Google or Apple first login that lacks a username stays on the same dialog until the username is set. No magic link.
 - Like: signed-in, one per spot, toggle off to unlike. Signed-out like opens the sign-in dialog and writes nothing
 - Leaderboard: adders ranked by likes on spots they added. Tie-break is number of spots added, then earliest add. An account with zero adds is absent.
 - Photo upload on add, Convex storage
@@ -55,7 +55,6 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 - Comments, followers, notifications beyond transactional email
 - Cuisine taxonomy, guests-only hotel flag, AI-written spot articles
 - ChatGPT-placement promises, national spot board
-- Apple login (add later on Better Auth)
 - Extra-upload button on the website spot page. Extra photos write from the app only.
 
 The owner sets the "idea is working" bar. Do not block v1 on a metric.
@@ -147,7 +146,7 @@ Signed-out add control fires `requestSignIn`. Signed-in add control mounts the P
 
 Name, address, woonplaats.  
 Like count and like control.  
-The adder’s photo as the card and page hero. A gallery of hosted photos on that spot, including the adder’s photo. Signed-in visitors can delete a gallery row they uploaded. Extra-upload is the app, not this page.  
+The adder’s photo as the card and page hero. A gallery of hosted photos on that spot, including the adder’s photo. Signed-in visitors can delete a gallery row they uploaded. Extra-upload is the app, not this page. Empty hero is berry with no broken image.  
 Share URL. Report.  
 Hours stay in the spot record and in JSON-LD. They are not a seeker heading, weekday list, or Open nu chip.  
 No menu, price, booking, phone-as-a-product in **v1** (optional tel link is fine). No comments. v2 claimed spots may add one owner conversion CTA. See Claim (v2).
@@ -168,9 +167,9 @@ Chrome page. Header and footer link here. Title only until the explainer copy la
 
 ## Auth and identity
 
-- **Better Auth**, v1 providers: Google, `emailAndPassword`.
+- **Better Auth**, v1 providers: Google, Apple, `emailAndPassword`. Apple `clientSecret` is the short-lived JWT Better Auth expects, not a Google-style static secret. Set it on the Convex deployment with `APPLE_CLIENT_ID`.
 - Unique public `username` (`UserSlug`) at signup. Mint the passport row then.
-- Google first login without a username opens the same dialog on the username field. Do not create a user without a `UserSlug`.
+- Google or Apple first login without a username opens the same dialog on the username field. Do not create a user without a `UserSlug`.
 - Password login accepts email or username.
 - Transactional email only: "your spot is live."
 - Keep `AuthControl` mounted. `requestSignIn()` opens that dialog.
@@ -199,7 +198,7 @@ Empty repo: use this unless the human names another.
 
 - Next.js App Router + TypeScript, **server-rendered** HTML for all public pages
 - Convex
-- Better Auth (Google, `emailAndPassword`)
+- Better Auth (Google, Apple, `emailAndPassword`)
 - Google Places (autocomplete + Place Details as the add helper. Place ID, hours, types)
 - i18n: `nl` + `en` message files; UGC never machine-translated
 - Object storage for **in-app** spot photos only

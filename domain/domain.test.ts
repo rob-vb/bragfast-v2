@@ -28,6 +28,8 @@ import {
   planHeroAfterDelete,
   planPhotoDelete,
   planPhotoPublish,
+  photoPublishWritesNewSpot,
+  unusedPublishBlob,
 } from "./photo";
 import { isMissingConvexFunction } from "./convexQuery";
 import {
@@ -504,11 +506,58 @@ test("planPhotoPublish attaches from the app and still redirects on the web", ()
   );
 });
 
+test("unused publish blobs drop; only live writes a new spot", () => {
+  const haarlem = { lat: 52.3812, lng: 4.636 };
+  const existing = { spotSlug: "zoete-kruimels", placeSlug: "oldenzaal" };
+  const webRedirect = planPhotoPublish({
+    channel: "web",
+    types: ["cafe"],
+    geo: haarlem,
+    photo: true,
+    existing,
+  });
+  const appReject = planPhotoPublish({
+    channel: "app",
+    types: ["cafe"],
+    geo: haarlem,
+    photo: false,
+    existing,
+  });
+  const appAttach = planPhotoPublish({
+    channel: "app",
+    types: ["cafe"],
+    geo: haarlem,
+    photo: true,
+    existing,
+  });
+  const live = planPhotoPublish({
+    channel: "app",
+    types: ["cafe"],
+    geo: haarlem,
+    photo: true,
+    existing: null,
+  });
+  assert.equal(unusedPublishBlob(webRedirect), true);
+  assert.equal(unusedPublishBlob(appReject), true);
+  assert.equal(unusedPublishBlob(appAttach), false);
+  assert.equal(unusedPublishBlob(live), false);
+  assert.equal(photoPublishWritesNewSpot(webRedirect), false);
+  assert.equal(photoPublishWritesNewSpot(appReject), false);
+  assert.equal(photoPublishWritesNewSpot(appAttach), false);
+  assert.equal(photoPublishWritesNewSpot(live), true);
+});
+
 test("planPhotoDelete only lets the uploader remove the row", () => {
-  assert.deepEqual(planPhotoDelete({ owner: true }), { action: "delete" });
-  assert.deepEqual(planPhotoDelete({ owner: false }), {
+  assert.deepEqual(planPhotoDelete({ exists: true, owner: true }), {
+    action: "delete",
+  });
+  assert.deepEqual(planPhotoDelete({ exists: true, owner: false }), {
     action: "reject",
     reason: "not-owner",
+  });
+  assert.deepEqual(planPhotoDelete({ exists: false, owner: true }), {
+    action: "reject",
+    reason: "missing",
   });
 });
 

@@ -24,7 +24,7 @@ Public pages are server-rendered Next.js on a VPS. The owner-facing site is http
 
 ## Capabilities and Constraints
 
-Specified in `SPEC.md`, not all shipped yet: woonplaats boards for every Dutch BAG woonplaats, visitor-add with Places autocomplete and one required photo, a spot gallery of hosted photos (app attaches extras), signed-in likes (one per spot), adder leaderboard, Better Auth Google + `emailAndPassword`.
+Specified in `SPEC.md`, not all shipped yet: woonplaats boards for every Dutch BAG woonplaats, visitor-add with Places autocomplete and one required photo, a spot gallery of hosted photos (app attaches extras), signed-in likes (one per spot), adder leaderboard, Better Auth Google + Apple + `emailAndPassword`.
 
 Shipped in the current tree and still true until later PRs land: homepage search and featured cities, near-me, city list, map toggle, open-now filter, spot page with hours, sign-in chrome, admin reports.
 
@@ -32,7 +32,7 @@ Type chips (Café/Bakker/Hotel/Overig) were removed on purpose. Do not put them 
 
 Live Google Places autocomplete is live when `GOOGLE_PLACES_API_KEY` is set on the Convex deployment. Use it only as the add helper.
 
-Not v1: Stripe/claim, pay-to-rank, TikTok/YouTube OAuth, Instagram, magic link, maker votes, nightly Places crawl, comments, followers, cuisine taxonomy, AI spot articles, national spot board. Extra-upload on the website spot page is out. Apple login lands with the app slice.
+Not v1: Stripe/claim, pay-to-rank, TikTok/YouTube OAuth, Instagram, magic link, maker votes, nightly Places crawl, comments, followers, cuisine taxonomy, AI spot articles, national spot board. Extra-upload on the website spot page is out. Apple login is on the website.
 
 Do not host third-party UGC. Do not invent Google ratings. Do not invent a nationwide ticker.
 

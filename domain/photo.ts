@@ -9,7 +9,7 @@ export type PhotoPublishPlan =
 
 export type PhotoDeletePlan =
   | { action: "delete" }
-  | { action: "reject"; reason: "not-owner" };
+  | { action: "reject"; reason: "not-owner" | "missing" };
 
 export type HeroAfterDelete =
   | { kind: "keep"; storageId: string }
@@ -44,7 +44,23 @@ export function planPhotoPublish(input: {
   });
 }
 
-export function planPhotoDelete(input: { owner: boolean }): PhotoDeletePlan {
+export function unusedPublishBlob(
+  plan: PhotoPublishPlan,
+): plan is Extract<PhotoPublishPlan, { action: "redirect" | "reject" }> {
+  return plan.action === "redirect" || plan.action === "reject";
+}
+
+export function photoPublishWritesNewSpot(plan: PhotoPublishPlan): boolean {
+  return plan.action === "live";
+}
+
+export function planPhotoDelete(input: {
+  exists: boolean;
+  owner: boolean;
+}): PhotoDeletePlan {
+  if (!input.exists) {
+    return { action: "reject", reason: "missing" };
+  }
   if (!input.owner) {
     return { action: "reject", reason: "not-owner" };
   }

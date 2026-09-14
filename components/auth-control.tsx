@@ -312,6 +312,29 @@ export function AuthControl({
     }
   }
 
+  async function signInWithApple() {
+    setState((current) =>
+      current.phase === "closed"
+        ? current
+        : { ...current, pending: true, error: null },
+    );
+    const result = await authClient.signIn.social({
+      provider: "apple",
+      callbackURL: "/",
+    });
+    if (result?.error) {
+      setState((current) =>
+        current.phase === "closed"
+          ? current
+          : {
+              ...current,
+              pending: false,
+              error: t(locale, "appleUnavailable"),
+            },
+      );
+    }
+  }
+
   async function signOut() {
     await authClient.signOut();
     router.refresh();
@@ -396,6 +419,15 @@ export function AuthControl({
     >
       <Button
         className="mt-7 w-full"
+        type="button"
+        variant="outline"
+        disabled={pending || state.phase === "needs-username"}
+        onClick={signInWithApple}
+      >
+        {t(locale, "continueApple")}
+      </Button>
+      <Button
+        className="mt-3 w-full"
         type="button"
         variant="outline"
         disabled={pending || state.phase === "needs-username"}
