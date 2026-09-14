@@ -44,6 +44,16 @@ export function planPhotoPublish(input: {
   });
 }
 
+export function unusedPublishBlob(
+  plan: PhotoPublishPlan,
+): plan is Extract<PhotoPublishPlan, { action: "redirect" | "reject" }> {
+  return plan.action === "redirect" || plan.action === "reject";
+}
+
+export function photoPublishWritesNewSpot(plan: PhotoPublishPlan): boolean {
+  return plan.action === "live";
+}
+
 export function planPhotoDelete(input: {
   exists: boolean;
   owner: boolean;

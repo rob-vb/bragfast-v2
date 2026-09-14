@@ -6,7 +6,9 @@ Worktree `/home/henk/bragfast-v2-wt-slice1-web` on branch `feat/slice1-web` from
 
 ## Predicate
 
-Domain tests for create, attach, web-redirect, type-reject, own-delete, and hero successor are green. Schema has `photos`. `places.add` still redirects a duplicate Place ID. `places.publish` creates or attaches. The spot page shows gallery URLs when rows exist, and has no `<img>` with an empty src when hero is missing. AuthControl has an Apple button next to Google. Autocomplete accepts optional `lat`/`lng`. No Expo code lands here.
+Domain tests for create, attach, web-redirect, type-reject, unused-blob drop, own-delete, and hero successor are green. Schema has `photos`. `places.add` still redirects a duplicate Place ID. `places.publish` creates or attaches. Autocomplete accepts optional `lat`/`lng`. No Expo code lands here.
+
+UI is unproven until a spot with photos exists: gallery URLs, empty-hero chrome (no empty `<img src>`), and own-delete. Apple is in AuthControl copy and the JS bundle; the dialog click and OAuth flow are unproven. `SpotGallery` always subscribes to `listForSpot` — do not ship this Next until Convex has that query.
 
 ## Rigor
 

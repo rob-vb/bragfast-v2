@@ -6,6 +6,7 @@ import {
   planHeroAfterDelete,
   planPhotoDelete,
   planPhotoPublish,
+  unusedPublishBlob,
   type PhotoPublishChannel,
 } from "../../domain/photo";
 import { applyPlaceAdd, type PlaceAddCommit } from "./placeAdd";
@@ -90,7 +91,7 @@ export async function applyPhotoPublish(
       spotSlug: parseSpotSlug(byPlaceId.slug),
     };
   }
-  if (plan.action !== "live") {
+  if (unusedPublishBlob(plan)) {
     if (photoId !== null) {
       await ctx.storage.delete(photoId);
     }
