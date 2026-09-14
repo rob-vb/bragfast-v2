@@ -12,7 +12,7 @@ A **website** (not a native app) that is the breakfast and brunch **directory** 
 
 The brand is English (`brag.fast`, hashtag `#bragfast`). The first market is NL because the owner lives there. More countries later via the same URL shape.
 
-Scraped Places catalogs and Instagram ingest are not the product. An iOS app later attaches more photos to an existing spot. That app is not this website.
+Scraped Places catalogs and Instagram ingest are not the product. The iOS and Android app (separate repo) attaches more photos to an existing spot. This website shows those photos in the spot gallery. Extra-upload stays in the app. Website add stays create-only.
 
 ## Leading words
 
@@ -24,7 +24,7 @@ Scraped Places catalogs and Instagram ingest are not the product. An iOS app lat
 | **Adder** | The account that added the spot. |
 | **Leaderboard** | Person board at `/nl/leaderboard`. Rank is the sum of likes on spots the adder added. |
 | **Passport** | Public profile of spots that account added. The `UserSlug` exists at signup. |
-| **Photo** | One image the adder uploads onto the spot. Required to create the spot. Hosted on brag.fast. |
+| **Photo** | One hosted image on the spot. Create requires the adder’s photo. That photo is the hero and the first gallery row. The app may attach more visitor photos to the same spot. Hosted on brag.fast. |
 | **Claim** | Paid ownership of the spot page (v2). Tools and a conversion CTA, never rank. **Geclaimd** means someone is paying for that page, not that we verified the business. |
 
 Do not call a woonplaats a gemeente. Gemeente boards are retired.
@@ -38,9 +38,9 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 - Woonplaats page: list of visitor-added spots, empty state when none, list default, map toggle
 - Add CTA on an empty woonplaats. Signed-out click opens sign-in. Signed-in visitor adds a Place plus one photo.
 - Filters: open now
-- Spot page: name, address, hours, like count, the uploaded photo
+- Spot page: name, address, hours, like count, the adder’s photo as hero, and a gallery of hosted photos on that spot
 - Ranking: like count on the spot. Tie-break is the most recent like, then recency of the add
-- Auth: Better Auth with Google + `emailAndPassword`. Unique public `username` (`UserSlug`) at signup. Password login accepts email or username. Google first login that lacks a username stays on the same dialog until the username is set. No magic link.
+- Auth: Better Auth with Google, Apple, and `emailAndPassword`. Unique public `username` (`UserSlug`) at signup. Password login accepts email or username. Google or Apple first login that lacks a username stays on the same dialog until the username is set. No magic link.
 - Like: signed-in, one per spot, toggle off to unlike. Signed-out like opens the sign-in dialog and writes nothing
 - Leaderboard: adders ranked by likes on spots they added. Tie-break is number of spots added, then earliest add. An account with zero adds is absent.
 - Photo upload on add, Convex storage
@@ -50,14 +50,13 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 
 **Not v1**
 
-- Native app, Stripe/claim (see **Claim (v2)**. Do not implement until a v2 task names it), pay-to-rank, TikTok/YouTube OAuth
+- Native iOS/Android UI (separate repo). Extra-upload on the website spot page.
 - Type chips (Café/lunch, Bakker, Hotel, Overig) are v2. `spotType` may exist in data. Do not expose woonplaats filters until a v2 task.
 - Instagram connect, `#bragfast` import, social embeds as catalog, maker votes, magic email link, nightly Places hygiene
 - Comments, followers, notifications beyond transactional email
 - Cuisine taxonomy, guests-only hotel flag, AI-written spot articles
 - ChatGPT-placement promises, national spot board
-- Apple login (add later on Better Auth)
-- iOS client that attaches more photos to an existing spot
+- Stripe/claim (see **Claim (v2)**. Do not implement until a v2 task names it), pay-to-rank, TikTok/YouTube OAuth
 
 The owner sets the "idea is working" bar. Do not block v1 on a metric.
 
@@ -150,7 +149,7 @@ Signed-out add control fires `requestSignIn`. Signed-in add control mounts the P
 
 Name, address, woonplaats, opening hours / open-now.  
 Like count and like control.  
-The adder’s photo as the card and page image.  
+The adder’s photo as the card and page hero. A gallery of hosted photos on that spot, including the adder’s photo. Signed-in visitors can delete a gallery row they uploaded. Extra-upload is the app, not this page. Empty hero is berry with no broken image.  
 Share URL. Report.  
 No menu, price, booking, phone-as-a-product in **v1** (optional tel link is fine). No comments. v2 claimed spots may add one owner conversion CTA. See Claim (v2).
 
@@ -166,9 +165,9 @@ List of adders. Readable signed-out. Header and footer link here. Empty copy whe
 
 ## Auth and identity
 
-- **Better Auth**, v1 providers: Google, `emailAndPassword`.
+- **Better Auth**, v1 providers: Google, Apple, `emailAndPassword`.
 - Unique public `username` (`UserSlug`) at signup. Mint the passport row then.
-- Google first login without a username opens the same dialog on the username field. Do not create a user without a `UserSlug`.
+- Google or Apple first login without a username opens the same dialog on the username field. Do not create a user without a `UserSlug`.
 - Password login accepts email or username.
 - Transactional email only: "your spot is live."
 - Keep `AuthControl` mounted. `requestSignIn()` opens that dialog.
@@ -178,11 +177,11 @@ List of adders. Readable signed-out. Header and footer link here. Empty copy whe
 - Sign-in required.
 - Places autocomplete, then one Place Details call at confirm.
 - Point-in-polygon sets the woonplaats from geo. Do not trust the page `{city}` slug as the board.
-- Exactly one photo on create. Convex `_storage`.
+- Exactly one photo on create. Convex `_storage`. That write also inserts the first `photos` row. Website add of an existing Place ID still redirects and does not attach a gallery photo.
 - Honor system: the Place is a breakfast or brunch tent. No GPS required from the visitor.
-- User can delete their photo later (AVG). Report hides pending owner review.
+- User can delete their own gallery photo later (AVG). Deleting the hero promotes the oldest remaining photo, or leaves the hero empty. Report hides pending owner review.
 - No pre-moderation of every upload.
-- iOS later attaches more photos to an existing spot. Do not block v1 on that client.
+- The iOS and Android app attaches more photos to an existing spot. The website gallery must show them. Do not add an extra-upload control on the website spot page.
 
 ## Likes
 
@@ -197,7 +196,7 @@ Empty repo: use this unless the human names another.
 
 - Next.js App Router + TypeScript, **server-rendered** HTML for all public pages
 - Convex
-- Better Auth (Google, `emailAndPassword`)
+- Better Auth (Google, Apple, `emailAndPassword`)
 - Google Places (autocomplete + Place Details as the add helper. Place ID, hours, types)
 - i18n: `nl` + `en` message files; UGC never machine-translated
 - Object storage for **in-app** spot photos only
@@ -208,6 +207,7 @@ Do not add a second framework. Do not ship a client-only SPA for public pages.
 
 - `User`. brag.fast account, `UserSlug`, email
 - `Spot`. place_id unique, slug, woonplaats slug, country=`nl`, types, hours, `closed_permanently`, `addedBy`, photo storage id, like count
+- `Photo`. spot_id, storage id, uploaded_by, created_at. Many per spot. Hero stays `Spot.photoId`.
 - `Like`. user_id, spot_id, created_at. Unique `(user_id, spot_id)`
 - `Report`. spot or photo, reason, status
 
@@ -263,8 +263,8 @@ Stop each step when the criterion is true.
 4. **Auth.** Google + `emailAndPassword`, `UserSlug` at signup.  
    *Done:* the dialog has Google, username, password, and create-account. Magic-link copy is gone. `requestSignIn()` still opens it.
 
-5. **Add + photo.** Mount add on empty woonplaats pages. Point-in-polygon assigns the board. One photo required.  
-   *Done:* a signed-in visitor can create `/nl/{woonplaats}/{spot}` with that photo as the card image.
+5. **Add + photo.** Mount add on empty woonplaats pages. Point-in-polygon assigns the board. One photo required. Website create writes the first gallery row.  
+   *Done:* a signed-in visitor can create `/nl/{woonplaats}/{spot}` with that photo as the card image and the first gallery row.
 
 6. **Likes.** One per session per spot. Signed-out click opens sign-in.  
    *Done:* the woonplaats list orders by like count. Counts match the spot page.
@@ -274,4 +274,4 @@ Stop each step when the criterion is true.
 
 ## Out of scope reminders
 
-If a task would require Stripe, TikTok login, a store listing, a comment thread, Google stars on the board, generating unique blog copy per spot, woonplaats type chips, Instagram, or magic link, stop and leave it out. Claim and type chips are v2. A v1 task that touches Stripe, Geclaimd, type chips, Instagram, or magic link is out of scope. iOS is later.
+If a task would require Stripe, TikTok login, a store listing, a comment thread, Google stars on the board, generating unique blog copy per spot, woonplaats type chips, Instagram, or magic link, stop and leave it out. Claim and type chips are v2. A v1 task that touches Stripe, Geclaimd, type chips, Instagram, or magic link is out of scope. Extra photos write from the app. The website gallery is in scope.
