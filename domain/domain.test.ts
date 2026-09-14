@@ -18,6 +18,11 @@ import {
 } from "./moderation";
 import { bragLiveEmail } from "./notify";
 import { classifyPlaceTypes, planPlaceAdd, slugFromPlaceName } from "./placeAdd";
+import {
+  planHeroAfterDelete,
+  planPhotoDelete,
+  planPhotoPublish,
+} from "./photo";
 import { isMissingConvexFunction } from "./convexQuery";
 import {
   passportSlugCandidate,
@@ -399,6 +404,103 @@ test("planPlaceAdd lives a café, redirects a duplicate placeId, and rejects fas
       existing: null,
     }),
     { action: "live", spotType: "cafe", placeSlug: "hoofddorp" },
+  );
+});
+
+test("planPhotoPublish attaches from the app and still redirects on the web", () => {
+  const haarlem = { lat: 52.3812, lng: 4.636 };
+  const existing = { spotSlug: "zoete-kruimels", placeSlug: "oldenzaal" };
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "web",
+      types: ["cafe"],
+      geo: haarlem,
+      photo: true,
+      existing,
+    }),
+    {
+      action: "redirect",
+      spotSlug: "zoete-kruimels",
+      placeSlug: "oldenzaal",
+    },
+  );
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "app",
+      types: ["cafe"],
+      geo: haarlem,
+      photo: true,
+      existing,
+    }),
+    { action: "attach" },
+  );
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "app",
+      types: ["cafe"],
+      geo: haarlem,
+      photo: false,
+      existing,
+    }),
+    { action: "reject", reason: "photo-required" },
+  );
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "app",
+      types: ["cafe"],
+      geo: haarlem,
+      photo: true,
+      existing: null,
+    }),
+    { action: "live", spotType: "cafe", placeSlug: "haarlem" },
+  );
+  assert.deepEqual(
+    planPhotoPublish({
+      channel: "app",
+      types: ["fast_food"],
+      geo: haarlem,
+      photo: true,
+      existing: null,
+    }),
+    { action: "reject", reason: "disallowed-type" },
+  );
+});
+
+test("planPhotoDelete only lets the uploader remove the row", () => {
+  assert.deepEqual(planPhotoDelete({ owner: true }), { action: "delete" });
+  assert.deepEqual(planPhotoDelete({ owner: false }), {
+    action: "reject",
+    reason: "not-owner",
+  });
+});
+
+test("planHeroAfterDelete promotes the oldest remaining photo", () => {
+  assert.deepEqual(
+    planHeroAfterDelete({
+      deletingStorageId: "hero",
+      heroStorageId: "hero",
+      remaining: [
+        { storageId: "newer", createdAt: 20 },
+        { storageId: "older", createdAt: 10 },
+      ],
+    }),
+    { kind: "promote", storageId: "older" },
+  );
+  assert.deepEqual(
+    planHeroAfterDelete({
+      deletingStorageId: "extra",
+      heroStorageId: "hero",
+      remaining: [{ storageId: "hero", createdAt: 1 }],
+    }),
+    { kind: "keep", storageId: "hero" },
+  );
+  assert.deepEqual(
+    planHeroAfterDelete({
+      deletingStorageId: "hero",
+      heroStorageId: "hero",
+      remaining: [],
+    }),
+    { kind: "empty" },
   );
 });
 
