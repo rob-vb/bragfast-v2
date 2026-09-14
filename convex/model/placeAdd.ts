@@ -64,6 +64,9 @@ export async function applyPlaceAdd(
       : null,
   });
   if (plan.action !== "live") {
+    if (photoId !== null) {
+      await ctx.storage.delete(photoId);
+    }
     return plan;
   }
   if (photoId === null) {

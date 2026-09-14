@@ -165,7 +165,7 @@ List of adders. Readable signed-out. Header and footer link here. Empty copy whe
 
 ## Auth and identity
 
-- **Better Auth**, v1 providers: Google, Apple, `emailAndPassword`.
+- **Better Auth**, v1 providers: Google, Apple, `emailAndPassword`. Apple `clientSecret` is the short-lived JWT Better Auth expects, not a Google-style static secret. Set it on the Convex deployment with `APPLE_CLIENT_ID`.
 - Unique public `username` (`UserSlug`) at signup. Mint the passport row then.
 - Google or Apple first login without a username opens the same dialog on the username field. Do not create a user without a `UserSlug`.
 - Password login accepts email or username.

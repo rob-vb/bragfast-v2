@@ -72,6 +72,9 @@ export async function applyPhotoPublish(
   });
   if (plan.action === "attach") {
     if (!byPlaceId || photoId === null) {
+      if (photoId !== null) {
+        await ctx.storage.delete(photoId);
+      }
       return { action: "reject", reason: "photo-required" };
     }
     await insertVisitorPhoto(ctx, {
@@ -86,6 +89,12 @@ export async function applyPhotoPublish(
       placeSlug: byPlaceId.citySlug,
       spotSlug: parseSpotSlug(byPlaceId.slug),
     };
+  }
+  if (plan.action !== "live") {
+    if (photoId !== null) {
+      await ctx.storage.delete(photoId);
+    }
+    return plan;
   }
   return await applyPlaceAdd(ctx, {
     placeId: input.placeId,
