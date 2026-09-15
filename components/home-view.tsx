@@ -1,22 +1,24 @@
-"use client";
-
-import { useState } from "react";
-import { boardCityLabel, t, type Locale } from "@/domain/messages";
-import type { CityCard } from "@/domain/viewModels";
+import {
+  likeCountLabel,
+  localFavoritesHeading,
+  seeAllInCity,
+  t,
+  type Locale,
+} from "@/domain/messages";
+import type { HomepageData, LocalFavorites } from "@/domain/viewModels";
+import { AppRow } from "@/components/app-row";
 import { SearchBox } from "@/components/search-box";
 import { PhotoFrame, SpotLinkCard } from "@/components/visual";
-import { HERO_SCENE, cityScene } from "@/lib/scenes";
-import { cn } from "@/lib/utils";
+import { HERO_SCENE } from "@/lib/scenes";
+import Link from "next/link";
 
 export function HomeView({
   locale,
-  featured,
+  homepage,
 }: {
   locale: Locale;
-  featured: CityCard[];
+  homepage: HomepageData;
 }) {
-  const [moreCities, setMoreCities] = useState(false);
-
   return (
     <main>
       <section className="relative -mt-16 min-h-[92svh] sm:-mt-[4.5rem]">
@@ -32,50 +34,66 @@ export function HomeView({
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
-        <h2 className="font-display text-3xl tracking-wide sm:text-4xl">
-          {t(locale, "featuredCities")}
-        </h2>
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((city, index) => {
-            const name = locale === "en" ? city.nameEn : city.nameNl;
-            const hiddenOnMobile = index >= 4 && !moreCities;
-            const featuredHero = index === 0;
-            return (
-              <li
-                key={city.slug}
-                className={cn(
-                  featuredHero && "sm:col-span-2 lg:row-span-2",
-                  hiddenOnMobile && "max-sm:hidden",
-                )}
-              >
-                <SpotLinkCard
-                  href={`/nl/${city.slug}`}
-                  src={cityScene(city.slug)}
-                  title={name}
-                  meta={
-                    city.boardCount
-                      ? boardCityLabel(locale, city.boardCount)
-                      : undefined
-                  }
-                  className={
-                    featuredHero ? "min-h-48 sm:min-h-72 lg:min-h-full" : "min-h-48"
-                  }
-                />
-              </li>
-            );
-          })}
-        </ul>
-        {featured.length > 4 && !moreCities ? (
-          <button
-            type="button"
-            className="mt-5 text-sm font-bold text-blush sm:hidden"
-            onClick={() => setMoreCities(true)}
-          >
-            {t(locale, "moreCities")}
-          </button>
-        ) : null}
-      </section>
+      <LocalFavoritesSection
+        locale={locale}
+        localFavorites={homepage.localFavorites}
+      />
+
+      <AppRow
+        locale={locale}
+        stores={homepage.stores}
+        titleKey="appRowBragTitle"
+        bodyKey="appRowBragBody"
+        phoneFirst={false}
+      />
+      <AppRow
+        locale={locale}
+        stores={homepage.stores}
+        titleKey="appRowPhotosTitle"
+        bodyKey="appRowPhotosBody"
+        phoneFirst
+      />
     </main>
+  );
+}
+
+function LocalFavoritesSection({
+  locale,
+  localFavorites,
+}: {
+  locale: Locale;
+  localFavorites: LocalFavorites;
+}) {
+  if (localFavorites.kind === "omit") {
+    return null;
+  }
+  const cityName =
+    locale === "en" ? localFavorites.city.nameEn : localFavorites.city.nameNl;
+  return (
+    <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
+      <h2 className="font-display text-3xl tracking-wide sm:text-4xl">
+        {localFavoritesHeading(locale, cityName)}
+      </h2>
+      <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {localFavorites.spots.map((spot) => (
+          <li key={spot.slug}>
+            <SpotLinkCard
+              href={`/nl/${spot.citySlug}/${spot.slug}`}
+              src={spot.photoUrl}
+              title={spot.name}
+              meta={likeCountLabel(locale, spot.likeCount)}
+            />
+          </li>
+        ))}
+      </ul>
+      <p className="mt-6">
+        <Link
+          href={`/nl/${localFavorites.city.slug}`}
+          className="text-sm font-bold text-blush"
+        >
+          {seeAllInCity(locale, cityName)}
+        </Link>
+      </p>
+    </section>
   );
 }

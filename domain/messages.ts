@@ -4,8 +4,13 @@ export const nlMessages = {
   searchLabel: "Zoek een woonplaats",
   searchPlaceholder: "Haarlem, Den Haag, Giethoorn",
   searchSubmit: "Zoek",
-  featuredCities: "Steden om te ontdekken",
-  moreCities: "Meer steden",
+  appRowBragTitle: "Brag als eerste",
+  appRowBragBody: "Maak een plek aan in de app met de eerste foto.",
+  appRowPhotosTitle: "Laat je ontbijt zien",
+  appRowPhotosBody: "Voeg extra foto's toe in de app.",
+  comingSoon: "Coming soon",
+  downloadIos: "App Store",
+  downloadAndroid: "Google Play",
   noSearchResults: "Geen stad met die naam. Probeer Haarlem of Amsterdam.",
   footerLine: "Brag je ontbijt.",
   footerExplain: "Plekken voeg je toe in de app.",
@@ -79,8 +84,13 @@ export const enMessages = {
   searchLabel: "Search a city",
   searchPlaceholder: "Haarlem, Den Haag, Giethoorn",
   searchSubmit: "Search",
-  featuredCities: "Cities to explore",
-  moreCities: "More cities",
+  appRowBragTitle: "Be first to brag",
+  appRowBragBody: "Add a spot in the app with the first photo.",
+  appRowPhotosTitle: "Show off your breakfast",
+  appRowPhotosBody: "Add extra photos in the app.",
+  comingSoon: "Coming soon",
+  downloadIos: "App Store",
+  downloadAndroid: "Google Play",
   noSearchResults: "No city by that name. Try Haarlem or Amsterdam.",
   footerLine: "Brag your breakfast.",
   footerExplain: "Add spots in the app.",
@@ -187,6 +197,14 @@ export function uniqueSpotsLabel(locale: Locale, count: number): string {
     return "1 plek";
   }
   return `${count} plekken`;
+}
+
+export function localFavoritesHeading(locale: Locale, city: string): string {
+  return locale === "en" ? `Favorites in ${city}` : `Favorieten in ${city}`;
+}
+
+export function seeAllInCity(locale: Locale, city: string): string {
+  return locale === "en" ? `All spots in ${city}` : `Alle plekken in ${city}`;
 }
 
 export function likeCountLabel(locale: Locale, count: number): string {

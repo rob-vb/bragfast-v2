@@ -34,7 +34,7 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 **Ship in v1**
 
 - Crawlable site, NL woonplaats boards, spot + profile + leaderboard pages
-- Homepage: woonplaats autocomplete over the BAG gazetteer, featured woonplaatsen. No near-me. No spot search on `/`.
+- Homepage: woonplaats autocomplete over the BAG gazetteer; IP local-favorites when that woonplaats board has at least 3 listed spots with a photo; two app rows with per-store Coming soon. No featured woonplaatsen. No GPS. No spot search on `/`. No national feed.
 - Woonplaats page: list of spots added in the app, empty state when none, list default, map toggle when spots exist
 - Empty woonplaats: `noSpotsYet` and `emptyBoardAppHint`. No add control. No sort or map on empty.
 - Spot page: name, address, like count, the adder’s photo as hero, and a gallery of hosted photos on that spot. Hours stay in data and JSON-LD, not in seeker chrome.
@@ -61,7 +61,7 @@ The owner sets the "idea is working" bar. Do not block v1 on a metric.
 
 ## Hard rules
 
-1. Discovery owns the product. Likes feed the woonplaats board. Do not build a national live feed as the homepage.
+1. Discovery owns the product. Likes feed the woonplaats board. Do not build a national live feed as the homepage. IP local-favorites are that one woonplaats board, not a radius and not a ticker.
 2. Rank **spots**, not dishes. The person board is the adder leaderboard.
 3. Catalog of boards = NL woonplaatsen. One GPS point, one woonplaats. URLs are country-prefixed for a future `/be/...`.
 4. A like is a vote. No star ratings. Do not surface Google rating as "best."
@@ -127,9 +127,26 @@ Permanently closed (`business_status` CLOSED): strip from woonplaats lists and s
 
 ### Homepage
 
-One sentence of what it is (breakfast and brunch spots per woonplaats). One search box: woonplaats autocomplete over the BAG gazetteer (`searchWoonplaatsHits` / `NL_CITIES`). English intro: "Search a city." Dutch intro keeps woonplaats. Featured woonplaatsen (prefer boards that already have spots; always include major NL woonplaatsen). Exact pick navigates to `/nl/{city}`. There is no `/?q=` results list and no near-me control.
+**Hero.** One sentence of what it is (breakfast and brunch spots per woonplaats). One search box: woonplaats autocomplete over the BAG gazetteer (`searchWoonplaatsHits` / `NL_CITIES`). English intro: "Search a city." Dutch intro keeps woonplaats. Exact pick navigates to `/nl/{city}`. There is no `/?q=` results list, no GPS or near-me control, no spot search on `/`, and no nationwide ticker or live social feed.
 
-No nationwide ticker.
+**Local favorites.** Optional block under the search. Infer a point from the request IP (GeoIP/MaxMind-style). No browser geolocation prompt. Map that point through BAG point-in-polygon to one woonplaats (same assignment as add).
+
+Render the block only when that woonplaats has at least **3** listed spots with a hosted photo. Otherwise omit it: too few spots, IP outside NL, the point misses every ring, or a VPN/datacenter with no Dutch woonplaats. No fallback city. Do not title the block with a foreign city.
+
+When it renders: heading is that woonplaats (copy not frozen). Order is `sortCityBoard` (likes, then recency). At most **6** cards. Each card: the brag photo, spot name, like count. No address, no hours. Click goes to `/nl/{city}/{spot}`. One extra link goes to the woonplaats board `/nl/{city}`. Spots without a photo do not count toward the threshold of 3.
+
+Do not ship featured woonplaatsen or **Steden om te ontdekken**. Stock city scenes are not a homepage module.
+
+**App rows.** Two bands under favorites (or under search when favorites is omitted). Always show them.
+
+1. First to brag a spot (create in the app).
+2. Show off your breakfast (extra photos in the app).
+
+No third row. No recent-brags feed on `/`. GPS stays in the app. Copy is not frozen; do not put **adder** in Dutch UI sentences.
+
+Each row: title, one sentence, per-store download controls, a device frame. Empty phone shells are allowed while the site is in development. Swap in real stills or looping mp4 later without changing the layout.
+
+Store buttons: one iOS, one Android. Each is independently **live** (href to that store URL) or **disabled + Coming soon**. iOS ships first; Android may stay coming-soon after iOS is live. Do not href a store that is not actually listed.
 
 ### Woonplaats `/nl/{city}`
 
@@ -242,6 +259,7 @@ Geclaimd means "this page has a paying owner," not "we checked KvK" and not "thi
 
 Homepage one-liner: **Ontbijt- en brunchplekken, per stad.**  
 Hashtag in UI: `#bragfast`.  
+Homepage app-row and local-favorites headings: not frozen; owner rewrites later. Do not use **adder** in Dutch UI sentences. Disabled store buttons: **Coming soon**.  
 Board empty: **Nog geen plekken in deze stad.** (`noSpotsYet`) plus `emptyBoardAppHint`.  
 Closed: **Gesloten**.  
 Leaderboard chrome (NL and EN): **Leaderboard**.  
@@ -277,6 +295,9 @@ Stop each step when the criterion is true.
 7. **Leaderboard.** `/nl/leaderboard` and passport list added spots.  
    *Done:* two adders with different like sums appear in that order. A user with zero spots is absent.
 
+8. **Homepage.** Local favorites from IP when the board has ≥3 photo spots; two app rows; featured woonplaatsen gone.  
+   *Done:* `/` HTML has no **Steden om te ontdekken**. A board under the 3-spot gate does not render the favorites block. Two app rows include per-store **Coming soon** (disabled until that store URL exists).
+
 ## Out of scope reminders
 
-If a task would require Stripe, TikTok login, a store listing, a comment thread, Google stars on the board, generating unique blog copy per spot, woonplaats type chips, Instagram, or magic link, stop and leave it out. Claim and type chips are v2. A v1 task that touches Stripe, Geclaimd, type chips, Instagram, or magic link is out of scope. Extra photos write from the app. The website gallery is in scope.
+If a task would require Stripe, TikTok login, submitting the app to a store, a comment thread, Google stars on the board, generating unique blog copy per spot, woonplaats type chips, Instagram, or magic link, stop and leave it out. Disabled **Coming soon** store badges on `/` are in scope; going live on App Store or Play is not a website task. Claim and type chips are v2. A v1 task that touches Stripe, Geclaimd, type chips, Instagram, or magic link is out of scope. Extra photos write from the app. The website gallery is in scope.

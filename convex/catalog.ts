@@ -2,7 +2,6 @@ import { v } from "convex/values";
 import { query, type QueryCtx } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
 import { NL_CITIES } from "../domain/cities";
-import { cityCentroid, nearestCity } from "../domain/geo";
 import { DomainParseError, parseCitySlug, parseSpotSlug } from "../domain/ids";
 import { searchWoonplaatsHits } from "../domain/searchMatch";
 import { sortCityBoard } from "../domain/like";
@@ -11,8 +10,6 @@ import type {
   CityCard,
   CityPageData,
   CitySpotCard,
-  HomepageData,
-  NearbyData,
   SearchHit,
   SitemapEntry,
   SpotPageData,
@@ -90,50 +87,6 @@ async function loadCityPage(
     spots: await listedVisitorSpots(ctx, slug),
   };
 }
-
-export const homepage = query({
-  args: {},
-  handler: async (ctx): Promise<HomepageData> => {
-    const rows = await ctx.db.query("cities").withIndex("by_featured").collect();
-    const featured = rows
-      .filter((row) => row.featuredOrder !== undefined)
-      .sort((a, b) => (a.featuredOrder ?? 0) - (b.featuredOrder ?? 0))
-      .map((row) => ({ ...cityCard(row), boardCount: 0 }));
-    return { featured };
-  },
-});
-
-export const nearby = query({
-  args: { lat: v.number(), lng: v.number() },
-  handler: async (ctx, { lat, lng }): Promise<NearbyData> => {
-    const origin = { lat, lng };
-    const cityRows = await ctx.db.query("cities").collect();
-    const citiesWithCentroid = [];
-    for (const row of cityRows) {
-      const geo = cityCentroid(row.slug);
-      if (!geo) {
-        continue;
-      }
-      citiesWithCentroid.push({
-        slug: parseCitySlug(row.slug),
-        geo,
-        nameNl: row.nameNl,
-        nameEn: row.nameEn,
-      });
-    }
-    const nearest = nearestCity(origin, citiesWithCentroid);
-    return {
-      nearestCity: nearest
-        ? {
-            slug: nearest.slug,
-            nameNl: nearest.nameNl,
-            nameEn: nearest.nameEn,
-          }
-        : null,
-      spots: [],
-    };
-  },
-});
 
 export const searchCatalog = query({
   args: { q: v.string() },

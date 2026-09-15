@@ -26,7 +26,7 @@ Public pages are server-rendered Next.js on a VPS. The owner-facing site is http
 
 Specified in `SPEC.md`, not all shipped yet: woonplaats boards for every Dutch BAG woonplaats, app-only catalog writes with Places autocomplete and one required photo, a spot gallery of hosted photos (app attaches extras), signed-in likes (one per spot), adder leaderboard, Better Auth Google + Apple + `emailAndPassword`.
 
-Shipped in the current tree and still true until later PRs land: homepage search and featured cities, near-me, city list, map toggle, open-now filter, spot page with hours, sign-in chrome, admin reports.
+Shipped in the current tree and still true until later PRs land: homepage search, woonplaats list, map toggle, sign-in chrome, admin reports. Featured woonplaatsen and near-me are retired; `/` follows the Homepage section in `SPEC.md` (IP local-favorites when the board qualifies, two app rows, no GPS).
 
 Type chips (Café/Bakker/Hotel/Overig) were removed on purpose. Do not put them back.
 
@@ -34,7 +34,7 @@ Live Google Places autocomplete is live when `GOOGLE_PLACES_API_KEY` is set on t
 
 Not v1: Stripe/claim, pay-to-rank, TikTok/YouTube OAuth, Instagram, magic link, maker votes, nightly Places crawl, comments, followers, cuisine taxonomy, AI spot articles, national spot board. Extra-upload on the website spot page is out. Apple login is on the website.
 
-Do not host third-party UGC. Do not invent Google ratings. Do not invent a nationwide ticker.
+Do not host third-party UGC. Do not invent Google ratings. Do not invent a nationwide ticker. Do not ship **Steden om te ontdekken**.
 
 ## Brand Commitments
 
@@ -44,7 +44,7 @@ User-pinned visual for this redesign: kawaii egg mascot, strawberry-milk header 
 
 ## Evidence on Hand
 
-Featured city rows and atmospheric breakfast stills used as city scenes must not be labeled as those cafés. Do not fabricate real venue photography or customer quotes. The live Haarlem catalog is leftover scrape data. Treat it as gone once the operator approves the wipe. Empty woonplaats pages are the intended board until someone adds the first photo in the app.
+Local-favorites cards use the hosted brag photo, never a city scene labeled as that café. Do not fabricate real venue photography or customer quotes. The live Haarlem catalog is leftover scrape data. Treat it as gone once the operator approves the wipe. Empty woonplaats pages are the intended board until someone adds the first photo in the app.
 
 ## Product Principles
 
