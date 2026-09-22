@@ -1,5 +1,10 @@
 import { parseCitySlug, parseSpotSlug } from "./ids";
-import { planPlaceAdd, type PlaceAddPlan } from "./placeAdd";
+import { lookupWoonplaats } from "./cities";
+import {
+  planPlaceAdd,
+  type PlaceAddPlan,
+  type PlaceAddRejectReason,
+} from "./placeAdd";
 
 export type PhotoPublishChannel = "web" | "app";
 
@@ -42,6 +47,52 @@ export function planPhotoPublish(input: {
     photo: input.photo,
     existing: null,
   });
+}
+
+export type PlacePreviewPlan =
+  | { kind: "new"; placeSlug: string; placeName: string }
+  | { kind: "existing"; placeSlug: string; placeName: string; spotSlug: string }
+  | { kind: "reject"; reason: PlaceAddRejectReason };
+
+function woonplaatsName(placeSlug: string): string {
+  return lookupWoonplaats(placeSlug)?.nameNl ?? placeSlug;
+}
+
+/**
+ * What an app publish of this place would do, before any upload. A
+ * prediction only: publish plans again on the server.
+ */
+export function planPlacePreview(input: {
+  types: readonly string[];
+  geo: { lat: number; lng: number };
+  existing: { spotSlug: string; placeSlug: string } | null;
+}): PlacePreviewPlan {
+  const plan = planPhotoPublish({
+    channel: "app",
+    types: input.types,
+    geo: input.geo,
+    photo: true,
+    existing: input.existing,
+  });
+  if (plan.action === "reject") {
+    return { kind: "reject", reason: plan.reason };
+  }
+  if (plan.action === "live") {
+    return {
+      kind: "new",
+      placeSlug: plan.placeSlug,
+      placeName: woonplaatsName(plan.placeSlug),
+    };
+  }
+  if (plan.action === "attach" && input.existing) {
+    return {
+      kind: "existing",
+      placeSlug: input.existing.placeSlug,
+      placeName: woonplaatsName(input.existing.placeSlug),
+      spotSlug: input.existing.spotSlug,
+    };
+  }
+  throw new Error(`Unexpected app publish plan: ${plan.action}`);
 }
 
 export function unusedPublishBlob(

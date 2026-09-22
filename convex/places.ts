@@ -3,6 +3,7 @@ import { internal } from "./_generated/api";
 import {
   action,
   internalMutation,
+  internalQuery,
   query,
   type ActionCtx,
 } from "./_generated/server";
@@ -10,7 +11,12 @@ import type { Id } from "./_generated/dataModel";
 import { authComponent } from "./auth";
 import { applyPlaceAdd, type PlaceAddCommit } from "./model/placeAdd";
 import { ensureUserByAuthId } from "./model/users";
-import type { PhotoPublishChannel } from "../domain/photo";
+import {
+  planPlacePreview,
+  type PhotoPublishChannel,
+} from "../domain/photo";
+import type { PlaceAddRejectReason } from "../domain/placeAdd";
+import { parsePlaceId } from "../domain/ids";
 
 type PlaceSuggestion = { placeId: string; name: string; address: string };
 
@@ -189,6 +195,78 @@ export const autocomplete = action({
     const bias =
       lat !== undefined && lng !== undefined ? { lat, lng } : null;
     return await fetchSuggestions(needle, key, bias);
+  },
+});
+
+export type PlacePreview =
+  | {
+      kind: "new";
+      name: string;
+      address: string;
+      placeSlug: string;
+      placeName: string;
+    }
+  | {
+      kind: "existing";
+      name: string;
+      address: string;
+      placeSlug: string;
+      placeName: string;
+      spotSlug: string;
+      heroUrl: string | null;
+    }
+  | { kind: "reject"; reason: PlaceAddRejectReason };
+
+export const spotForPlace = internalQuery({
+  args: { placeId: v.string() },
+  handler: async (
+    ctx,
+    { placeId },
+  ): Promise<{
+    spotSlug: string;
+    placeSlug: string;
+    heroUrl: string | null;
+  } | null> => {
+    const spot = await ctx.db
+      .query("spots")
+      .withIndex("by_placeId", (q) => q.eq("placeId", parsePlaceId(placeId)))
+      .unique();
+    if (!spot) {
+      return null;
+    }
+    return {
+      spotSlug: spot.slug,
+      placeSlug: spot.citySlug,
+      heroUrl: spot.photoId ? await ctx.storage.getUrl(spot.photoId) : null,
+    };
+  },
+});
+
+export const preview = action({
+  args: { placeId: v.string() },
+  handler: async (ctx, { placeId }): Promise<PlacePreview> => {
+    await authComponent.getAuthUser(ctx);
+    const key = placesKey();
+    if (!key) {
+      throw new ConvexError("Places is not configured");
+    }
+    const details = await fetchDetails(placeId, key);
+    const spot = await ctx.runQuery(internal.places.spotForPlace, {
+      placeId: details.placeId,
+    });
+    const plan = planPlacePreview({
+      types: details.types,
+      geo: details.geo,
+      existing: spot,
+    });
+    if (plan.kind === "reject") {
+      return plan;
+    }
+    const place = { name: details.name, address: details.address };
+    if (plan.kind === "new") {
+      return { ...plan, ...place };
+    }
+    return { ...plan, ...place, heroUrl: spot?.heroUrl ?? null };
   },
 });
 

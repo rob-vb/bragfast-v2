@@ -28,6 +28,7 @@ import {
   planHeroAfterDelete,
   planPhotoDelete,
   planPhotoPublish,
+  planPlacePreview,
   photoPublishWritesNewSpot,
   unusedPublishBlob,
 } from "./photo";
@@ -1075,4 +1076,33 @@ test("homepage copy helpers name the woonplaats", () => {
   assert.equal(localFavoritesHeading("en", "Haarlem"), "Favorites in Haarlem");
   assert.equal(seeAllInCity("nl", "Haarlem"), "Alle plekken in Haarlem");
   assert.equal(seeAllInCity("en", "Haarlem"), "All spots in Haarlem");
+});
+
+test("planPlacePreview maps live to new, attach to existing, and reject to reject", () => {
+  const haarlem = { lat: 52.3812, lng: 4.636 };
+  assert.deepEqual(
+    planPlacePreview({ types: ["cafe"], geo: haarlem, existing: null }),
+    { kind: "new", placeSlug: "haarlem", placeName: "Haarlem" },
+  );
+  assert.deepEqual(
+    planPlacePreview({
+      types: ["cafe"],
+      geo: haarlem,
+      existing: { spotSlug: "zoete-kruimels", placeSlug: "oldenzaal" },
+    }),
+    {
+      kind: "existing",
+      placeSlug: "oldenzaal",
+      placeName: "Oldenzaal",
+      spotSlug: "zoete-kruimels",
+    },
+  );
+  assert.deepEqual(
+    planPlacePreview({ types: ["fast_food"], geo: haarlem, existing: null }),
+    { kind: "reject", reason: "disallowed-type" },
+  );
+  assert.deepEqual(
+    planPlacePreview({ types: ["cafe"], geo: { lat: 0, lng: 0 }, existing: null }),
+    { kind: "reject", reason: "no-woonplaats" },
+  );
 });
