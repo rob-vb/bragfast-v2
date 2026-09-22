@@ -6,7 +6,7 @@ If `SPEC.md` and the code disagree, `SPEC.md` wins until a human edits it.
 
 Boards are Dutch BAG woonplaatsen (stad and dorp). Visitors add spots in the app, not on the website. Rank is like count. Auth is Better Auth Google, Apple, and `emailAndPassword`. The app creates a spot from the first photo of a Place and attaches extra photos. The website gallery shows them. Instagram, magic link, maker votes, and the Places catalog crawl are out of v1.
 
-This tree lives on a VPS. The owner-facing site is **https://brag.fast/** (nginx → `127.0.0.1:3002` → henk's pm2 process `bragfast` running `next start`). Never send the human to `localhost` or `127.0.0.1`. A Cursor `next dev` on 3010 is not what the owner sees. After UI changes: `next build` then `sudo -u henk -H pm2 restart bragfast`.
+This tree lives on a VPS. The owner-facing site is **https://brag.fast/** (nginx → `127.0.0.1:3002` → henk's pm2 process `bragfast` running `next start`). Never send the human to `localhost` or `127.0.0.1`. A Cursor `next dev` on 3010 is not what the owner sees. Deploy with `scripts/deploy.sh`: it builds into `.next`, swaps the build into `.next-live` (what pm2 serves, see `ecosystem.config.cjs`), and restarts pm2. A bare `next build` does not change the live site.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
