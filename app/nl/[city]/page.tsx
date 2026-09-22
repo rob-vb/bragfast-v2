@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { CitySpots } from "@/components/city-spots";
 import { EmptyCityBoard } from "@/components/empty-city-board";
+import { PageHero, PageHeroTitle } from "@/components/page-hero";
 import { loadCityPage } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import type { Locale } from "@/domain/messages";
@@ -61,15 +62,11 @@ export default async function CityPage({
 
   return (
     <main>
-      <section className="relative -mt-16 min-h-[52svh] bg-berry sm:-mt-[4.5rem]">
-        <div className="relative mx-auto flex min-h-[52svh] max-w-6xl flex-col justify-end px-5 pb-10 pt-28 sm:px-8">
-          <h1 className="font-display text-[clamp(3rem,10vw,7rem)] leading-[0.9] tracking-wide text-white">
-            {name}
-          </h1>
-        </div>
-      </section>
+      <PageHero size="city">
+        <PageHeroTitle size="lg">{name}</PageHeroTitle>
+      </PageHero>
 
-      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
+      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-12">
         {board.kind === "empty" ? (
           <EmptyCityBoard locale={locale} />
         ) : (

@@ -89,7 +89,7 @@ function LocalFavoritesSection({
       <p className="mt-6">
         <Link
           href={`/nl/${localFavorites.city.slug}`}
-          className="text-sm font-bold text-blush"
+          className="text-sm font-bold text-blush transition-colors duration-press ease-out-strong pointer-fine:hover:text-berry focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk"
         >
           {seeAllInCity(locale, cityName)}
         </Link>

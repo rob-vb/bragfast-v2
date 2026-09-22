@@ -34,7 +34,7 @@ export function SpotPhotos({
             viewerId === photo.uploadedBy;
           return (
             <li key={photo.id} className="overflow-hidden rounded-slab bg-milk">
-              <div className="relative min-h-44">
+              <div className="relative aspect-[4/3] outline outline-1 -outline-offset-1 outline-black/10">
                 <img
                   src={photo.url}
                   alt=""

@@ -356,13 +356,16 @@ export function AuthControl({
 
     return (
       <Menu.Root modal={false}>
-        <Menu.Trigger className="inline-flex items-center gap-1 text-sm font-bold text-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk">
+        <Menu.Trigger className="inline-flex h-8 items-center gap-1 rounded-full px-3 text-sm font-bold text-berry transition-[color,background-color,transform] duration-press ease-out-strong pointer-fine:hover:bg-milk pointer-fine:hover:text-blush active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk">
           {t(locale, "myProfile")}
           <ChevronDown className="size-4" aria-hidden="true" />
         </Menu.Trigger>
         <Menu.Portal>
           <Menu.Positioner className="isolate z-50 outline-none" sideOffset={8} align="end">
-            <Menu.Popup className="min-w-40 origin-[var(--transform-origin)] rounded-xl border border-berry/15 bg-white py-1 shadow-lift outline-none transition-[scale,opacity] duration-100 data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
+            <Menu.Popup
+              data-slot="menu-popup"
+              className="min-w-40 origin-(--transform-origin) rounded-slab bg-white py-1 shadow-lift outline-none transition-[opacity,transform] duration-popover ease-out-strong data-ending-style:scale-[0.97] data-ending-style:opacity-0 data-starting-style:scale-[0.97] data-starting-style:opacity-0"
+            >
               {accountItems.map((item) =>
                 item.kind === "link" ? (
                   <Menu.LinkItem
@@ -433,7 +436,6 @@ export function AuthControl({
         disabled={pending || state.phase === "needs-username"}
         onClick={signInWithGoogle}
       >
-        <span className="font-black text-blush">G</span>
         {t(locale, "continueGoogle")}
       </Button>
 

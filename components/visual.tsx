@@ -92,11 +92,16 @@ export function SpotLinkCard({
         href={href}
         className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk"
       >
-        <div className={cn("relative min-h-44 overflow-hidden", className)}>
+        <div
+          className={cn(
+            "relative aspect-[4/3] overflow-hidden outline outline-1 -outline-offset-1 outline-black/10",
+            className,
+          )}
+        >
           <img
             src={src}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out-strong pointer-fine:group-hover:scale-[1.03]"
           />
         </div>
         <span className="block px-4 py-3">
@@ -143,7 +148,7 @@ export function Segmented({
 }
 
 const segmentKeyClass =
-  "candy-key px-3.5 py-1.5 text-berry hover:bg-milk aria-current:bg-blush aria-current:text-white aria-current:hover:bg-blush";
+  "candy-key px-3.5 py-1.5 text-berry transition-[color,background-color,transform] duration-press ease-out-strong pointer-fine:hover:bg-milk active:scale-[0.97] aria-current:bg-blush aria-current:text-white pointer-fine:aria-current:hover:bg-blush";
 
 export function SegmentLink({
   href,

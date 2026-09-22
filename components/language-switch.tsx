@@ -31,7 +31,7 @@ export function LanguageSwitch({
     <div
       role="group"
       aria-label={label}
-      className="flex items-center rounded-full border border-berry/15 bg-white/70 p-0.5 backdrop-blur-sm"
+      className="flex items-center rounded-full border border-berry/12 bg-white p-0.5"
     >
       {LOCALE_FLAGS.map((option) => {
         const Flag = FLAG_MARK[option.locale];
@@ -41,7 +41,7 @@ export function LanguageSwitch({
             type="button"
             aria-label={option.autonym}
             aria-pressed={locale === option.locale}
-            className="flex size-8 items-center justify-center rounded-full transition-colors aria-pressed:bg-blush"
+            className="flex size-8 items-center justify-center rounded-full transition-[background-color,transform] duration-press ease-out-strong active:scale-[0.97] pointer-fine:hover:bg-milk focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk aria-pressed:bg-blush pointer-fine:aria-pressed:hover:bg-blush"
             onClick={() => choose(option.locale)}
           >
             <Flag />

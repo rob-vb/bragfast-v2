@@ -1,15 +1,18 @@
 import { getLocale } from "@/lib/i18n";
+import { t } from "@/domain/messages";
+import { PageHero, PageHeroTitle } from "@/components/page-hero";
 
 export default async function PrivacyPage() {
   const locale = await getLocale();
   const en = locale === "en";
   return (
-    <main className="mx-auto max-w-3xl px-5 py-16 sm:px-8">
-      <h1 className="font-display text-4xl tracking-wide">
-        {en ? "Privacy" : "Privacy"}
-      </h1>
-      <p className="mt-6 text-sm text-berry/55">brag.fast · https://brag.fast/</p>
-      <div className="mt-8 space-y-5 text-base leading-7 text-berry/80">
+    <main>
+      <PageHero size="compact" width="narrow">
+        <PageHeroTitle size="sm">{t(locale, "privacy")}</PageHeroTitle>
+      </PageHero>
+      <div className="mx-auto max-w-3xl px-5 py-10 sm:px-8 sm:py-12">
+        <p className="text-sm text-berry/55">brag.fast · https://brag.fast/</p>
+        <div className="mt-8 space-y-5 text-base leading-7 text-berry/80">
         {en ? (
           <>
             <p>
@@ -43,6 +46,7 @@ export default async function PrivacyPage() {
             </p>
           </>
         )}
+      </div>
       </div>
     </main>
   );

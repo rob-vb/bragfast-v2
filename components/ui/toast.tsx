@@ -26,7 +26,8 @@ function ToastList() {
     <ToastPrimitive.Root
       key={toast.id}
       toast={toast}
-      className="pointer-events-auto rounded-full bg-berry px-5 py-3 text-center text-sm font-bold text-white shadow-lift transition-[opacity,transform] duration-200 data-starting-style:-translate-y-2 data-starting-style:opacity-0 data-ending-style:opacity-0"
+      data-slot="toast"
+      className="pointer-events-auto rounded-full bg-berry px-5 py-3 text-center text-sm font-bold text-white shadow-lift transition-[opacity,transform] duration-200 ease-out-strong data-starting-style:-translate-y-2 data-starting-style:opacity-0 data-ending-style:-translate-y-2 data-ending-style:opacity-0"
     >
       <ToastPrimitive.Title className="contents" />
     </ToastPrimitive.Root>

@@ -104,6 +104,8 @@ export function ComboboxContent({
           data-slot="combobox-content"
           className={cn(
             "group/combobox-content relative z-50 w-(--anchor-width) origin-(--transform-origin) overflow-hidden rounded-slab bg-white py-1 text-berry shadow-lift outline-none",
+            "transition-[opacity,transform] duration-popover ease-out-strong",
+            "data-starting-style:scale-[0.97] data-starting-style:opacity-0 data-ending-style:scale-[0.97] data-ending-style:opacity-0",
             className,
           )}
           {...props}
