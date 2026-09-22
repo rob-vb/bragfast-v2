@@ -57,15 +57,17 @@ export default async function RootLayout({
       <body>
         <div dangerouslySetInnerHTML={{ __html: `<!--${DIRECTION}-->` }} />
         <ConvexClientProvider initialToken={initialToken}>
-          <SiteHeader
-            locale={locale}
-            preloadedUser={preloadedUser}
-            passportSlug={mine?.slug ?? null}
-            isOwner={isOwner === true}
-          />
-          {children}
-          <SiteFooter locale={locale} />
-          <Toaster />
+          <div className="flex min-h-dvh flex-col">
+            <SiteHeader
+              locale={locale}
+              preloadedUser={preloadedUser}
+              passportSlug={mine?.slug ?? null}
+              isOwner={isOwner === true}
+            />
+            <div className="flex flex-1 flex-col">{children}</div>
+            <SiteFooter locale={locale} />
+            <Toaster />
+          </div>
         </ConvexClientProvider>
       </body>
     </html>

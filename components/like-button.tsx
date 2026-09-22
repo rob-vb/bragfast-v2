@@ -41,10 +41,10 @@ export function LikeButton({
       variant={liked ? "default" : "outline"}
       aria-pressed={liked}
       aria-label={`${t(locale, "like")}, ${likeCountLabel(locale, count)}`}
-      disabled={pending}
+      aria-busy={pending}
       onClick={() => void onClick()}
     >
-      {t(locale, "like")} · {count}
+      {t(locale, "like")} · <span className="tabular-nums">{count}</span>
     </Button>
   );
 }

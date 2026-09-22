@@ -56,7 +56,7 @@ export function CityMap({ spots }: { spots: readonly MapSpot[] }) {
   return (
     <div
       ref={root}
-      className="mt-6 h-[28rem] overflow-hidden rounded-slab"
+      className="h-[28rem] overflow-hidden rounded-slab outline outline-1 -outline-offset-1 outline-black/10"
     />
   );
 }

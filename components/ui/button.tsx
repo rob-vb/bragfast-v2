@@ -4,14 +4,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full text-sm font-bold whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-yolk focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full text-sm font-bold whitespace-nowrap outline-none select-none transition-[color,background-color,border-color,opacity,transform,filter] duration-press ease-out-strong active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-yolk focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:active:scale-100 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-blush text-white hover:brightness-110",
+        default: "bg-blush text-white pointer-fine:hover:brightness-110",
         outline:
-          "border border-berry/15 bg-white text-berry hover:border-blush hover:text-blush",
-        ghost: "text-berry hover:bg-milk",
+          "border border-berry/15 bg-white text-berry pointer-fine:hover:border-blush pointer-fine:hover:text-blush",
+        ghost: "text-berry pointer-fine:hover:bg-milk",
       },
       size: {
         default: "h-10 px-5",

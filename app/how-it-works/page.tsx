@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getLocale } from "@/lib/i18n";
 import { t } from "@/domain/messages";
+import { PageHero, PageHeroTitle } from "@/components/page-hero";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -10,10 +11,10 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HowItWorksPage() {
   const locale = await getLocale();
   return (
-    <main className="mx-auto max-w-3xl px-5 py-16 sm:px-8">
-      <h1 className="font-display text-4xl tracking-wide">
-        {t(locale, "howItWorks")}
-      </h1>
+    <main className="flex flex-1 flex-col">
+      <PageHero className="flex-1">
+        <PageHeroTitle>{t(locale, "howItWorks")}</PageHeroTitle>
+      </PageHero>
     </main>
   );
 }

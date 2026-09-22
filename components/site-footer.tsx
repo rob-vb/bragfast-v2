@@ -1,8 +1,8 @@
-import Link from "next/link";
 import type { Locale } from "@/domain/messages";
 import { t } from "@/domain/messages";
 import { LEGAL_LINKS, chromeLinks } from "@/domain/chrome";
 import { Egg } from "@/components/visual";
+import { FooterNavLink } from "@/components/chrome-nav-link";
 
 export function SiteFooter({ locale }: { locale: Locale }) {
   return (
@@ -21,16 +21,16 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         </div>
         <p className="font-display text-2xl">#bragfast</p>
       </div>
-      <nav className="mx-auto mt-6 flex max-w-6xl flex-wrap gap-4 text-sm font-bold">
+      <nav className="mx-auto mt-6 flex max-w-6xl flex-wrap items-center gap-2 text-sm font-bold">
         {chromeLinks("footer").map((item) => (
-          <Link key={item.href} href={item.href}>
+          <FooterNavLink key={item.href} href={item.href}>
             {t(locale, item.label)}
-          </Link>
+          </FooterNavLink>
         ))}
         {LEGAL_LINKS.map((item) => (
-          <Link key={item.href} href={item.href}>
+          <FooterNavLink key={item.href} href={item.href}>
             {t(locale, item.label)}
-          </Link>
+          </FooterNavLink>
         ))}
       </nav>
     </footer>

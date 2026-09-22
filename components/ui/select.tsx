@@ -40,8 +40,9 @@ export function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex w-fit items-center justify-between gap-1.5 rounded-full border border-berry/12 bg-white py-1.5 pr-2.5 pl-3.5 text-sm font-bold whitespace-nowrap text-berry outline-none transition-colors select-none",
-        "hover:border-blush hover:text-blush focus-visible:ring-2 focus-visible:ring-yolk",
+        "flex w-fit items-center justify-between gap-1.5 rounded-full border border-berry/12 bg-white py-1.5 pr-2.5 pl-3.5 text-sm font-bold whitespace-nowrap text-berry outline-none select-none",
+        "transition-[color,border-color,transform] duration-press ease-out-strong active:scale-[0.97]",
+        "pointer-fine:hover:border-blush pointer-fine:hover:text-blush focus-visible:ring-2 focus-visible:ring-yolk",
         "disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-10 data-[size=sm]:h-8",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
@@ -84,6 +85,8 @@ export function SelectContent({
           data-slot="select-content"
           className={cn(
             "relative z-50 max-h-(--available-height) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-slab bg-white py-1 text-berry shadow-lift outline-none",
+            "transition-[opacity,transform] duration-popover ease-out-strong",
+            "data-starting-style:scale-[0.97] data-starting-style:opacity-0 data-ending-style:scale-[0.97] data-ending-style:opacity-0",
             className,
           )}
           {...props}

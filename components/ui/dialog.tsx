@@ -39,7 +39,7 @@ export function Dialog({
       <DialogPrimitive.Portal>
         <DialogPrimitive.Backdrop
           data-slot="dialog-backdrop"
-          className="fixed inset-0 z-50 bg-berry/45 backdrop-blur-sm transition-opacity duration-150 data-starting-style:opacity-0 data-ending-style:opacity-0"
+          className="fixed inset-0 z-50 bg-berry/45 backdrop-blur-sm transition-opacity duration-modal ease-out-strong data-starting-style:opacity-0 data-ending-style:opacity-0"
         />
         <DialogPrimitive.Popup
           data-slot="dialog-popup"
@@ -47,7 +47,10 @@ export function Dialog({
           className={cn(
             "fixed inset-x-3 bottom-3 z-50 w-auto rounded-slab bg-white p-6 text-berry shadow-lift outline-none",
             "sm:inset-auto sm:top-1/2 sm:left-1/2 sm:w-full sm:max-w-md sm:-translate-x-1/2 sm:-translate-y-1/2 sm:p-8",
-            "transition-[opacity,transform] duration-150 data-starting-style:opacity-0 data-starting-style:translate-y-3 data-ending-style:opacity-0 sm:data-starting-style:translate-y-[calc(-50%+0.75rem)]",
+            "transition-[opacity,transform] duration-modal ease-out-strong",
+            "data-starting-style:opacity-0 data-starting-style:translate-y-4 data-ending-style:opacity-0 data-ending-style:translate-y-4",
+            "sm:data-starting-style:translate-y-[calc(-50%+0.75rem)] sm:data-starting-style:scale-[0.96]",
+            "sm:data-ending-style:translate-y-[calc(-50%+0.75rem)] sm:data-ending-style:scale-[0.96]",
             className,
           )}
         >

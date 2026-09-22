@@ -70,7 +70,7 @@ export function SearchBox({ locale }: { locale: Locale }) {
       >
         <ComboboxInputGroup
           ref={pillRef}
-          className="flex h-16 items-center gap-2 rounded-full border border-white/40 bg-white/92 pl-5 pr-2 shadow-lift"
+          className="flex h-16 items-center gap-2 rounded-full border border-white/40 bg-white/92 pl-5 pr-2 shadow-lift focus-within:ring-2 focus-within:ring-yolk"
         >
           <Search className="size-5 shrink-0 text-blush" aria-hidden />
           <ComboboxInput
