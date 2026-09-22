@@ -1,3 +1,4 @@
+import { expo } from "@better-auth/expo";
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { betterAuth } from "better-auth/minimal";
@@ -11,6 +12,7 @@ import { DomainParseError, parseUserSlug } from "../domain/ids";
 import { mintPassportFromUsername } from "./model/users";
 
 const siteUrl = process.env.SITE_URL!;
+const appScheme = "bragfast";
 
 export const authComponent = createClient<DataModel>(components.betterAuth);
 
@@ -31,10 +33,13 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
   const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
   const appleClientId = process.env.APPLE_CLIENT_ID;
   const appleClientSecret = process.env.APPLE_CLIENT_SECRET;
+  // Native Sign in with Apple (the Expo app) sends an identity token whose
+  // audience is the iOS bundle id, not the web Services ID.
+  const appleAppBundleId = process.env.APPLE_APP_BUNDLE_ID;
 
   const socialProviders: {
     google?: { clientId: string; clientSecret: string };
-    apple?: { clientId: string; clientSecret: string };
+    apple?: { clientId: string; clientSecret: string; audience: string[] };
   } = {};
   if (googleClientId && googleClientSecret) {
     socialProviders.google = {
@@ -46,15 +51,21 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
     socialProviders.apple = {
       clientId: appleClientId,
       clientSecret: appleClientSecret,
+      audience: appleAppBundleId
+        ? [appleClientId, appleAppBundleId]
+        : [appleClientId],
     };
   }
 
   return betterAuth({
     baseURL: siteUrl,
+    // The Expo app calls this deployment with an `expo-origin` of its scheme.
+    trustedOrigins: [siteUrl, `${appScheme}://`],
     database: authComponent.adapter(ctx),
     emailAndPassword: { enabled: true },
     socialProviders,
     plugins: [
+      expo(),
       username({
         minUsernameLength: 3,
         usernameValidator: isUserSlug,
