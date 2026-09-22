@@ -61,7 +61,7 @@ Stable handles from this repo (Dutch default UI; English after locale POST):
 | Control | Handle |
 | --- | --- |
 | Header home | link `aria-label="brag.fast"` → `/` |
-| Search combobox | `#catalog-search` `role="combobox"` named `Zoek een woonplaats` / `Search a city`; listbox of woonplaats names; submit `Zoek` / `Search` navigates to `/nl/{slug}` |
+| Search combobox | `#catalog-search` `role="combobox"` named `Zoek een plaats` / `Search a city`; listbox of woonplaats names; submit `Zoek` / `Search` navigates to `/nl/{slug}` |
 | Language | `role="group"` named `Taal` / `Language`; buttons `nl` and `en` with `aria-pressed` |
 | Sign in | button `Inloggen` / `Sign in` → dialog title `Log in bij brag.fast` / `Sign in to brag.fast`; email `#email`; do **not** submit |
 | City view | group `Weergave` / `View`; links `Lijst` / `List` and `Kaart` / `Map`; `view=map` (non-empty board) |

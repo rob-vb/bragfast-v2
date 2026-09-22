@@ -1,7 +1,7 @@
 export const nlMessages = {
   hero: "Ontbijt- en brunchplekken, per stad.",
-  intro: "Zoek een woonplaats. Plekken komen binnen via de app.",
-  searchLabel: "Zoek een woonplaats",
+  intro: "Zoek een plaats. Plekken komen binnen via de app.",
+  searchLabel: "Zoek een plaats",
   searchPlaceholder: "Haarlem, Den Haag, Giethoorn",
   searchSubmit: "Zoek",
   appRowBragTitle: "Brag als eerste",
