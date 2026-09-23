@@ -7,7 +7,7 @@ This directory is the maintained source for verifying seeker-facing behavior of 
 - Launch with `node .cursor/skills/verify-bragfast/scripts/control-bragfast.mjs launch` so the app is at `http://127.0.0.1:3019/`.
 - Run `… doctor` and require pid, `http://127.0.0.1:3019/`, and HTML that identifies brag.fast.
 - `.env.local` points at the shared Convex catalog. Treat every drive as **read-only** unless a feature file says otherwise.
-- Never drive `http://77.42.31.66/` or `127.0.0.1:3002`.
+- Never drive the owner preview (`https://brag.fast/`, `http://77.42.31.66/`) or `127.0.0.1:3002`.
 - Default UI language is Dutch (`html lang="nl"`) unless you POST `/api/locale`.
 - Seeded Haarlem fixtures must **not** appear. Empty `noSpotsYet` copy is the proof.
 

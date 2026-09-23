@@ -20,7 +20,7 @@ TripAdvisor without the everything-else. Rank is like count, not dishes, not sta
 
 ## Operating Context
 
-Public pages are server-rendered Next.js on a VPS. The owner-facing site is https://brag.fast/ (nginx → pm2 `next start` on 3002). Never localhost. UI changes are not live until `next build` and a pm2 restart. Data lives in Convex. Dutch is the default UI language on the same URLs as English. Brand is English (`brag.fast`, `#bragfast`). First market is NL. Owner lives there.
+Public pages are server-rendered Next.js on a VPS. The owner-facing site is https://brag.fast/ (nginx → pm2 `next start` on 3002). Never localhost. UI changes are not live until `scripts/deploy.sh` swaps the build into `.next-live` and restarts pm2; a bare `next build` does not change the live site. Data lives in Convex. Dutch is the default UI language on the same URLs as English. Brand is English (`brag.fast`, `#bragfast`). First market is NL. Owner lives there.
 
 ## Capabilities and Constraints
 

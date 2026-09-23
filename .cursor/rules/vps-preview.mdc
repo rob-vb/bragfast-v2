@@ -5,4 +5,4 @@ alwaysApply: true
 
 # Preview URL
 
-This project runs on a VPS. The human-facing site is https://brag.fast/ (nginx → 127.0.0.1:3002 → henk's pm2 `bragfast` = `next start`). Never tell the owner to open localhost. Cursor `next dev` on 3010 is not the public site. After UI changes: `next build`, then `sudo -u henk -H pm2 restart bragfast`.
+This project runs on a VPS. The human-facing site is https://brag.fast/ (nginx → 127.0.0.1:3002 → henk's pm2 `bragfast` = `next start`). Never tell the owner to open localhost. Cursor `next dev` on 3010 is not the public site. Deploy UI changes with `scripts/deploy.sh`. A bare `next build` writes `.next`, but pm2 serves `.next-live` — the site does not change until the script swaps the build in and restarts pm2.
