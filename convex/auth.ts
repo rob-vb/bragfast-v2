@@ -60,7 +60,8 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
     baseURL: siteUrl,
     // The Expo app calls this deployment with an `expo-origin` of its scheme.
-    trustedOrigins: [siteUrl, `${appScheme}://`],
+    // Apple's web flow POSTs the callback (form_post) from appleid.apple.com.
+    trustedOrigins: [siteUrl, `${appScheme}://`, "https://appleid.apple.com"],
     database: authComponent.adapter(ctx),
     emailAndPassword: { enabled: true },
     socialProviders,
