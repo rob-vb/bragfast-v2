@@ -18,10 +18,10 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@base-ui/react": "^1.8.0",
-    "@better-auth/expo": "1.6.15",
+    "@better-auth/expo": "1.6.33",
     "@convex-dev/better-auth": "^0.12.5",
     "@types/leaflet": "^1.9.22",
-    "better-auth": "1.6.15",
+    "better-auth": "1.6.33",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.45.0",
@@ -47,5 +47,8 @@
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.13",
     "typescript": "~5.9.3"
+  },
+  "overrides": {
+    "@better-auth/core": "1.6.33"
   }
 }
