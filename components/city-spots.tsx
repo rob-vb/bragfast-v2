@@ -105,7 +105,7 @@ export function CitySpots({
       </div>
       {view === "map" ? (
         <div className="mt-8">
-          <CityMap spots={spots} />
+          <CityMap locale={locale} spots={spots} />
         </div>
       ) : (
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

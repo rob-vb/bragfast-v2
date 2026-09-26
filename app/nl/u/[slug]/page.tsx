@@ -92,7 +92,13 @@ export default async function PassportPage({
 
             {filters.view === "map" ? (
               <div className="mt-8">
-                <CityMap spots={page.spots} />
+                <CityMap
+                  locale={locale}
+                  spots={page.spots.map((spot) => ({
+                    ...spot,
+                    photoUrl: spot.photoUrl ?? stillFor(spot.slug),
+                  }))}
+                />
               </div>
             ) : (
               <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
