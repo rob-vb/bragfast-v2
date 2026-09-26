@@ -3,7 +3,13 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import L from "leaflet";
-import { likeCountLabel, t, type Locale } from "@/domain/messages";
+import "leaflet.markercluster";
+import {
+  likeCountLabel,
+  t,
+  uniqueSpotsLabel,
+  type Locale,
+} from "@/domain/messages";
 
 export type MapSpot = {
   slug: string;
@@ -42,6 +48,19 @@ export function CityMap({
       attribution: "&copy; OpenStreetMap",
     }).addTo(map);
 
+    const cluster = L.markerClusterGroup({
+      maxClusterRadius: EGG + 8,
+      showCoverageOnHover: false,
+      spiderfyDistanceMultiplier: 1.6,
+      spiderLegPolylineOptions: { weight: 1.5, color: "#4a1534", opacity: 0.4 },
+      iconCreateFunction: (group) =>
+        clusterIcon(group.getChildCount(), locale),
+    });
+
+    cluster.on("spiderfied", (event) => {
+      event.cluster.setOpacity(0);
+    });
+
     const points: L.LatLngExpression[] = [];
     spots.forEach((spot, index) => {
       const latlng: L.LatLngExpression = [spot.geo.lat, spot.geo.lng];
@@ -50,7 +69,8 @@ export function CityMap({
         icon: eggIcon(spot, index),
         riseOnHover: true,
         keyboard: true,
-      }).addTo(map);
+      });
+      cluster.addLayer(marker);
 
       marker.bindTooltip(escapeHtml(spot.name), {
         direction: "top",
@@ -67,7 +87,6 @@ export function CityMap({
         autoPanPadding: [24, 24],
       });
 
-      marker.getElement()?.setAttribute("aria-label", spot.name);
       marker.on("tooltipopen", () => {
         if (marker.isPopupOpen()) {
           marker.closeTooltip();
@@ -84,6 +103,10 @@ export function CityMap({
       });
     });
 
+    map.addLayer(cluster);
+    el.classList.add("is-intro");
+    const intro = window.setTimeout(() => el.classList.remove("is-intro"), 1400);
+
     if (points.length === 1) {
       map.setView(points[0], 15);
     } else if (points.length > 1) {
@@ -93,6 +116,7 @@ export function CityMap({
     }
 
     return () => {
+      window.clearTimeout(intro);
       map.remove();
     };
   }, [spots, locale, router]);
@@ -110,9 +134,19 @@ function eggIcon(spot: MapSpot, index: number): L.DivIcon {
   const delay = Math.min(index * 45, 540);
   return L.divIcon({
     className: spot.closed ? "spot-egg is-closed" : "spot-egg",
-    html: `<img src="/brag_fast_egg.svg" alt="" width="${EGG}" height="${EGG}" draggable="false" style="--tilt:${tilt}deg;--delay:${delay}ms" />`,
+    html: `<img src="/brag_fast_egg.svg" alt="${escapeHtml(spot.name)}" width="${EGG}" height="${EGG}" draggable="false" style="--tilt:${tilt}deg;--delay:${delay}ms" />`,
     iconSize: [EGG, EGG],
     iconAnchor: [EGG / 2, EGG / 2],
+  });
+}
+
+function clusterIcon(count: number, locale: Locale): L.DivIcon {
+  const size = EGG + 10;
+  return L.divIcon({
+    className: "spot-egg spot-cluster",
+    html: `<img src="/brag_fast_egg.svg" alt="${uniqueSpotsLabel(locale, count)}" width="${size}" height="${size}" draggable="false" style="--tilt:0deg;--delay:0ms" /><span class="spot-cluster__count" aria-hidden="true">${count}</span>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
   });
 }
 

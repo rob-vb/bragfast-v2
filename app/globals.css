@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
+@import "leaflet.markercluster/dist/MarkerCluster.css";
 
 @theme {
   --color-berry: #4a1534;
@@ -94,7 +95,7 @@ input {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-ken,
-  .spot-egg img,
+  .spot-map.is-intro .spot-egg img,
   .spot-popup {
     animation: none;
   }
@@ -113,12 +114,6 @@ input {
 .leaflet-container {
   font-family: var(--font-body);
   background: color-mix(in srgb, var(--color-candy) 28%, var(--color-milk));
-}
-
-/* OSM tiles pulled toward strawberry milk so the eggs carry the colour */
-.spot-map .leaflet-tile-pane {
-  filter: grayscale(1) sepia(0.32) hue-rotate(292deg) saturate(1.5)
-    brightness(1.06) contrast(0.86);
 }
 
 .spot-map .leaflet-bar {
@@ -192,9 +187,12 @@ input {
   transition:
     transform 240ms var(--ease-out-strong),
     filter 240ms var(--ease-out-strong);
-  animation: egg-in 520ms var(--ease-out-strong) var(--delay) both;
   cursor: pointer;
   user-select: none;
+}
+
+.spot-map.is-intro .spot-egg img {
+  animation: egg-in 520ms var(--ease-out-strong) var(--delay) both;
 }
 
 .spot-egg:hover img,
@@ -212,6 +210,24 @@ input {
 .spot-egg.is-closed img {
   filter: grayscale(0.85) drop-shadow(0 3px 0 rgb(74 21 52 / 0.14));
   opacity: 0.8;
+}
+
+.spot-cluster__count {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border: 2px solid #fff;
+  border-radius: 9999px;
+  background: var(--color-berry);
+  color: #fff;
+  font: 800 0.75rem/20px var(--font-body);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 3px 8px rgb(74 21 52 / 0.25);
 }
 
 @keyframes egg-in {
