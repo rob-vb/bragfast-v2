@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
+@import "leaflet.markercluster/dist/MarkerCluster.css";
 
 @theme {
   --color-berry: #4a1534;
@@ -93,7 +94,9 @@ input {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-ken {
+  .hero-ken,
+  .spot-map.is-intro .spot-egg img,
+  .spot-popup {
     animation: none;
   }
 
@@ -113,19 +116,288 @@ input {
   background: color-mix(in srgb, var(--color-candy) 28%, var(--color-milk));
 }
 
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip {
-  background: var(--color-blush);
+.spot-map .leaflet-bar {
+  border: 0;
+  border-radius: 9999px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lift);
+}
+
+.spot-map .leaflet-top.leaflet-left .leaflet-control {
+  margin: 16px 0 0 16px;
+}
+
+.spot-map .leaflet-bar a {
+  width: 38px;
+  height: 38px;
+  line-height: 38px;
+  border-bottom: 1px solid rgb(74 21 52 / 0.12);
+  background: #fff;
+  color: var(--color-berry);
+  font: 800 1.25rem/38px var(--font-body);
+  transition: background-color var(--duration-press) var(--ease-out-strong);
+}
+
+.spot-map .leaflet-bar a:last-child {
+  border-bottom: 0;
+}
+
+.spot-map .leaflet-bar a:hover {
+  background: var(--color-milk);
   color: var(--color-berry);
 }
 
-.leaflet-popup-content a {
+.spot-map .leaflet-bar a.leaflet-disabled {
+  background: #fff;
+  color: rgb(74 21 52 / 0.3);
+}
+
+.spot-map .leaflet-bar a:focus-visible {
+  outline-offset: -4px;
+  border-radius: 9999px;
+}
+
+.spot-map .leaflet-control-attribution {
+  margin: 0 12px 12px 0;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.85);
+  color: rgb(74 21 52 / 0.7);
+  font-size: 11px;
+}
+
+.spot-map .leaflet-control-attribution a {
   color: var(--color-berry);
+}
+
+/* Markers: the brag.fast egg as a sticker on the map */
+.spot-egg {
+  background: none;
+  border: 0;
+  border-radius: 9999px;
+}
+
+.spot-egg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: rotate(var(--tilt));
+  filter: drop-shadow(0 3px 0 rgb(74 21 52 / 0.18))
+    drop-shadow(0 6px 10px rgb(74 21 52 / 0.22));
+  transition:
+    transform 240ms var(--ease-out-strong),
+    filter 240ms var(--ease-out-strong);
+  cursor: pointer;
+  user-select: none;
+}
+
+.spot-map.is-intro .spot-egg img {
+  animation: egg-in 520ms var(--ease-out-strong) var(--delay) both;
+}
+
+.spot-egg:hover img,
+.spot-egg:focus-visible img,
+.spot-egg.is-active img {
+  transform: translateY(-4px) rotate(0deg) scale(1.18);
+  filter: drop-shadow(0 6px 0 rgb(74 21 52 / 0.16))
+    drop-shadow(0 12px 16px rgb(74 21 52 / 0.26));
+}
+
+.spot-egg.is-active img {
+  transform: translateY(-6px) rotate(0deg) scale(1.3);
+}
+
+.spot-egg.is-closed img {
+  filter: grayscale(0.85) drop-shadow(0 3px 0 rgb(74 21 52 / 0.14));
+  opacity: 0.8;
+}
+
+.spot-cluster__count {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border: 2px solid #fff;
+  border-radius: 9999px;
+  background: var(--color-berry);
+  color: #fff;
+  font: 800 0.75rem/20px var(--font-body);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 3px 8px rgb(74 21 52 / 0.25);
+}
+
+@keyframes egg-in {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) rotate(calc(var(--tilt) - 18deg)) scale(0.4);
+  }
+}
+
+/* Hover label */
+.leaflet-tooltip.spot-tip {
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--color-berry);
+  color: #fff;
+  font: 700 0.8125rem/1.25 var(--font-body);
+  white-space: nowrap;
+  box-shadow: 0 6px 14px rgb(74 21 52 / 0.22);
+}
+
+.leaflet-tooltip.spot-tip.leaflet-tooltip-top::before {
+  border-top-color: var(--color-berry);
+}
+
+/* Popup: a small spot card */
+.spot-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 22px;
+  background: #fff;
+  color: var(--color-berry);
+  box-shadow: var(--shadow-lift);
+  overflow: hidden;
+}
+
+.spot-popup .leaflet-popup-content {
+  margin: 0;
+  font: inherit;
+  line-height: inherit;
+}
+
+.spot-popup .leaflet-popup-tip {
+  background: #fff;
+  box-shadow: none;
+}
+
+.spot-popup {
+  animation: card-in var(--duration-popover) var(--ease-out-strong);
+  transform-origin: 50% 100%;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+    scale: 0.96;
+  }
+}
+
+.leaflet-container a.spot-card {
+  display: block;
+  color: var(--color-berry);
+  text-decoration: none;
+}
+
+.spot-card:focus-visible {
+  outline-offset: -4px;
+  border-radius: 22px;
+}
+
+.spot-card__photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--color-milk);
+}
+
+.spot-card__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 200ms var(--ease-out-strong);
+}
+
+.spot-card__stamp {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: var(--color-candy);
+  color: var(--color-berry);
+  font: 700 0.75rem/1.25 var(--font-body);
+}
+
+.spot-card__body {
+  display: block;
+  padding: 12px 16px 14px;
+}
+
+.spot-card__name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.3125rem;
+  line-height: 1.15;
+  letter-spacing: 0.025em;
+  text-wrap: balance;
+}
+
+.spot-card__meta {
+  display: block;
+  margin-top: 4px;
+  color: rgb(74 21 52 / 0.7);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.spot-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.spot-card__likes {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 9999px;
+  background: var(--color-milk);
+  font-size: 0.8125rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-.spot-marker {
-  stroke: var(--color-blush);
-  fill: var(--color-yolk);
-  fill-opacity: 0.9;
+.spot-card__likes svg {
+  fill: var(--color-blush);
+}
+
+.spot-card__go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  border-radius: 9999px;
+  background: var(--color-blush);
+  color: #fff;
+  transition: translate 200ms var(--ease-out-strong);
+}
+
+.spot-card__go svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .spot-card:hover .spot-card__photo img {
+    transform: scale(1.04);
+  }
+
+  .spot-card:hover .spot-card__go {
+    translate: 3px 0;
+  }
 }
