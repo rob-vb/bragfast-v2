@@ -84,6 +84,7 @@ export function SpotLinkCard({
   action,
   featured,
   eager,
+  muted,
   heading: Heading = "h3",
 }: {
   href: string;
@@ -96,6 +97,8 @@ export function SpotLinkCard({
   featured?: boolean;
   /** Above-the-fold prints skip lazy loading. */
   eager?: boolean;
+  /** A closed spot's print fades toward grey, as on its own page. */
+  muted?: boolean;
   heading?: "h2" | "h3";
 }) {
   return (
@@ -117,7 +120,10 @@ export function SpotLinkCard({
           alt=""
           loading={eager ? "eager" : "lazy"}
           decoding="async"
-          className="absolute inset-0 size-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out-strong pointer-fine:group-hover/card:scale-[1.045]"
+          className={cn(
+            "absolute inset-0 size-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out-strong pointer-fine:group-hover/card:scale-[1.045]",
+            muted && "grayscale-90",
+          )}
         />
         <span className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-berry/10 ring-inset" />
       </div>

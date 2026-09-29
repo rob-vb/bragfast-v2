@@ -313,6 +313,128 @@ input {
   }
 }
 
+/* Passport: a rubber stamp per woonplaats, pressed onto the slab one after
+   another. The tilt lives on the link so hover can straighten it; the press
+   lives on the ink inside. */
+.stamp-sheet {
+  --stamp: clamp(7.25rem, 30vw, 9.5rem);
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 0 calc(var(--stamp) * 0.2) calc(var(--stamp) * 0.12);
+}
+
+.stamp-slot {
+  width: var(--stamp);
+  margin: 0 0 calc(var(--stamp) * -0.08) calc(var(--stamp) * -0.12);
+}
+
+.stamp-slot:nth-child(even) {
+  translate: 0 22%;
+}
+
+.stamp {
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  opacity: 0.94;
+  rotate: var(--tilt);
+  transition:
+    rotate 360ms var(--ease-out-strong),
+    scale 360ms var(--ease-out-strong);
+}
+
+.stamp svg {
+  animation: stamp-press 560ms var(--ease-out-strong) both;
+  animation-delay: calc(260ms + var(--i) * 170ms);
+}
+
+a.stamp:focus-visible {
+  rotate: calc(var(--tilt) * 0.25);
+  scale: 1.06;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a.stamp:hover {
+    rotate: calc(var(--tilt) * 0.25);
+    scale: 1.06;
+  }
+}
+
+@media (min-width: 64rem) {
+  .stamp-sheet {
+    --stamp: 12.5rem;
+    justify-content: flex-end;
+  }
+
+  /* A fuller passport packs three stamps to a row */
+  .stamp-sheet--full {
+    --stamp: 9.25rem;
+  }
+}
+
+@keyframes stamp-press {
+  0% {
+    opacity: 0;
+    scale: 1.55;
+  }
+  55% {
+    opacity: 1;
+    scale: 0.96;
+  }
+}
+
+/* Leaderboard: the podium steps rise out of the slab's floor, third first,
+   and the egg drops onto first place once it has arrived */
+.podium-rise {
+  animation: podium-rise 900ms var(--ease-out-strong) both;
+  animation-delay: var(--rise);
+}
+
+@keyframes podium-rise {
+  from {
+    translate: 0 101%;
+  }
+}
+
+/* A podium name takes its step's width and shrinks only when its longest
+   unbreakable chunk (lib/display-fit.ts) would not fit */
+.podium-name {
+  font-size: min(1.25rem, calc(92cqi / var(--fit-word)));
+}
+
+@media (min-width: 40rem) {
+  .podium-name {
+    font-size: min(1.875rem, calc(92cqi / var(--fit-word)));
+  }
+}
+
+.podium-egg {
+  animation: podium-egg 700ms var(--ease-out-strong) 1100ms both;
+}
+
+/* Hidden while its step rises, so it only appears as it drops */
+@keyframes podium-egg {
+  from {
+    opacity: 0;
+    translate: 0 -1.75rem;
+    rotate: -32deg;
+    scale: 0.55;
+  }
+}
+
+.like-bar {
+  width: calc(var(--share) * 100%);
+  min-width: 0.625rem;
+  transform-origin: left;
+  animation: bar-fill 900ms var(--ease-out-strong) 200ms both;
+}
+
+@keyframes bar-fill {
+  from {
+    scale: 0 1;
+  }
+}
+
 /* Before Leaflet arrives the well is the map's own candy canvas */
 .map-well {
   background: color-mix(in srgb, var(--color-candy) 28%, var(--color-milk));
@@ -372,6 +494,10 @@ input {
 
 @media (prefers-reduced-motion: reduce) {
   .poster-letter,
+  .stamp svg,
+  .podium-rise,
+  .podium-egg,
+  .like-bar,
   .like-pop,
   .brag-print,
   .print-glow img,

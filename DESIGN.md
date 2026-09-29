@@ -208,7 +208,9 @@ Dutch is the default UI language. The brand is English (`brag.fast`, `#bragfast`
 
 - Photo-first on home only. City, spot, passport and leaderboard heroes are berry slabs. The
   city slab is a poster: the woonplaats name set edge to edge, ending in a bakery-awning
-  scallop. The spot slab holds the brag print, which hangs over the slab's bottom edge.
+  scallop. The spot slab holds the brag print, which hangs over the slab's bottom edge. The
+  passport slab carries the adder's woonplaatsen as rubber stamps; the leaderboard slab is a
+  stage whose podium stands on its floor.
 - The wordmark is the SVG lockup `/brag_fast_logo.svg`, rendered through `<Logo>`. The mascot
   is `/brag_fast_egg.svg`, rendered through `<Egg>` in the footer and as the favicon. Neither
   is ever recreated in CSS.
@@ -294,10 +296,13 @@ voices, no third.
   to the text column beside the print between 2.5rem and 7rem, line-height 0.92. A name that
   fits one line big takes it; a long one takes its most even two-line break (`--fit-pair`)
   at up to 4.5rem. Its letters do not land; the print is the spot page's moment.
+- **Handle** (`PageHeroPoster fit="handle"`): the passport's username behind a blush `@`,
+  sized like the spot poster to the column beside the stamps. `lib/display-fit.ts` carries
+  digits, `@` and `#` so a handle measures true.
 - **Display** (Bagel Fat One, `clamp(3rem, 10vw, 7rem)`, line-height 0.92, tracking wide,
   white): `PageHeroTitle size="lg"`.
-- **Headline** (Bagel Fat One, `clamp(2.4rem, 8vw, 5.5rem)`, white): spot, passport and
-  leaderboard hero titles.
+- **Headline** (Bagel Fat One, `clamp(2.4rem, 8vw, 5.5rem)`, white): hero titles that are
+  neither a name nor a poster. The leaderboard title is Display (`PageHeroTitle size="lg"`).
 - **Home hero** (Bagel Fat One, `clamp(1.875rem, 6vw, 3.25rem)`, line-height 1.05, white with
   `text-shadow-photo`): deliberately smaller than a city name — the still is the loud thing.
 - **Section** (Bagel Fat One, `text-3xl`→`text-4xl`, berry): section heads such as local
@@ -360,6 +365,9 @@ Four shadow tokens, all tinted — no grey or black drop shadows anywhere.
 - **Print cast** (`.brag-print`: `0 1px 0 berry/6, 0 3px 0 deep-berry/12, 0 24px 48px -12px
   deep-berry/55`, where deep berry is `rgb(22 4 14)`, the `.sticker` cast): the spot hero print,
   so it reads as paper lying on the slab and, where it hangs, on the white page.
+- **Step enamel** (`inset 0 3px 0 white/45`): the top lip of a filled podium step, the same
+  highlight `shadow-stamp` puts on a sticker, with no cast because the step stands on the
+  floor.
 - **`shadow-rest`** and **`drop-shadow-burst`** are declared but unused. Leave them alone or
   delete them; do not invent a use.
 
@@ -448,9 +456,42 @@ spots.
 
 ### Rank
 
-Rank exists **only on the leaderboard**: a `size-10` yolk circle with the position in Bagel Fat
-One `tabular-nums`, at the head of a milk `rounded-slab` row that turns shell on hover. No
-burst, no zero-padding, no rank on spot cards or city tiles.
+Rank exists **only on the leaderboard**, and as the passport's pill that links there (a
+white/12 pill with a yolk Lucide trophy: "#2 op de leaderboard"). No burst, no zero-padding,
+no rank on spot cards or city tiles.
+
+### Podium (`components/podium.tsx`)
+
+The leaderboard's first three stand on a podium on the berry slab's floor: second left, first
+centre, third right (the DOM stays 1, 2, 3). Steps are `rounded-t-slab` with step enamel, first
+yolk, second candy, third mint, the place in Bagel Fat One berry. Over each step: the
+`@username` (blush `@`) fitted to the step's width by its widest unbreakable chunk
+(`.podium-name`, up to three lines), a white/12 like pill with a candy heart, and the spot
+count in `milk/70`. The egg sits over first place. A place nobody holds is an open step: a
+dashed `white/22` outline, the number at `white/25`, and **Nog vrij** above it. The whole
+column is the link to the passport; hover tilts the step's number.
+
+### Leaderboard rows
+
+Fourth place down: a milk `rounded-slab` row that turns shell on hover, the `size-10` yolk rank
+circle, the `@username` in Bagel Fat One over the spot count, a like bar (a white track with a
+blush fill at the adder's share of the leader's likes, from `sm`, absent at zero likes), and
+the like count with a blush heart. Below the rows, **Zo klim je** in a shell well with the egg;
+on an empty board the well's title is the empty copy. Store keys join it only once a store is
+live.
+
+### Passport stamps (`components/passport-stamps.tsx`)
+
+One rubber stamp per woonplaats, in the order the adder first bragged there (`passportStamps`
+in `domain/passport.ts`). A stamp is an inline SVG in a single ink: a heavy outer ring and a
+fine inner ring, the woonplaats in Bagel Fat One capitals on a 240° arc over the top (sized to
+fit the arc), the first-brag date in Nunito 800 capitals along the bottom, a dot where they
+meet, and the count with its noun inside. The `#stamp-ink` filter knocks grain out of the
+fill and warps the edge a little so it reads as ink, not vector. Inks cycle yolk, mint,
+candy, milk, blush at 94%; tilts alternate; every other stamp drops 22% and they overlap like
+a filled passport page. Two stamps sit side by side at 12.5rem on `lg`; three or more pack
+three to a row at 9.25rem. Past six, the last stamp reads `#bragfast` / `+N steden`. Each
+stamp links to its board, and hover or keyboard focus straightens it and scales it 1.06.
 
 ### City poster (`app/nl/[city]/page.tsx`)
 
@@ -460,13 +501,14 @@ likes."). An empty board shows the name alone. Below the scallop, the toolbar pu
 selects (list view only) left and the Lijst/Kaart segment right, icons plus labels, labels
 screen-reader-only under `sm`.
 
-### Empty states (`BoardEmpty`)
+### Empty states (`BoardEmpty`, `EggEmpty`)
 
 A shell well with a milk hairline, `max-w-xl`, `py-14`: a yolk `size-12` disc carrying a blush
 Lucide glyph with `shadow-stamp`, then a bold berry title and optional `berry/70` description.
 An empty board is a designed state, not a failure — it is the intended look of a woonplaats
-nobody has photographed yet. The empty city board swaps the disc for the egg (76px, -8deg,
-`drop-shadow-sticker`) and sets the title in Bagel Fat One.
+nobody has photographed yet. `EggEmpty` swaps the disc for the egg (76px, -8deg,
+`drop-shadow-sticker`) and sets the title in Bagel Fat One; the empty city board and the empty
+passport use it.
 
 ### Spot print (`components/spot-print.tsx`)
 
@@ -543,6 +585,14 @@ tilted 2.5 times its resting angle and scaled 1.07, at 20% opacity, and settles 
 `ease-out-strong` while its cast tightens from a wide soft shadow to the print cast. The glow
 fades in behind it. Lightbox photos slide 2rem in the paging direction over 320ms.
 
+**The passport's one authored moment** is the stamps being pressed: each lands from scale 1.55
+and no opacity, overshoots to 0.96 and settles, 560ms `ease-out-strong`, 170ms apart. The tilt
+lives on the link and the press on the ink inside, so hover can still straighten a stamp.
+
+**The leaderboard's one authored moment** is the podium rising out of the slab's floor, third
+step first and first step last (900ms `ease-out-strong`, clipped by the slab), then the egg
+dropping onto first place with a tilt that settles. Like bars fill from the left once.
+
 **The city page's one authored moment** is the poster name: each letter lands from a small
 drop and tilt with a 34ms stagger (`.poster-letter`), starting from a visible 20% opacity. The
 heading keeps the plain name as its `aria-label` and text. Re-sorting the board runs the state
@@ -553,8 +603,8 @@ frame and old ones clear in 140ms.
 Press feedback is uniform: `active:scale-[0.97]`. Hover effects are gated behind the
 `pointer-fine` variant so a touch device never sticks in a hover state. Under
 `prefers-reduced-motion` the ken-burns, poster letters, print landing, glow fade, lightbox
-slide, like pop and sort glide stop, and every popup transition falls back to opacity with
-transforms removed.
+slide, like pop, sort glide, stamp press, podium rise, egg drop and like-bar fill stop, and
+every popup transition falls back to opacity with transforms removed.
 
 ## Do's and Don'ts
 

@@ -1,4 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { t, type Locale } from "@/domain/messages";
 import type { StoreButton } from "@/domain/viewModels";
 
@@ -6,13 +7,15 @@ export function StoreButtons({
   locale,
   ios,
   android,
+  className,
 }: {
   locale: Locale;
   ios: StoreButton;
   android: StoreButton;
+  className?: string;
 }) {
   return (
-    <div className="mt-6 flex flex-wrap gap-3">
+    <div className={cn("mt-6 flex flex-wrap gap-3", className)}>
       <StoreControl locale={locale} store={ios} liveLabel={t(locale, "downloadIos")} />
       <StoreControl
         locale={locale}

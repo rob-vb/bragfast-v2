@@ -52,6 +52,11 @@ export const nlMessages = {
   leaderboard: "Leaderboard",
   leaderboardIntro: "Gerangschikt op likes op de plekken die ze toevoegden.",
   leaderboardEmpty: "Nog niemand heeft een plek toegevoegd.",
+  podiumOpen: "Nog vrij",
+  climbTitle: "Zo klim je",
+  climbBody:
+    "Voeg een plek toe in de app met de eerste foto. Elke like op die plek telt voor jou.",
+  passportCities: "Steden",
   sortByLikes: "Likes",
   sortByName: "Naam",
   sortDirDesc: "Aflopend",
@@ -141,6 +146,11 @@ export const enMessages = {
   leaderboard: "Leaderboard",
   leaderboardIntro: "Ranked by likes on spots they added.",
   leaderboardEmpty: "Nobody has added a spot yet.",
+  podiumOpen: "Still open",
+  climbTitle: "How to climb",
+  climbBody:
+    "Add a spot in the app with the first photo. Every like on it counts for you.",
+  passportCities: "Cities",
   sortByLikes: "Likes",
   sortByName: "Name",
   sortDirDesc: "Descending",
@@ -256,3 +266,30 @@ export function likeCountLabel(locale: Locale, count: number): string {
   return `${count} likes`;
 }
 
+
+/** The word under a count set on its own: "plekken" in "3 plekken". */
+export function spotNoun(locale: Locale, count: number): string {
+  if (locale === "en") {
+    return count === 1 ? "spot" : "spots";
+  }
+  return count === 1 ? "plek" : "plekken";
+}
+
+export function cityNoun(locale: Locale, count: number): string {
+  if (locale === "en") {
+    return count === 1 ? "city" : "cities";
+  }
+  return count === 1 ? "stad" : "steden";
+}
+
+/** "in 2 steden" */
+export function inCitiesLabel(locale: Locale, count: number): string {
+  return `in ${count} ${cityNoun(locale, count)}`;
+}
+
+/** "#2 op de leaderboard" */
+export function leaderboardRankLabel(locale: Locale, rank: number): string {
+  return locale === "en"
+    ? `#${rank} on the leaderboard`
+    : `#${rank} op de leaderboard`;
+}

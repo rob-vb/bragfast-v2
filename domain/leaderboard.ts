@@ -50,3 +50,17 @@ export function rankAdders(rows: readonly AdderRow[]): AdderRow[] {
 export function rankedLeaderboard(spots: readonly AdderSpot[]): AdderRow[] {
   return rankAdders(foldAdderRows(spots));
 }
+
+export type LeaderboardStanding = { rank: number; likeSum: number };
+
+/** Where an adder stands on a ranked board, or null when they are absent. */
+export function standingOf(
+  ranked: readonly AdderRow[],
+  username: string,
+): LeaderboardStanding | null {
+  const index = ranked.findIndex((row) => row.username === username);
+  if (index === -1) {
+    return null;
+  }
+  return { rank: index + 1, likeSum: ranked[index].likeSum };
+}

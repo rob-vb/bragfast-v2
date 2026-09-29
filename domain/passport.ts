@@ -64,3 +64,33 @@ export function listAddedSpots<T extends { addedAt: number }>(
 ): T[] {
   return [...spots].sort((a, b) => b.addedAt - a.addedAt);
 }
+
+export type PassportStamp<C extends string = string> = {
+  citySlug: C;
+  count: number;
+  firstAt: number;
+};
+
+/**
+ * One stamp per woonplaats the adder bragged in, in the order they first
+ * did: a passport fills up front to back.
+ */
+export function passportStamps<C extends string>(
+  spots: readonly { citySlug: C; addedAt: number }[],
+): PassportStamp<C>[] {
+  const byCity = new Map<C, PassportStamp<C>>();
+  for (const spot of spots) {
+    const stamp = byCity.get(spot.citySlug);
+    if (!stamp) {
+      byCity.set(spot.citySlug, {
+        citySlug: spot.citySlug,
+        count: 1,
+        firstAt: spot.addedAt,
+      });
+      continue;
+    }
+    stamp.count += 1;
+    stamp.firstAt = Math.min(stamp.firstAt, spot.addedAt);
+  }
+  return [...byCity.values()].sort((a, b) => a.firstAt - b.firstAt);
+}

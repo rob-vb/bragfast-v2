@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { CitySpots } from "@/components/city-spots";
-import { EmptyCityBoard } from "@/components/empty-city-board";
+import { EggEmpty } from "@/components/egg-empty";
 import { PageHero, PageHeroPoster } from "@/components/page-hero";
 import { loadCityPage } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
@@ -78,7 +78,10 @@ export default async function CityPage({
 
       <div className="mx-auto w-full max-w-6xl px-5 pb-14 pt-14 sm:px-8 sm:pb-20 sm:pt-16">
         {board.kind === "empty" ? (
-          <EmptyCityBoard locale={locale} />
+          <EggEmpty
+            title={t(locale, "noSpotsYet")}
+            description={t(locale, "emptyBoardAppHint")}
+          />
         ) : (
           <CitySpots
             locale={locale}

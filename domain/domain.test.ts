@@ -39,6 +39,7 @@ import {
   planPassport,
   slugifyPassportName,
   listAddedSpots,
+  passportStamps,
 } from "./passport";
 import { openNow, planSpotUpsert } from "./spot";
 import {
@@ -49,7 +50,7 @@ import {
   planLikeToggle,
   sortCityBoard,
 } from "./like";
-import { rankAdders, rankedLeaderboard } from "./leaderboard";
+import { rankAdders, rankedLeaderboard, standingOf } from "./leaderboard";
 import { foodEstablishmentJsonLd } from "./jsonld";
 import { boardFromListedSpots } from "./board";
 import type { CityCard, CitySpotCard } from "./viewModels";
@@ -288,6 +289,19 @@ test("passport lists added spots newest first", () => {
     ["newer", "older"],
   );
   assert.deepEqual(listAddedSpots([]), []);
+});
+
+test("passport stamps one woonplaats each, in the order it was first bragged", () => {
+  const stamps = passportStamps([
+    { citySlug: "enschede", addedAt: 40 },
+    { citySlug: "oldenzaal", addedAt: 30 },
+    { citySlug: "oldenzaal", addedAt: 10 },
+  ]);
+  assert.deepEqual(stamps, [
+    { citySlug: "oldenzaal", count: 2, firstAt: 10 },
+    { citySlug: "enschede", count: 1, firstAt: 40 },
+  ]);
+  assert.deepEqual(passportStamps([]), []);
 });
 
 test("haversine puts Haarlem closer than Rotterdam from Amsterdam", () => {
@@ -929,6 +943,15 @@ test("equal like sums break ties by spot count then earliest add", () => {
     ranked.map((row) => row.username),
     ["many", "few", "early", "late"],
   );
+});
+
+test("a standing is the adder's place and like sum, or null when absent", () => {
+  const ranked = rankAdders([
+    { username: "alice", likeSum: 5, spotCount: 1, earliestAddAt: 10 },
+    { username: "bob", likeSum: 2, spotCount: 2, earliestAddAt: 5 },
+  ]);
+  assert.deepEqual(standingOf(ranked, "bob"), { rank: 2, likeSum: 2 });
+  assert.equal(standingOf(ranked, "ghost"), null);
 });
 
 test("zero-spot accounts are absent from the leaderboard", () => {
