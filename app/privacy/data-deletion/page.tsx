@@ -1,6 +1,17 @@
+import type { Metadata } from "next";
 import { getLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/seo";
 import { t } from "@/domain/messages";
 import { PageHero, PageHeroTitle } from "@/components/page-hero";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return pageMetadata(locale, {
+    title: t(locale, "dataDeletion"),
+    description: t(locale, "dataDeletionMetaDescription"),
+    path: "/privacy/data-deletion",
+  });
+}
 
 export default async function DataDeletionPage() {
   const locale = await getLocale();

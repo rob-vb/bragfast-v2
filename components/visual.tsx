@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import type { Scene } from "@/lib/scenes";
 import { cn } from "@/lib/utils";
 
 export type LogoSize = "header" | "hero";
@@ -43,29 +44,40 @@ export function Egg({
   );
 }
 
+/** A full-bleed still; it is the page's largest paint, so it loads first. */
 export function PhotoFrame({
-  src,
+  scene,
   alt = "",
   className,
   ken,
   children,
 }: {
-  src: string;
+  scene: Scene;
   alt?: string;
   className?: string;
   ken?: boolean;
   children?: ReactNode;
 }) {
+  const srcSet = (ext: string) =>
+    scene.widths.map((w) => `${scene.base}-${w}.${ext} ${w}w`).join(", ");
   return (
     <div className={cn("relative overflow-hidden", className)}>
-      <img
-        src={src}
-        alt={alt}
-        className={cn(
-          "absolute inset-0 h-full w-full object-cover",
-          ken && "hero-ken",
-        )}
-      />
+      <picture>
+        <source media="(orientation: portrait)" type="image/avif" srcSet={`${scene.portrait}.avif`} />
+        <source media="(orientation: portrait)" type="image/webp" srcSet={`${scene.portrait}.webp`} />
+        <source type="image/avif" srcSet={srcSet("avif")} sizes="100vw" />
+        <img
+          src={`${scene.base}-${scene.widths[0]}.webp`}
+          srcSet={srcSet("webp")}
+          sizes="100vw"
+          alt={alt}
+          fetchPriority="high"
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover",
+            ken && "hero-ken",
+          )}
+        />
+      </picture>
       {children}
     </div>
   );

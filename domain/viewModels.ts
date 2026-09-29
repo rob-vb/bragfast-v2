@@ -119,6 +119,18 @@ export type SitemapEntry = {
   path: string;
 };
 
+/** A spot that is live on its board: listed, with a hosted photo. */
+export type LiveSpotRef = {
+  citySlug: CitySlug;
+  slug: SpotSlug;
+};
+
+/** A woonplaats board that has at least one live spot. */
+export type BoardIndexEntry = {
+  city: CityCard;
+  spotCount: number;
+};
+
 export type PassportSpotCard = {
   slug: SpotSlug;
   citySlug: CitySlug;

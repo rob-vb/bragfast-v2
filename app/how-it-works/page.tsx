@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { getLocale } from "@/lib/i18n";
 import { loadAppStores } from "@/lib/catalog";
+import { pageMetadata } from "@/lib/seo";
 import { NL_CITIES } from "@/domain/cities";
 import { t, townCountLabel } from "@/domain/messages";
 import { PageHero, PageHeroLead, PageHeroTitle } from "@/components/page-hero";
@@ -27,10 +28,11 @@ import { buttonVariants } from "@/components/ui/button";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return {
-    title: `${t(locale, "howItWorks")} · brag.fast`,
+  return pageMetadata(locale, {
+    title: t(locale, "howItWorks"),
     description: t(locale, "hiwLead"),
-  };
+    path: "/how-it-works",
+  });
 }
 
 const LEDE = "text-lg font-semibold leading-8 text-pretty sm:text-xl sm:leading-9";

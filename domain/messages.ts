@@ -1,13 +1,44 @@
 export const nlMessages = {
   hero: "Ontbijt- en brunchplekken, per stad.",
-  intro: "Zoek een plaats. Plekken komen binnen via de app.",
+  intro:
+    "Zoek je woonplaats en zie waar het ontbijt goed is. Bezoekers zetten plekken erop met een foto in de app, likes bepalen de volgorde.",
+  heroTownIndex: "Woonplaatsen met plekken",
   searchLabel: "Zoek een plaats",
   searchPlaceholder: "Haarlem, Den Haag, Giethoorn",
   searchSubmit: "Zoek",
   appRowBragTitle: "Brag als eerste",
-  appRowBragBody: "Maak een plek aan in de app met de eerste foto.",
+  appRowBragBody:
+    "Staat jouw ontbijtplek er nog niet op? Kies de plek in de app en maak de eerste foto. Die zet hem op de board van jouw woonplaats, met jouw naam eronder.",
   appRowPhotosTitle: "Laat je ontbijt zien",
-  appRowPhotosBody: "Voeg extra foto's toe in de app.",
+  appRowPhotosBody:
+    "Was je er ook? Voeg je eigen foto's toe aan de galerij van een plek, zodat iedereen ziet wat er op tafel komt.",
+  stepsTitle: "Zo werkt brag.fast",
+  stepSearchBody:
+    "Elke stad en elk dorp in Nederland heeft een eigen board. Kijken kan zonder account.",
+  stepBragBody:
+    "Ontbijt je ergens dat er nog niet op staat? Eén foto in de app zet de plek op de board.",
+  stepLikeBody:
+    "Like de plekken waar het ontbijt goed is. De meeste likes staan bovenaan: geen sterren, niets betaald.",
+  stepClimbBody:
+    "Elke like op een plek die jij toevoegde, telt voor jou op de leaderboard.",
+  stepsMore: "Lees hoe het werkt",
+  metaHomeTitle: "Ontbijt en brunch per stad in Nederland | brag.fast",
+  metaHomeDescription:
+    "Vind ontbijt- en brunchplekken in elke stad en elk dorp van Nederland. Gerangschikt op likes van bezoekers, niet op sterren of betaalde plekken.",
+  townIndex: "Woonplaatsen",
+  townIndexLead:
+    "Elke woonplaats met minstens één plek, van A tot Z. Staat jouw plaats er niet bij? Zoek hem hieronder, of zet de eerste plek erop in de app.",
+  townIndexEmpty: "Nog geen woonplaats met plekken.",
+  townIndexEmptyHint:
+    "Een woonplaats verschijnt hier zodra iemand de eerste foto toevoegt in de app.",
+  townIndexMetaTitle: "Woonplaatsen met ontbijt- en brunchplekken",
+  townIndexMetaDescription:
+    "Alle steden en dorpen in Nederland met ontbijt- en brunchplekken op brag.fast, van A tot Z, met het aantal plekken per plaats.",
+  leaderboardMetaDescription:
+    "Wie zette de meest gelikete ontbijtplekken op brag.fast? De leaderboard rangschikt iedereen op de likes op de plekken die ze toevoegden.",
+  privacyMetaDescription: "Welke gegevens brag.fast bewaart, en waarom.",
+  dataDeletionMetaDescription:
+    "Zo wis je je eigen foto's of je hele brag.fast-account.",
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   downloadAndroid: "Google Play",
@@ -141,14 +172,42 @@ export type MessageKey = keyof typeof nlMessages;
 
 export const enMessages = {
   hero: "Breakfast and brunch spots, by city.",
-  intro: "Search a city. Spots are added in the app.",
+  intro:
+    "Search a city and see where breakfast is good. Visitors add spots with a photo in the app, and likes set the order.",
+  heroTownIndex: "Towns with spots",
   searchLabel: "Search a city",
   searchPlaceholder: "Haarlem, Den Haag, Giethoorn",
   searchSubmit: "Search",
   appRowBragTitle: "Be first to brag",
-  appRowBragBody: "Add a spot in the app with the first photo.",
+  appRowBragBody:
+    "Is your breakfast spot not on here yet? Pick the place in the app and take the first photo. It lands on your town's board, with your name under it.",
   appRowPhotosTitle: "Show off your breakfast",
-  appRowPhotosBody: "Add extra photos in the app.",
+  appRowPhotosBody:
+    "Been there too? Add your own photos to a spot's gallery, so everyone can see what comes to the table.",
+  stepsTitle: "How brag.fast works",
+  stepSearchBody:
+    "Every city and village in the Netherlands has its own board. No account needed to look.",
+  stepBragBody:
+    "Having breakfast somewhere that isn't on here yet? One photo in the app puts the spot on the board.",
+  stepLikeBody:
+    "Like the spots where breakfast is good. Most likes sit on top: no stars, nothing paid.",
+  stepClimbBody: "Every like on a spot you added counts for you on the leaderboard.",
+  stepsMore: "Read how it works",
+  metaHomeTitle: "Breakfast and brunch by city in the Netherlands | brag.fast",
+  metaHomeDescription:
+    "Find breakfast and brunch spots in every city and village in the Netherlands. Ranked by visitors' likes, not by stars or paid placement.",
+  townIndex: "Towns",
+  townIndexLead:
+    "Every town with at least one spot, A to Z. Not seeing yours? Search it below, or put the first spot on it in the app.",
+  townIndexEmpty: "No town has a spot yet.",
+  townIndexEmptyHint: "A town shows up here once someone adds the first photo in the app.",
+  townIndexMetaTitle: "Towns with breakfast and brunch spots",
+  townIndexMetaDescription:
+    "Every city and village in the Netherlands with breakfast and brunch spots on brag.fast, A to Z, with the number of spots in each.",
+  leaderboardMetaDescription:
+    "Who put the most-liked breakfast spots on brag.fast? The leaderboard ranks everyone by the likes on the spots they added.",
+  privacyMetaDescription: "What brag.fast stores, and why.",
+  dataDeletionMetaDescription: "How to delete your own photos or your whole brag.fast account.",
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   downloadAndroid: "Google Play",
@@ -317,6 +376,41 @@ export function uniqueSpotsLabel(locale: Locale, count: number): string {
     return "1 plek";
   }
   return `${count} plekken`;
+}
+
+/** "Ontbijt en brunch in Gouda": the board's title in search results */
+export function cityMetaTitle(locale: Locale, city: string): string {
+  return locale === "en" ? `Breakfast and brunch in ${city}` : `Ontbijt en brunch in ${city}`;
+}
+
+export function cityMetaDescription(locale: Locale, city: string, count: number): string {
+  if (locale === "en") {
+    if (count <= 0) {
+      return `No breakfast or brunch spots in ${city} yet. Put the first one on the board with a photo in the app.`;
+    }
+    return `Breakfast and brunch in ${city}: ${uniqueSpotsLabel(locale, count)} ranked by visitors' likes, with photos from the app.`;
+  }
+  if (count <= 0) {
+    return `Nog geen ontbijt- of brunchplekken in ${city}. Zet de eerste op de board met een foto in de app.`;
+  }
+  return `Ontbijt en brunch in ${city}: ${uniqueSpotsLabel(locale, count)} op volgorde van likes van bezoekers, met foto's uit de app.`;
+}
+
+export function spotMetaDescription(
+  locale: Locale,
+  spot: { name: string; address: string; likeCount: number },
+): string {
+  const likes = likeCountLabel(locale, spot.likeCount);
+  return locale === "en"
+    ? `Breakfast and brunch at ${spot.name}, ${spot.address}. ${likes} from visitors on brag.fast.`
+    : `Ontbijt en brunch bij ${spot.name}, ${spot.address}. ${likes} van bezoekers op brag.fast.`;
+}
+
+export function passportMetaDescription(locale: Locale, slug: string, count: number): string {
+  const spots = uniqueSpotsLabel(locale, count);
+  return locale === "en"
+    ? `@${slug}'s passport on brag.fast: ${spots} added.`
+    : `Het paspoort van @${slug} op brag.fast: ${spots.toLowerCase()} toegevoegd.`;
 }
 
 export function localFavoritesHeading(locale: Locale, city: string): string {

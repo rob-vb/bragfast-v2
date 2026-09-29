@@ -562,8 +562,15 @@ a.stamp:focus-visible {
   scale: 1.05;
 }
 
+/* A home step card straightens its sticker as the whole card is the link */
+.step-card:has(:focus-visible) .hiw-sticker {
+  rotate: 0deg;
+  scale: 1.05;
+}
+
 @media (hover: hover) and (pointer: fine) {
-  .hiw-sticker:hover {
+  .hiw-sticker:hover,
+  .step-card:hover .hiw-sticker {
     rotate: 0deg;
     scale: 1.05;
   }

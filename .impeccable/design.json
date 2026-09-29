@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-29T13:01:41.173Z",
+  "generatedAt": "2026-09-29T14:19:10.000Z",
   "title": "Design System: brag.fast",
   "extensions": {
     "colorMeta": {
@@ -336,6 +336,22 @@
       "description": "Strawberry milk at 85% with a backdrop blur: lockup and #bragfast left, chrome links, language tray and a blush sign-in right.",
       "html": "<header class=\"ds-nav\"><span class=\"ds-nav__brand\">brag.fast</span><span class=\"ds-nav__tag\">#bragfast</span><nav class=\"ds-nav__links\"><a href=\"#\">Hoe het werkt</a><a href=\"#\">Leaderboard</a><button class=\"ds-nav__cta\" type=\"button\">Inloggen</button></nav></header>",
       "css": ".ds-nav { display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 20px; background: rgb(255 229 240 / 0.85); backdrop-filter: blur(12px); color: var(--color-berry, #4a1534); } .ds-nav__brand { font: 400 1.5rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); } .ds-nav__tag { color: var(--color-blush, #fa715a); font: 400 0.875rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); } .ds-nav__links { display: flex; align-items: center; gap: 16px; margin-left: auto; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-nav__links a { color: var(--color-berry, #4a1534); text-decoration: none; transition: color 160ms cubic-bezier(0.23,1,0.32,1); } .ds-nav__links a:hover { color: var(--color-blush, #fa715a); } .ds-nav__links a:focus-visible, .ds-nav__cta:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; border-radius: 9999px; } .ds-nav__cta { height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: var(--color-blush, #fa715a); color: #fff; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; }"
+    },
+    {
+      "name": "Step Card",
+      "kind": "card",
+      "refersTo": "step-card",
+      "description": "Home's four-step band: a white/7 slab on berry holding one how-it-works verb as a tilted sticker and one milk sentence; the whole slab opens that verb's poster, and hover or focus straightens the sticker.",
+      "html": "<a class=\"ds-step\" href=\"#\"><span class=\"ds-step__verb\">Zoek</span><span class=\"ds-step__body\">Elke stad en elk dorp in Nederland heeft een eigen board. Kijken kan zonder account.</span></a>",
+      "css": ".ds-step { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; max-width: 260px; padding: 28px 24px 24px; border-radius: 28px; background: rgb(255 255 255 / 0.07); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.10); color: var(--color-white, #fff); text-decoration: none; font-family: var(--font-body, \"Nunito\", system-ui, sans-serif); transition: background-color 160ms cubic-bezier(0.23, 1, 0.32, 1), scale 160ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-step:hover { background: rgb(255 255 255 / 0.12); } .ds-step:active { scale: 0.985; } .ds-step:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; } .ds-step__verb { display: inline-flex; padding: 6px 20px; border-radius: 999px; background: var(--color-yolk, #feb62a); color: var(--color-berry, #4a1534); font: 400 1.875rem/1.1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); letter-spacing: 0.025em; box-shadow: 0 0 0 3px #fff, 0 10px 20px rgb(22 4 14 / 0.35); rotate: -6deg; transition: rotate 360ms cubic-bezier(0.23, 1, 0.32, 1), scale 360ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-step:hover .ds-step__verb, .ds-step:focus-visible .ds-step__verb { rotate: 0deg; scale: 1.05; } .ds-step__body { font-weight: 600; font-size: 1rem; line-height: 1.75; color: rgb(255 229 240 / 0.85); }"
+    },
+    {
+      "name": "Town Pill",
+      "kind": "chip",
+      "refersTo": "town-pill",
+      "description": "A board on the woonplaats index: milk pill with the name in Bagel Fat One and a white count chip; hover tints it candy.",
+      "html": "<a class=\"ds-town\" href=\"#\"><span class=\"ds-town__name\">Oldenzaal</span><span class=\"ds-town__count\">3 plekken</span></a>",
+      "css": ".ds-town { display: inline-flex; align-items: center; gap: 12px; height: 48px; padding: 0 8px 0 20px; border-radius: 999px; background: var(--color-milk, #ffe5f0); color: var(--color-berry, #4a1534); text-decoration: none; transition: background-color 160ms cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-town:hover { background: rgb(255 158 190 / 0.45); } .ds-town:active { transform: scale(0.97); } .ds-town:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; } .ds-town__name { font: 400 1.25rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); letter-spacing: 0.025em; } .ds-town__count { padding: 4px 12px; border-radius: 999px; background: #fff; font: 700 0.875rem/1.25 var(--font-body, \"Nunito\", system-ui, sans-serif); color: rgb(74 21 52 / 0.75); font-variant-numeric: tabular-nums; }"
     }
   ],
   "narrative": {

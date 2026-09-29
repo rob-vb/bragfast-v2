@@ -16,8 +16,8 @@ import type {
   CityCard,
   CityPageData,
   CitySpotCard,
+  LiveSpotRef,
   SearchHit,
-  SitemapEntry,
   SpotPageData,
   SpotPagePhoto,
 } from "../domain/viewModels";
@@ -230,13 +230,24 @@ export const spotPage = query({
   },
 });
 
-export const sitemapEntries = query({
+/** Every spot live on a board, for the sitemap and the woonplaats index. */
+export const liveSpots = query({
   args: {},
-  handler: async (ctx): Promise<SitemapEntry[]> => {
-    const cities = await ctx.db.query("cities").collect();
-    return [
-      { path: "/" },
-      ...cities.map((city) => ({ path: `/nl/${city.slug}` })),
-    ];
+  handler: async (ctx): Promise<LiveSpotRef[]> => {
+    const rows = await ctx.db.query("spots").collect();
+    const live: LiveSpotRef[] = [];
+    for (const row of rows) {
+      if (row.listingStatus !== "listed" || row.photoId === undefined) {
+        continue;
+      }
+      try {
+        live.push({ citySlug: parseCitySlug(row.citySlug), slug: parseSpotSlug(row.slug) });
+      } catch (error) {
+        if (!(error instanceof DomainParseError)) {
+          throw error;
+        }
+      }
+    }
+    return live;
   },
 });

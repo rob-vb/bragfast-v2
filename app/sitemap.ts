@@ -1,11 +1,9 @@
 import type { MetadataRoute } from "next";
-import { NL_CITIES } from "@/domain/cities";
-import { publicSiteUrl } from "@/lib/catalog";
+import { loadSitemap, publicSiteUrl } from "@/lib/catalog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const origin = publicSiteUrl();
-  const paths = ["/", "/nl/leaderboard", ...NL_CITIES.map((city) => `/nl/${city.slug}`)];
-  return paths.map((path) => ({
+  return (await loadSitemap()).map(({ path }) => ({
     url: `${origin}${path}`,
     changeFrequency: "daily" as const,
   }));

@@ -51,7 +51,8 @@ import {
   sortCityBoard,
 } from "./like";
 import { rankAdders, rankedLeaderboard, standingOf } from "./leaderboard";
-import { foodEstablishmentJsonLd } from "./jsonld";
+import { foodEstablishmentJsonLd, jsonLdScript, siteJsonLd } from "./jsonld";
+import { boardIndex, planSitemap, townIndexGroups } from "./seo";
 import { boardFromListedSpots } from "./board";
 import type { CityCard, CitySpotCard } from "./viewModels";
 import { clientIpFrom } from "./clientIp";
@@ -69,7 +70,7 @@ test("chrome links are marketing pages and legal stays out of the header", () =>
   );
   assert.deepEqual(
     chromeLinks("footer").map((link) => link.href),
-    ["/how-it-works", "/nl/leaderboard"],
+    ["/how-it-works", "/nl/woonplaatsen", "/nl/leaderboard"],
   );
   assert.deepEqual(
     LEGAL_LINKS.map((link) => link.href),
@@ -1128,4 +1129,94 @@ test("planPlacePreview maps live to new, attach to existing, and reject to rejec
     planPlacePreview({ types: ["cafe"], geo: { lat: 0, lng: 0 }, existing: null }),
     { kind: "reject", reason: "no-woonplaats" },
   );
+});
+
+function live(city: string, spot: string) {
+  return { citySlug: parseCitySlug(city), slug: parseSpotSlug(spot) };
+}
+
+test("boardIndex counts live spots per known woonplaats", () => {
+  const index = boardIndex([
+    live("oldenzaal", "a"),
+    live("enschede", "b"),
+    live("oldenzaal", "c"),
+    live("nergenshuizen", "d"),
+  ]);
+  assert.deepEqual(
+    index.map((entry) => [entry.city.slug, entry.city.nameNl, entry.spotCount]),
+    [
+      ["oldenzaal", "Oldenzaal", 2],
+      ["enschede", "Enschede", 1],
+    ],
+  );
+});
+
+test("planSitemap lists chrome pages, boards with spots and their spots only", () => {
+  assert.deepEqual(
+    planSitemap([live("oldenzaal", "b"), live("enschede", "a"), live("oldenzaal", "a")]).map(
+      (entry) => entry.path,
+    ),
+    [
+      "/",
+      "/how-it-works",
+      "/nl/woonplaatsen",
+      "/nl/leaderboard",
+      "/nl/enschede",
+      "/nl/oldenzaal",
+      "/nl/enschede/a",
+      "/nl/oldenzaal/a",
+      "/nl/oldenzaal/b",
+    ],
+  );
+  assert.deepEqual(
+    planSitemap([]).map((entry) => entry.path),
+    ["/", "/how-it-works", "/nl/woonplaatsen", "/nl/leaderboard"],
+  );
+});
+
+test("townIndexGroups sorts A to Z by the name the visitor reads", () => {
+  const index = boardIndex([
+    live("s-gravenpolder", "a"),
+    live("den-haag", "b"),
+    live("ijhorst", "c"),
+    live("amsterdam", "d"),
+    live("arnemuiden", "e"),
+  ]);
+  const shape = (locale: "nl" | "en") =>
+    townIndexGroups(index, locale).map((group) => [
+      group.letter,
+      group.entries.map((entry) => (locale === "en" ? entry.city.nameEn : entry.city.nameNl)),
+    ]);
+  assert.deepEqual(shape("nl"), [
+    ["A", ["Amsterdam", "Arnemuiden"]],
+    ["D", ["Den Haag"]],
+    ["G", ["'s-Gravenpolder"]],
+    ["I", ["IJhorst"]],
+  ]);
+  assert.deepEqual(
+    shape("en").map(([letter]) => letter),
+    ["A", "G", "I", "T"],
+  );
+});
+
+test("siteJsonLd names the site and its publisher", () => {
+  const json = siteJsonLd({
+    origin: "https://brag.fast",
+    description: "Ontbijt",
+    language: "nl-NL",
+    logo: "/logo.png",
+  });
+  const [site, organization] = json["@graph"] as Record<string, unknown>[];
+  assert.equal(site["@type"], "WebSite");
+  assert.equal(site.url, "https://brag.fast/");
+  assert.equal(site.name, "brag.fast");
+  assert.deepEqual(site.publisher, { "@id": "https://brag.fast/#organization" });
+  assert.equal(organization["@id"], "https://brag.fast/#organization");
+  assert.equal(organization.logo, "https://brag.fast/logo.png");
+});
+
+test("jsonLdScript cannot close its script tag", () => {
+  const out = jsonLdScript({ name: "</script><script>alert(1)</script>" });
+  assert.equal(out.includes("</script>"), false);
+  assert.deepEqual(JSON.parse(out), { name: "</script><script>alert(1)</script>" });
 });

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 import { loadAppStores, loadLeaderboard } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/seo";
 import { likeCountLabel, t, uniqueSpotsLabel } from "@/domain/messages";
 import { PageHero, PageHeroLead, PageHeroTitle } from "@/components/page-hero";
 import { Podium } from "@/components/podium";
@@ -16,7 +17,11 @@ const PODIUM = 3;
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: `${t(locale, "leaderboard")} · brag.fast` };
+  return pageMetadata(locale, {
+    title: t(locale, "leaderboard"),
+    description: t(locale, "leaderboardMetaDescription"),
+    path: "/nl/leaderboard",
+  });
 }
 
 export default async function LeaderboardPage() {
