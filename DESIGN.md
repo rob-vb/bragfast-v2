@@ -192,7 +192,7 @@ code disagree, the code is the fact and this file is the bug.
 **Creative North Star: "Kawaii egg on strawberry milk."**
 
 The home page opens inside a full-bleed breakfast still. Every other page — city, spot,
-passport, leaderboard — opens on a **berry slab** (`bg-berry`, `#4a1534`) that the milk header
+passport, leaderboard, how it works — opens on a **berry slab** (`bg-berry`, `#4a1534`) that the milk header
 sits over. The spot slab carries the adder's photo as a tilted print instead of a backdrop,
 and the print's own light pools softly around it, so the berry still reads as the ground. Chrome around either is strawberry milk, berry ink, blush and yolk
 stickers. Cocoa brown lives on the egg SVG and nowhere else.
@@ -210,7 +210,9 @@ Dutch is the default UI language. The brand is English (`brag.fast`, `#bragfast`
   city slab is a poster: the woonplaats name set edge to edge, ending in a bakery-awning
   scallop. The spot slab holds the brag print, which hangs over the slab's bottom edge. The
   passport slab carries the adder's woonplaatsen as rubber stamps; the leaderboard slab is a
-  stage whose podium stands on its floor.
+  stage whose podium stands on its floor. The how-it-works slab carries the four verbs as
+  tilted stickers that jump to four verb posters below it, each poster alternating berry,
+  milk and white grounds.
 - The wordmark is the SVG lockup `/brag_fast_logo.svg`, rendered through `<Logo>`. The mascot
   is `/brag_fast_egg.svg`, rendered through `<Egg>` in the footer and as the favicon. Neither
   is ever recreated in CSS.
@@ -229,7 +231,7 @@ supplies the warmth.
 ### Primary
 
 - **Berry** (`{colors.berry}`, `#4a1534`): all text (`body { color }`), the hero slab on city,
-  spot, passport and leaderboard, and selection background. At alpha it does the quiet work —
+  spot, passport, leaderboard and how it works, and selection background. At alpha it does the quiet work —
   `berry/70` for secondary text, `berry/12`–`berry/15` for hairlines, `berry/45` for a photo
   scrim.
 - **Milk** (`{colors.milk}`, `#ffe5f0`): the header (at 85%, blurred), spot-card and
@@ -299,6 +301,11 @@ voices, no third.
 - **Handle** (`PageHeroPoster fit="handle"`): the passport's username behind a blush `@`,
   sized like the spot poster to the column beside the stamps. `lib/display-fit.ts` carries
   digits, `@` and `#` so a handle measures true.
+- **Verb poster** (`.verb-word`, Bagel Fat One, fitted, line-height 0.8, tracking 0.012em):
+  the four verbs on how it works (Zoek, Brag, Like, Klim). All four share one size:
+  `verbFit()` takes the widest verb's `displayFit` line width for the locale, and every
+  poster divides 98% of its `max-w-6xl` container width by it, capped at 30rem. White on a
+  berry poster, berry on milk or white.
 - **Display** (Bagel Fat One, `clamp(3rem, 10vw, 7rem)`, line-height 0.92, tracking wide,
   white): `PageHeroTitle size="lg"`.
 - **Headline** (Bagel Fat One, `clamp(2.4rem, 8vw, 5.5rem)`, white): hero titles that are
@@ -551,6 +558,58 @@ of the board's photos fanned top-right (3px white die-cut, deep-berry cast, ±8d
 ±12deg on hover), the yolk count `.sticker`, `seeAllInCity` in Bagel Fat One, and a blush
 arrow disc. Neighbour spots before it are ordinary `SpotLinkCard`s, at most two.
 
+### How-it-works page (`app/how-it-works/page.tsx`, `components/how-it-works.tsx`)
+
+The page is four verb posters between a berry hero and a milk close. Grounds run hero berry,
+Zoek milk, Brag berry, Like white, Klim berry, house rules white, close milk. Every demo
+piece that shows made-up data wears a candy **Voorbeeld** label (a `.sticker` pill on the
+print and the podium, a plain candy chip under the example board).
+
+- **Hero.** The default `board` `PageHero`: `PageHeroTitle size="lg"` and a milk lede on the
+  left seven columns; on the right, `VerbStickers`, a `nav` list of the four verbs as
+  `.sticker` pills in yolk, candy, mint and milk, Bagel Fat One berry (`text-2xl` →
+  `text-5xl` on `lg`), each ending in a `white/70` disc with a Lucide arrow-down. Each is
+  tilted (-6, 4, -3, 6deg); on `lg` they stack and every other one steps in 4rem. Hover
+  (fine pointer) or focus straightens a sticker and scales it 1.05 over 360ms.
+- **Verb poster** (`VerbPoster`). A full-width section on its ground, a `max-w-6xl`
+  `@container` column padded `pt-16`/`sm:pt-24` and `pb-20`/`sm:pb-28`, the verb as the
+  section's `h2`, then the working piece 2–2.5rem under it. `floor` drops the bottom
+  padding so the piece stands on the poster's edge; `backdrop` puts something behind the
+  column.
+- **Zoek: town map and search** (`TownSearch`). The real `SearchBox` pill (its
+  `onQueryChange` feeds the map) with a `berry/70` note under it, beside a dot map of every
+  woonplaats: one round 8-unit berry/35 dot per board at its own lat/lng, in an
+  equirectangular frame squeezed by cos 52°. A yolk `.sticker` count ("2.503 plaatsen")
+  sits on the map's top-left at -3deg. The pin is a yolk dot in a 3px white die-cut with a
+  blush/45 ring pulsing out of it and the name on a berry pill above. Typing dims the country
+  to berry/16 and draws every hit in 13-unit blush; the pin follows the active suggestion.
+  Nobody typing, the pin tours eight boards, big and small, every 2.6s.
+- **Brag: demo print** (`DemoPrint`). A `.brag-print` at -3deg with the spot print's
+  caption ("Ontdekt door" over `@handle`, "vandaag" right), pulled up into the verb on `lg`.
+  `PrintGlow at="28% 72%"` pools its light behind it on the berry. Beside it, the body and
+  `BragFacts`: three milk lines, each behind a `white/12` disc holding a yolk Lucide glyph.
+  The store buttons hang under the print on `lg` and follow the copy on mobile.
+- **Like: example board** (`LikeDemo`). Three milk-slab prints laid out like the city
+  board's podium (the top print spans two columns, and two rows on `lg`), each with its own
+  like pill (outline at rest, flat blush when yours, `like-pop` on a new like). Beside it
+  the body and three rule pills (milk, a white disc with a blush heart); the tie rule turns
+  yolk and scales 1.03 while the top two are tied. Order is likes, then newest like, then
+  newest add — the real board's order. The top spot is announced in a polite live region.
+- **Klim: demo podium and stamp** (`DemoPodium`, `DemoStamp`). The leaderboard podium in
+  miniature on the berry poster's floor: yolk, candy and mint `rounded-t-slab` steps with
+  step enamel, one handle size on every step (it truncates rather than shrinks), a
+  `white/12` like pill with a candy heart, the spot count in `milk/70`, the egg over first
+  place. A candy passport stamp (`StampFace`/`StampDefs`, -11deg) overlaps the verb at the
+  top right. The copy column ends in a white `h-12` pill link to the leaderboard whose ink
+  turns blush on hover.
+- **House rules** (`HouseRules`). White ground; the egg (76px, -8deg) and the title in
+  Bagel Fat One `text-4xl`/`text-5xl` held sticky on `lg`, beside a `dl` of five rules
+  between `berry/12` hairlines: the term in Bagel Fat One `text-2xl`, the detail in Nunito
+  `berry/75` at `max-w-prose`.
+- **Close.** Milk, centred in `max-w-3xl`: the egg at 96px, 6deg with
+  `drop-shadow-sticker`, the app line as an `h2`, a `berry/80` lede, then a blush search
+  button back to home beside the store buttons.
+
 ### Photo frame
 
 `PhotoFrame` is absolute-inset `object-cover`. With `ken`, it runs `hero-ken` — a 22s
@@ -600,10 +659,31 @@ change inside `document.startViewTransition`, with each card named `spot-{slug}`
 glide to their new places and the podium print morphs; new snapshots are solid from the first
 frame and old ones clear in 140ms.
 
+**How it works has one moment per poster, and each is its page's own moment played once.**
+Zoek: the country fills in from the south, eight bands of dots each rising 14px out of
+nothing (640ms `ease-out-strong`, 60ms apart), then the pin starts its tour. Brag: the print
+lands exactly as on the spot page (`print-land`, 120ms in). Like: 1.3s after the board is
+half in view, someone else's like lands on the runner-up — a candy **+1** floats off its
+pill, the heart pops, and the board glides into its new order through
+`document.startViewTransition` (each print named `hiw-{id}`), the newest like breaking the
+tie. Your own taps glide the same way. Klim: the podium rises third step first (`podium-rise`,
+120/270/420ms), the egg drops at 1.1s, and the stamp is pressed at 1.5s (`stamp-press`).
+
+**The Stage.** `components/stage.tsx` holds a poster's moment until it arrives. A stage that
+is off-screen when the page wakes is marked `data-stage="armed"`, which pauses every
+animation inside it on its first frame; at 30% in view it turns `live` and plays, once. A
+stage already on screen at wake, a reduced-motion visitor, or a page without script gets no
+`data-stage`, and the staged classes only animate under `[data-stage]`, so the piece simply
+stands in its final state. Nothing jumps back to replay. Pieces that react rather than play
+(the pin tour, the like nudge) use `useSeen`, which fires once at a threshold.
+
 Press feedback is uniform: `active:scale-[0.97]`. Hover effects are gated behind the
 `pointer-fine` variant so a touch device never sticks in a hover state. Under
 `prefers-reduced-motion` the ken-burns, poster letters, print landing, glow fade, lightbox
-slide, like pop, sort glide, stamp press, podium rise, egg drop and like-bar fill stop, and
+slide, like pop, sort glide, stamp press, podium rise, egg drop and like-bar fill stop — and on how it works the
+staged print, map bands, pin ring, pin glide and pin tour, town label, +1 float, demo
+podium rise, demo egg drop and demo stamp press stop, and the like demo re-sorts without a
+view transition — and
 every popup transition falls back to opacity with transforms removed.
 
 ## Do's and Don'ts
@@ -612,8 +692,8 @@ every popup transition falls back to opacity with transforms removed.
 
 - **Do** open home with a full-bleed still under the milk header, copy bottom-left in white
   with `text-shadow-photo`.
-- **Do** give city, spot, passport and leaderboard a berry `PageHero` slab — with a photo
-  print on spot.
+- **Do** give city, spot, passport, leaderboard and how it works a berry `PageHero` slab —
+  with a photo print on spot.
 - **Do** use `<Logo>` (`/brag_fast_logo.svg`) in the header and hero, and `<Egg>` in the footer
   and favicon.
 - **Do** use flat blush for primary buttons and the pressed segment.

@@ -96,7 +96,7 @@ export function PassportStamps({
   );
 }
 
-function StampFace({
+export function StampFace({
   top,
   count,
   noun,
@@ -165,7 +165,7 @@ function StampFace({
  * The arcs the stamp text runs along, and the ink: grain that knocks specks
  * out of the fill, then a faint warp so no edge is machine-true.
  */
-function StampDefs() {
+export function StampDefs() {
   return (
     <svg aria-hidden width="0" height="0" className="absolute">
       <defs>

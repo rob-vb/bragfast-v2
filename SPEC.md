@@ -81,7 +81,7 @@ The owner sets the "idea is working" bar. Do not block v1 on a metric.
 /nl/{city}/{spot}         spot page
 /nl/u/{slug}              public passport
 /nl/leaderboard           adder leaderboard
-/how-it-works             how it works (chrome page, empty until copy lands)
+/how-it-works             how it works (chrome page, explainer)
 ```
 
 - `{city}` and `{spot}` are English-safe slugs (e.g. `haarlem`, `de-bakkerswinkel`).
@@ -178,7 +178,11 @@ List of adders. Readable signed-out. Header and footer link here. Empty copy whe
 
 ### How it works `/how-it-works`
 
-Chrome page. Header and footer link here. Title only until the explainer copy lands. English slug. Dutch default title **Hoe het werkt**.
+Chrome page. Header and footer link here. English slug. Dutch default title **Hoe het werkt**.
+
+The explainer runs in four steps, in the order a spot lives: **Zoek** (every woonplaats has a board; the real search box), **Brag** (the first photo in the app creates the spot under your name), **Like** (one like per person per spot, tap again to undo, most likes on top, a tie goes to the newest like, no stars and no paid placement), **Klim** (likes on spots you added count toward the leaderboard; the passport gets a stamp per woonplaats). Then house rules (what counts as a spot, likes are not for sale, browse without an account, delete your own photos, closed spots leave the board) and the store buttons.
+
+Demo pieces (the photo print, the example board, the podium, the stamp) use made-up spots and usernames, labelled **Voorbeeld**. They never link to a real spot or passport, and demo likes write nothing. The example board sorts with the same rule as `sortCityBoard`.
 
 ## Auth and identity
 

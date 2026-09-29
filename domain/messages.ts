@@ -88,6 +88,53 @@ export const nlMessages = {
   opensGoogleMaps: "opent Google Maps",
   previousPhoto: "Vorige foto",
   nextPhoto: "Volgende foto",
+  hiwLead: "Eén foto zet een plek op de board. Likes bepalen de volgorde.",
+  hiwSteps: "De stappen",
+  hiwVerbSearch: "Zoek",
+  hiwVerbBrag: "Brag",
+  hiwVerbLike: "Like",
+  hiwVerbClimb: "Klim",
+  hiwSearchBody:
+    "Elke woonplaats in Nederland heeft een eigen board, van de grote stad tot het kleinste dorp. Zoek een plaats en zie waar het ontbijt goed is.",
+  hiwSearchNote: "Kijken kan zonder account.",
+  hiwMapLabel: "Kaart van Nederland met een stip voor elke woonplaats",
+  hiwBragBody:
+    "Ontbijt je ergens dat nog niet op brag.fast staat? Kies de plek in de app en maak de eerste foto. Die foto zet de plek op de board, met jouw naam eronder.",
+  hiwBragFactPhoto: "Eén foto is genoeg om een plek toe te voegen.",
+  hiwBragFactTown: "De plek komt op de board van de plaats waar hij staat.",
+  hiwBragFactGallery: "Daarna voegt iedereen extra foto's toe in de app.",
+  hiwLikeBody:
+    "Log in en like de plekken waar je lekker hebt ontbeten. De plek met de meeste likes staat bovenaan. Geen sterren, geen betaalde plekken.",
+  hiwLikeRuleOne: "Eén like per persoon per plek",
+  hiwLikeRuleUndo: "Nog een keer tikken haalt je like weg",
+  hiwLikeRuleTie: "Gelijkspel? De nieuwste like wint",
+  hiwDemo: "Voorbeeld",
+  hiwDemoBoard: "Voorbeeldboard",
+  hiwDemoHint: "Tik op een hartje. Deze likes tellen niet mee.",
+  hiwDemoHandle: "jij",
+  hiwToday: "vandaag",
+  hiwClimbBody:
+    "Elke like op een plek die jij toevoegde telt voor jou. Zo klim je op de leaderboard.",
+  hiwClimbPassport:
+    "Je paspoort krijgt een stempel voor elke plaats waar je een plek toevoegde.",
+  hiwSeeLeaderboard: "Bekijk de leaderboard",
+  hiwRulesTitle: "Huisregels",
+  hiwRuleSpotTitle: "Ontbijt of brunch te koop",
+  hiwRuleSpotBody:
+    "Cafés, bakkers, lunchrooms en hotels. Geen fastfood, geen thuiskeukens, geen zaak die alleen lunch of diner doet.",
+  hiwRuleRankTitle: "Likes zijn niet te koop",
+  hiwRuleRankBody:
+    "Een plek staat hoger omdat mensen hem goed vinden. Niet omdat iemand betaalt.",
+  hiwRuleBrowseTitle: "Kijken zonder account",
+  hiwRuleBrowseBody:
+    "Zoeken en bladeren kan altijd. Inloggen, met Apple, Google of een wachtwoord, doe je pas als je wilt liken.",
+  hiwRulePhotoTitle: "Jouw foto, jouw keuze",
+  hiwRulePhotoBody: "Je eigen foto's wis je wanneer je wilt.",
+  hiwRuleClosedTitle: "Dicht is dicht",
+  hiwRuleClosedBody:
+    "Een plek die voorgoed dicht is, gaat van de board. De pagina blijft, met Gesloten erop.",
+  hiwCloseBody: "Staat jouw ontbijtplek er nog niet op? Met de app ben jij de eerste.",
+  hiwSearchAPlace: "Zoek een plaats",
 } as const;
 
 export type MessageKey = keyof typeof nlMessages;
@@ -182,6 +229,51 @@ export const enMessages = {
   opensGoogleMaps: "opens Google Maps",
   previousPhoto: "Previous photo",
   nextPhoto: "Next photo",
+  hiwLead: "One photo puts a spot on the board. Likes set the order.",
+  hiwSteps: "The steps",
+  hiwVerbSearch: "Find",
+  hiwVerbBrag: "Brag",
+  hiwVerbLike: "Like",
+  hiwVerbClimb: "Climb",
+  hiwSearchBody:
+    "Every town in the Netherlands has its own board, from the big city to the smallest village. Search a place and see where breakfast is good.",
+  hiwSearchNote: "No account needed to look.",
+  hiwMapLabel: "Map of the Netherlands with a dot for every town",
+  hiwBragBody:
+    "Having breakfast somewhere that isn't on brag.fast yet? Pick the place in the app and take the first photo. That photo puts the spot on the board, with your name under it.",
+  hiwBragFactPhoto: "One photo is all it takes to add a spot.",
+  hiwBragFactTown: "The spot lands on the board of the town it's in.",
+  hiwBragFactGallery: "After that, anyone can add more photos in the app.",
+  hiwLikeBody:
+    "Sign in and like the spots where you had a great breakfast. The spot with the most likes sits at the top. No stars, no paid placement.",
+  hiwLikeRuleOne: "One like per person per spot",
+  hiwLikeRuleUndo: "Tap again to take your like back",
+  hiwLikeRuleTie: "A tie? The newest like wins",
+  hiwDemo: "Example",
+  hiwDemoBoard: "Example board",
+  hiwDemoHint: "Tap a heart. These likes don't count.",
+  hiwDemoHandle: "you",
+  hiwToday: "today",
+  hiwClimbBody:
+    "Every like on a spot you added counts for you. That's how you climb the leaderboard.",
+  hiwClimbPassport: "Your passport gets a stamp for every town where you added a spot.",
+  hiwSeeLeaderboard: "See the leaderboard",
+  hiwRulesTitle: "House rules",
+  hiwRuleSpotTitle: "Breakfast or brunch for sale",
+  hiwRuleSpotBody:
+    "Cafés, bakeries, lunchrooms and hotels. No fast food, no home kitchens, no place that only does lunch or dinner.",
+  hiwRuleRankTitle: "Likes aren't for sale",
+  hiwRuleRankBody: "A spot ranks higher because people like it. Not because someone paid.",
+  hiwRuleBrowseTitle: "Look without an account",
+  hiwRuleBrowseBody:
+    "Search and browse any time. You only sign in, with Apple, Google or a password, when you want to like.",
+  hiwRulePhotoTitle: "Your photo, your call",
+  hiwRulePhotoBody: "Delete your own photos whenever you want.",
+  hiwRuleClosedTitle: "Closed is closed",
+  hiwRuleClosedBody:
+    "A spot that closes for good leaves the board. Its page stays, marked Closed.",
+  hiwCloseBody: "Is your breakfast spot not on here yet? With the app, you're first.",
+  hiwSearchAPlace: "Search a place",
 } as const satisfies Record<MessageKey, string>;
 
 export type Locale = "nl" | "en";
@@ -292,4 +384,15 @@ export function leaderboardRankLabel(locale: Locale, rank: number): string {
   return locale === "en"
     ? `#${rank} on the leaderboard`
     : `#${rank} op de leaderboard`;
+}
+
+/** "2503 plaatsen": every woonplaats has a board */
+export function townCountLabel(locale: Locale, count: number): string {
+  const n = count.toLocaleString(locale === "en" ? "en-GB" : "nl-NL");
+  return locale === "en" ? `${n} towns` : `${n} plaatsen`;
+}
+
+/** Announced when the example board's order changes */
+export function demoTopLabel(locale: Locale, name: string): string {
+  return locale === "en" ? `${name} is now on top` : `${name} staat nu bovenaan`;
 }
