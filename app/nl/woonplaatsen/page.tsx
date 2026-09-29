@@ -3,11 +3,17 @@ import Link from "next/link";
 import { EggEmpty } from "@/components/egg-empty";
 import { PageHero, PageHeroLead, PageHeroTitle } from "@/components/page-hero";
 import { SearchBox } from "@/components/search-box";
-import { loadBoardIndex } from "@/lib/catalog";
+import { loadBoardIndex, publicSiteUrl } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
-import { pageMetadata } from "@/lib/seo";
+import { SITE_NAME, pageMetadata } from "@/lib/seo";
 import { t, townCountLabel, uniqueSpotsLabel } from "@/domain/messages";
 import { townIndexGroups } from "@/domain/seo";
+import {
+  breadcrumbJsonLd,
+  itemListJsonLd,
+  jsonLdGraph,
+  jsonLdScript,
+} from "@/domain/jsonld";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -30,9 +36,37 @@ export default async function TownIndexPage() {
   const locale = await getLocale();
   const boards = await loadBoardIndex();
   const groups = townIndexGroups(boards, locale);
+  const origin = publicSiteUrl();
+  const indexUrl = `${origin}/nl/woonplaatsen`;
+  const jsonLd =
+    groups.length === 0
+      ? null
+      : jsonLdGraph([
+          itemListJsonLd({
+            name: t(locale, "townIndexMetaTitle"),
+            url: indexUrl,
+            order: "alphabetical",
+            items: groups
+              .flatMap((group) => group.entries)
+              .map((entry) => ({
+                name: locale === "en" ? entry.city.nameEn : entry.city.nameNl,
+                url: `${origin}/nl/${entry.city.slug}`,
+              })),
+          }),
+          breadcrumbJsonLd([
+            { name: SITE_NAME, url: `${origin}/` },
+            { name: t(locale, "townIndex"), url: indexUrl },
+          ]),
+        ]);
 
   return (
     <main>
+      {jsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+        />
+      ) : null}
       <PageHero>
         <PageHeroTitle size="lg">{t(locale, "townIndex")}</PageHeroTitle>
         {boards.length > 0 ? (

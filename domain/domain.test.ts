@@ -41,7 +41,7 @@ import {
   listAddedSpots,
   passportStamps,
 } from "./passport";
-import { openNow, planSpotUpsert } from "./spot";
+import { addressLines, openNow, planSpotUpsert, splitDutchPlace } from "./spot";
 import {
   applyCityBoardSort,
   applyLikeCommand,
@@ -51,8 +51,15 @@ import {
   sortCityBoard,
 } from "./like";
 import { rankAdders, rankedLeaderboard, standingOf } from "./leaderboard";
-import { foodEstablishmentJsonLd, jsonLdScript, siteJsonLd } from "./jsonld";
-import { boardIndex, planSitemap, townIndexGroups } from "./seo";
+import {
+  breadcrumbJsonLd,
+  foodEstablishmentJsonLd,
+  itemListJsonLd,
+  jsonLdGraph,
+  jsonLdScript,
+  siteJsonLd,
+} from "./jsonld";
+import { boardIndex, llmsTxt, planSitemap, townIndexGroups } from "./seo";
 import { boardFromListedSpots } from "./board";
 import type { CityCard, CitySpotCard } from "./viewModels";
 import { clientIpFrom } from "./clientIp";
@@ -172,7 +179,8 @@ test("JSON-LD omits image when none is licensed", () => {
     hours: null,
     spotType: "cafe",
     url: "http://77.42.31.66/nl/haarlem/anne-max",
-    image: null,
+    images: [],
+    likeCount: 0,
   });
   assert.equal(json["@type"], "CafeOrCoffeeShop");
   assert.equal(json.name, "Anne&Max Haarlem");
@@ -188,7 +196,8 @@ test("JSON-LD keeps the name when an uploaded photo is present", () => {
     hours: null,
     spotType: "cafe",
     url: "http://77.42.31.66/nl/haarlem/anne-max",
-    image: { url: "https://focused-deer-318.convex.cloud/api/storage/photo" },
+    images: ["https://focused-deer-318.convex.cloud/api/storage/photo"],
+    likeCount: 0,
   });
   assert.equal(json.name, "Anne&Max Haarlem");
   assert.equal(
@@ -1131,8 +1140,19 @@ test("planPlacePreview maps live to new, attach to existing, and reject to rejec
   );
 });
 
-function live(city: string, spot: string) {
-  return { citySlug: parseCitySlug(city), slug: parseSpotSlug(spot) };
+function live(
+  city: string,
+  spot: string,
+  extra: { name?: string; likeCount?: number; lastLikedAt?: number; addedAt?: number } = {},
+) {
+  return {
+    citySlug: parseCitySlug(city),
+    slug: parseSpotSlug(spot),
+    name: extra.name ?? spot,
+    likeCount: extra.likeCount ?? 0,
+    lastLikedAt: extra.lastLikedAt ?? 0,
+    addedAt: extra.addedAt ?? 0,
+  };
 }
 
 test("boardIndex counts live spots per known woonplaats", () => {
@@ -1219,4 +1239,124 @@ test("jsonLdScript cannot close its script tag", () => {
   const out = jsonLdScript({ name: "</script><script>alert(1)</script>" });
   assert.equal(out.includes("</script>"), false);
   assert.deepEqual(JSON.parse(out), { name: "</script><script>alert(1)</script>" });
+});
+
+test("planSitemap dates catalog pages by their last add or like", () => {
+  const entries = planSitemap([
+    live("oldenzaal", "a", { addedAt: 100, lastLikedAt: 500 }),
+    live("oldenzaal", "b", { addedAt: 300 }),
+    live("enschede", "c", { addedAt: 200 }),
+  ]);
+  const at = (path: string) => entries.find((entry) => entry.path === path)?.lastModified;
+  assert.equal(at("/"), undefined);
+  assert.equal(at("/how-it-works"), undefined);
+  assert.equal(at("/nl/woonplaatsen"), 500);
+  assert.equal(at("/nl/leaderboard"), 500);
+  assert.equal(at("/nl/oldenzaal"), 500);
+  assert.equal(at("/nl/enschede"), 200);
+  assert.equal(at("/nl/oldenzaal/a"), 500);
+  assert.equal(at("/nl/oldenzaal/b"), 300);
+  assert.equal(
+    planSitemap([]).some((entry) => "lastModified" in entry),
+    false,
+  );
+});
+
+test("llmsTxt lists every live spot per board in board order", () => {
+  const text = llmsTxt("https://brag.fast", [
+    live("oldenzaal", "zoete-kruimels", { name: "Zoete Kruimels", likeCount: 1, addedAt: 10 }),
+    live("oldenzaal", "de-tijd", { name: "Eetcafé [De Tijd]", likeCount: 3, addedAt: 5 }),
+    live("den-haag", "a", { name: "A", likeCount: 1, addedAt: Date.UTC(2026, 8, 1) }),
+    live("nergenshuizen", "x", { name: "X" }),
+  ]);
+  assert.ok(text.startsWith("# brag.fast\n\n> "));
+  assert.ok(text.includes("Catalog as of 2026-09-01."));
+  assert.ok(text.includes("- [Woonplaatsen](https://brag.fast/nl/woonplaatsen)"));
+  // A to Z by the Dutch name, English name alongside when it differs
+  const den = text.indexOf("## Den Haag (The Hague)");
+  const olden = text.indexOf("## Oldenzaal\n");
+  assert.ok(den > 0 && olden > den);
+  // Board order: likes first; brackets escaped in link labels
+  const tijd = text.indexOf("- [Eetcafé \\[De Tijd\\]](https://brag.fast/nl/oldenzaal/de-tijd): 3 likes");
+  const kruimels = text.indexOf("- [Zoete Kruimels](https://brag.fast/nl/oldenzaal/zoete-kruimels): 1 like\n");
+  assert.ok(tijd > olden && kruimels > tijd);
+  assert.ok(text.includes("(https://brag.fast/nl/oldenzaal): the board, 2 spots ranked by likes"));
+  // A slug outside the gazetteer is no board
+  assert.equal(text.includes("nergenshuizen"), false);
+  assert.ok(text.endsWith("\n"));
+});
+
+test("llmsTxt without spots still says what the site is", () => {
+  const text = llmsTxt("https://brag.fast", []);
+  assert.ok(text.includes("## How the ranking works"));
+  assert.equal(text.includes("Catalog as of"), false);
+});
+
+test("addressLines drops the country and splits the Dutch postcode", () => {
+  const { street, place } = addressLines("Grootestraat 13, 7571 EJ Oldenzaal, Nederland");
+  assert.equal(street, "Grootestraat 13");
+  assert.equal(place, "7571 EJ Oldenzaal");
+  assert.deepEqual(splitDutchPlace(place!), { postalCode: "7571 EJ", locality: "Oldenzaal" });
+  assert.deepEqual(splitDutchPlace("Haarlem"), { postalCode: null, locality: "Haarlem" });
+  assert.deepEqual(addressLines("Markt 1"), { street: "Markt 1", place: null });
+});
+
+test("foodEstablishmentJsonLd splits the address and counts likes, not stars", () => {
+  const json = foodEstablishmentJsonLd({
+    name: "Zoete Kruimels",
+    address: "Grootestraat 13, 7571 EJ Oldenzaal, Nederland",
+    cityName: "Oldenzaal",
+    geo: { lat: 52.3, lng: 6.9 },
+    hours: null,
+    spotType: "cafe",
+    url: "https://brag.fast/nl/oldenzaal/zoete-kruimels",
+    images: ["https://x/hero", "https://x/hero", "https://x/second"],
+    likeCount: 4,
+  });
+  assert.equal(json["@id"], "https://brag.fast/nl/oldenzaal/zoete-kruimels#spot");
+  assert.deepEqual(json.address, {
+    "@type": "PostalAddress",
+    streetAddress: "Grootestraat 13",
+    postalCode: "7571 EJ",
+    addressLocality: "Oldenzaal",
+    addressCountry: "NL",
+  });
+  assert.deepEqual(json.image, ["https://x/hero", "https://x/second"]);
+  assert.deepEqual(json.interactionStatistic, {
+    "@type": "InteractionCounter",
+    interactionType: "https://schema.org/LikeAction",
+    userInteractionCount: 4,
+  });
+  assert.equal("aggregateRating" in json, false);
+});
+
+test("board JSON-LD ranks spots and trails back to the home page", () => {
+  const graph = jsonLdGraph([
+    itemListJsonLd({
+      name: "Ontbijt en brunch in Oldenzaal",
+      url: "https://brag.fast/nl/oldenzaal",
+      order: "ranked",
+      items: [
+        { name: "A", url: "https://brag.fast/nl/oldenzaal/a" },
+        { name: "B", url: "https://brag.fast/nl/oldenzaal/b" },
+      ],
+    }),
+    breadcrumbJsonLd([
+      { name: "brag.fast", url: "https://brag.fast/" },
+      { name: "Oldenzaal", url: "https://brag.fast/nl/oldenzaal" },
+    ]),
+  ]);
+  assert.equal(graph["@context"], "https://schema.org");
+  const [list, crumbs] = graph["@graph"] as Record<string, unknown>[];
+  assert.equal("@context" in list, false);
+  assert.equal(list.itemListOrder, "https://schema.org/ItemListOrderDescending");
+  assert.equal(list.numberOfItems, 2);
+  assert.deepEqual(list.itemListElement, [
+    { "@type": "ListItem", position: 1, name: "A", url: "https://brag.fast/nl/oldenzaal/a" },
+    { "@type": "ListItem", position: 2, name: "B", url: "https://brag.fast/nl/oldenzaal/b" },
+  ]);
+  assert.deepEqual(crumbs.itemListElement, [
+    { "@type": "ListItem", position: 1, name: "brag.fast", item: "https://brag.fast/" },
+    { "@type": "ListItem", position: 2, name: "Oldenzaal", item: "https://brag.fast/nl/oldenzaal" },
+  ]);
 });

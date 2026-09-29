@@ -3,8 +3,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
-import { foodEstablishmentJsonLd, jsonLdScript } from "@/domain/jsonld";
+import {
+  breadcrumbJsonLd,
+  foodEstablishmentJsonLd,
+  jsonLdGraph,
+  jsonLdScript,
+} from "@/domain/jsonld";
 import { canonicalCitySlug } from "@/domain/cities";
+import { addressLines } from "@/domain/spot";
 import {
   moreInCity,
   seeAllInCity,
@@ -15,7 +21,7 @@ import {
 } from "@/domain/messages";
 import { loadCityPage, loadSpotPage, publicSiteUrl } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
-import { pageMetadata } from "@/lib/seo";
+import { SITE_NAME, pageMetadata } from "@/lib/seo";
 import { SpotShare } from "@/components/spot-share";
 import { LikeButton } from "@/components/like-button";
 import { SpotPhotos } from "@/components/spot-photos";
@@ -86,23 +92,6 @@ function cityName(locale: Locale, city: { nameNl: string; nameEn: string }): str
   return locale === "en" ? city.nameEn : city.nameNl;
 }
 
-/**
- * "Grootestraat 13, 7571 EJ Oldenzaal, Nederland" →
- * { street: "Grootestraat 13", place: "7571 EJ Oldenzaal" }.
- * Every spot is Dutch, so the country line is noise.
- */
-function addressLines(address: string): { street: string; place: string | null } {
-  const parts = address
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean);
-  if (parts.length > 1 && /^(nederland|netherlands|the netherlands)$/i.test(parts.at(-1)!)) {
-    parts.pop();
-  }
-  const [street = address, ...rest] = parts;
-  return { street, place: rest.length > 0 ? rest.join(", ") : null };
-}
-
 function directionsUrl(name: string, address: string): string {
   const destination = encodeURIComponent(`${name}, ${address}`);
   return `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
@@ -130,16 +119,29 @@ export default async function SpotPage({
   const more = neighbours.slice(0, MORE_IN_CITY);
 
   const name = cityName(locale, page.city);
-  const jsonLd = foodEstablishmentJsonLd({
-    name: page.name,
-    address: page.address,
-    cityName: name,
-    geo: page.geo,
-    hours: page.hours,
-    spotType: page.spotType,
-    url: `${publicSiteUrl()}${page.canonicalPath}`,
-    image: page.licensedImage,
-  });
+  const origin = publicSiteUrl();
+  const jsonLd = jsonLdGraph([
+    foodEstablishmentJsonLd({
+      name: page.name,
+      address: page.address,
+      cityName: name,
+      geo: page.geo,
+      hours: page.hours,
+      spotType: page.spotType,
+      url: `${origin}${page.canonicalPath}`,
+      images: [
+        ...(page.licensedImage ? [page.licensedImage.url] : []),
+        ...page.photos.map((photo) => photo.url),
+      ],
+      likeCount: page.likeCount,
+    }),
+    breadcrumbJsonLd([
+      { name: SITE_NAME, url: `${origin}/` },
+      { name: t(locale, "townIndex"), url: `${origin}/nl/woonplaatsen` },
+      { name, url: `${origin}/nl/${page.city.slug}` },
+      { name: page.name, url: `${origin}${page.canonicalPath}` },
+    ]),
+  ]);
   const closed = page.lifecycle.kind === "gravestone";
   const hero = page.licensedImage?.url ?? null;
   const { street, place } = addressLines(page.address);
@@ -195,7 +197,7 @@ export default async function SpotPage({
               />
               <SpotShare
                 locale={locale}
-                url={`${publicSiteUrl()}${page.canonicalPath}`}
+                url={`${origin}${page.canonicalPath}`}
                 name={page.name}
               />
             </div>

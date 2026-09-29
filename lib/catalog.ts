@@ -6,7 +6,7 @@ import { parseCitySlug } from "@/domain/ids";
 import { sortCityBoard } from "@/domain/like";
 import { boardFromListedSpots, type WoonplaatsBoard } from "@/domain/board";
 import { planAppStores, planLocalFavorites } from "@/domain/homepage";
-import { boardIndex, planSitemap } from "@/domain/seo";
+import { boardIndex, llmsTxt, planSitemap } from "@/domain/seo";
 import { standingOf } from "@/domain/leaderboard";
 import { assignPlaceSlug } from "@/domain/woonplaatsen";
 import type {
@@ -130,7 +130,14 @@ export async function loadSpotPage(
 
 async function loadLiveSpots(): Promise<LiveSpotRef[]> {
   try {
-    return await fetchQuery(api.catalog.liveSpots, {});
+    // Tolerate a Convex deployment that predates the name and like fields
+    return (await fetchQuery(api.catalog.liveSpots, {})).map((spot) => ({
+      ...spot,
+      name: spot.name ?? spot.slug,
+      likeCount: spot.likeCount ?? 0,
+      lastLikedAt: spot.lastLikedAt ?? 0,
+      addedAt: spot.addedAt ?? 0,
+    }));
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;
@@ -141,6 +148,10 @@ async function loadLiveSpots(): Promise<LiveSpotRef[]> {
 
 export async function loadSitemap(): Promise<SitemapEntry[]> {
   return planSitemap(await loadLiveSpots());
+}
+
+export async function loadLlmsTxt(): Promise<string> {
+  return llmsTxt(publicSiteUrl(), await loadLiveSpots());
 }
 
 export async function loadBoardIndex(): Promise<BoardIndexEntry[]> {
