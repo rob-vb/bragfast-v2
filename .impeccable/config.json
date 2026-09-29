@@ -7,6 +7,18 @@
         "rule": "side-tab",
         "value": ".candy-key",
         "createdAt": "2026-09-02T16:40:40.227Z"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "createdAt": "2026-09-29T13:52:03.102Z",
+        "reason": "DESIGN.md Motion: --ease-spring is the sanctioned single overshoot for poster letters landing and the like heart pop; predates this session"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "var(--ease-spring)",
+        "createdAt": "2026-09-29T13:52:03.186Z",
+        "reason": "DESIGN.md Motion: --ease-spring is the sanctioned single overshoot for poster letters landing and the like heart pop; predates this session"
       }
     ]
   },
