@@ -21,15 +21,6 @@ const nunito = Nunito({
   weight: ["400", "600", "700", "800"],
 });
 
-const DIRECTION = `
-THESIS: A seeker lands inside a golden-hour breakfast still. The photo is the product. Type sits on it like a painted sleeve title. Discovery owns the product.
-OWN-WORLD: Milk header, white content, berry ink, candy/blush/yolk stickers, Bagel Fat One, SVG egg lockup, rank as yolk sticker. Photos full-bleed. Cocoa brown stays on the egg only.
-STORY: Feel a Saturday table, search a city, pick a numbered photo.
-FIRST VIEWPORT: Full-bleed still. Header lockup. Search pill on the photo. No eyebrow.
-FORM: Outdoor terrace still, seed 9bbca63c assigned 3, kawaii egg on strawberry milk. User pin.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
-`;
-
 export const metadata: Metadata = {
   title: "brag.fast",
   description: "Ontbijt- en brunchplekken, per stad.",
@@ -55,7 +46,6 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${bagel.variable} ${nunito.variable}`}>
       <body>
-        <div dangerouslySetInnerHTML={{ __html: `<!--${DIRECTION}-->` }} />
         <ConvexClientProvider initialToken={initialToken}>
           <div className="flex min-h-dvh flex-col">
             <SiteHeader
