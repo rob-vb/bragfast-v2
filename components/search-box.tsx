@@ -17,8 +17,18 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
+import { cn } from "@/lib/utils";
 
-export function SearchBox({ locale }: { locale: Locale }) {
+export function SearchBox({
+  locale,
+  onQueryChange,
+  className,
+}: {
+  locale: Locale;
+  /** Every keystroke, for a page that lights up what is being typed. */
+  onQueryChange?: (query: string) => void;
+  className?: string;
+}) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -38,7 +48,11 @@ export function SearchBox({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className="relative mt-8 max-w-xl" role="search" aria-label={t(locale, "searchLabel")}>
+    <div
+      className={cn("relative mt-8 max-w-xl", className)}
+      role="search"
+      aria-label={t(locale, "searchLabel")}
+    >
       <label className="sr-only" htmlFor="catalog-search">
         {t(locale, "searchLabel")}
       </label>
@@ -57,6 +71,7 @@ export function SearchBox({ locale }: { locale: Locale }) {
         inputValue={query}
         onInputValueChange={(value) => {
           setQuery(value);
+          onQueryChange?.(value);
           const next = woonplaatsSuggest(value);
           setOpen(next.kind === "list" || next.kind === "none");
         }}

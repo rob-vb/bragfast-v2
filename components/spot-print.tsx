@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import type { UserSlug } from "@/domain/ids";
 import { shortDate, t, type Locale } from "@/domain/messages";
@@ -62,9 +63,20 @@ export function SpotPrint({
 }
 
 /** The print's own light, thrown softly across the berry slab. */
-export function PrintGlow({ src }: { src: string }) {
+export function PrintGlow({
+  src,
+  at,
+}: {
+  src: string;
+  /** Where the light pools, when the print does not hang on the right. */
+  at?: string;
+}) {
   return (
-    <div aria-hidden className="print-glow">
+    <div
+      aria-hidden
+      className="print-glow"
+      style={at ? ({ "--glow-at": at } as CSSProperties) : undefined}
+    >
       <img src={src} alt="" decoding="async" />
     </div>
   );

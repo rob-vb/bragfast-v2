@@ -525,6 +525,151 @@ a.stamp:focus-visible {
   }
 }
 
+/* How it works: four posters, each verb set edge to edge. Every poster
+   takes one size, the widest verb's fit (--fit, lib/display-fit.ts), so the
+   words read as one series and a narrow verb leaves room at its end. */
+.verb-word {
+  font-size: min(calc(98cqi / var(--fit)), 30rem);
+  line-height: 0.8;
+  letter-spacing: 0.012em;
+}
+
+/* A poster replays its page's own moment once, the first time it comes into
+   view. Off-screen it waits on its first frame; without script it is still. */
+[data-stage="armed"] *,
+[data-stage="armed"] *::before,
+[data-stage="armed"] *::after {
+  animation-play-state: paused !important;
+}
+
+.brag-print.hiw-print {
+  animation: none;
+}
+
+[data-stage] .brag-print.hiw-print {
+  animation: print-land 1000ms var(--ease-out-strong) 120ms both;
+}
+
+.hiw-sticker {
+  rotate: var(--tilt);
+  transition:
+    rotate 360ms var(--ease-out-strong),
+    scale 360ms var(--ease-out-strong);
+}
+
+.hiw-sticker:focus-visible {
+  rotate: 0deg;
+  scale: 1.05;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hiw-sticker:hover {
+    rotate: 0deg;
+    scale: 1.05;
+  }
+}
+
+/* The country fills in from the south, one band of woonplaatsen at a time */
+[data-stage] .town-band {
+  animation: band-in 640ms var(--ease-out-strong) both;
+  animation-delay: calc(var(--band) * 60ms);
+}
+
+@keyframes band-in {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+}
+
+.town-pin {
+  translate: -50% -50%;
+  transition:
+    left 520ms var(--ease-out-strong),
+    top 520ms var(--ease-out-strong);
+}
+
+.town-pin__ring {
+  animation: pin-ring 1800ms var(--ease-out-strong) infinite;
+}
+
+@keyframes pin-ring {
+  from {
+    scale: 0.5;
+    opacity: 0.85;
+  }
+  to {
+    scale: 2.6;
+    opacity: 0;
+  }
+}
+
+.town-label {
+  animation: label-in 360ms var(--ease-out-strong) both;
+}
+
+/* transform, not translate: the label's centring lives on translate */
+@keyframes label-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Someone else's like on the example board floats up off its pill */
+.plus-one {
+  animation: plus-one 1000ms var(--ease-out-strong) both;
+}
+
+@keyframes plus-one {
+  0% {
+    opacity: 0;
+    translate: 0 8px;
+    scale: 0.8;
+  }
+  25% {
+    opacity: 1;
+    translate: 0 -6px;
+    scale: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -34px;
+  }
+}
+
+[data-stage] .hiw-rise {
+  animation: podium-rise 900ms var(--ease-out-strong) both;
+  animation-delay: var(--rise);
+}
+
+[data-stage] .hiw-egg {
+  animation: podium-egg 700ms var(--ease-out-strong) 1100ms both;
+}
+
+.stamp.hiw-stamp svg {
+  animation: none;
+}
+
+[data-stage] .stamp.hiw-stamp svg {
+  animation: stamp-press 560ms var(--ease-out-strong) 1500ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brag-print.hiw-print,
+  .town-band,
+  .town-pin,
+  .town-pin__ring,
+  .town-label,
+  .plus-one,
+  .hiw-rise,
+  .hiw-egg,
+  .stamp.hiw-stamp svg {
+    animation: none !important;
+    transition: none;
+  }
+}
+
 .leaflet-container {
   font-family: var(--font-body);
   background: color-mix(in srgb, var(--color-candy) 28%, var(--color-milk));

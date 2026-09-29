@@ -63,11 +63,13 @@ export function PageHeroTitle({
   return (
     <h1
       className={cn(
-        "font-display leading-[0.92] tracking-wide text-white",
+        "font-display tracking-wide text-white",
         onPhoto && "text-shadow-photo",
         size === "lg" && "text-[clamp(3rem,10vw,7rem)]",
         size === "md" && "text-[clamp(2.4rem,8vw,5.5rem)]",
         size === "sm" && "text-[clamp(2rem,6vw,3.5rem)]",
+        // After the size: tailwind-merge drops a leading-* that precedes a text-*
+        "leading-[0.92]",
       )}
     >
       {children}
