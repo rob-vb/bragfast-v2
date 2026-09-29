@@ -1,112 +1,112 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-02T16:56:00.000Z",
+  "generatedAt": "2026-09-29T13:01:41.173Z",
   "title": "Design System: brag.fast",
   "extensions": {
     "colorMeta": {
-      "foam": {
-        "role": "neutral",
-        "displayName": "Foam",
-        "canonical": "#f4fbff",
-        "tonalRamp": [
-          "oklch(15% 0.008 220)",
-          "oklch(27% 0.008 220)",
-          "oklch(38% 0.008 220)",
-          "oklch(50% 0.008 220)",
-          "oklch(61% 0.008 220)",
-          "oklch(72% 0.008 220)",
-          "oklch(84% 0.008 220)",
-          "oklch(95% 0.008 220)"
-        ]
-      },
-      "sky": {
-        "role": "tertiary",
-        "displayName": "Sky",
-        "canonical": "#8fd4f8",
-        "tonalRamp": [
-          "oklch(15% 0.09 230)",
-          "oklch(27% 0.09 230)",
-          "oklch(38% 0.09 230)",
-          "oklch(50% 0.09 230)",
-          "oklch(61% 0.09 230)",
-          "oklch(72% 0.09 230)",
-          "oklch(84% 0.09 230)",
-          "oklch(95% 0.09 230)"
-        ]
-      },
-      "night": {
-        "role": "neutral",
-        "displayName": "Night",
-        "canonical": "#1b1540",
-        "tonalRamp": [
-          "oklch(15% 0.08 285)",
-          "oklch(27% 0.08 285)",
-          "oklch(38% 0.08 285)",
-          "oklch(50% 0.08 285)",
-          "oklch(61% 0.08 285)",
-          "oklch(72% 0.08 285)",
-          "oklch(84% 0.08 285)",
-          "oklch(95% 0.08 285)"
-        ]
-      },
-      "flare": {
+      "berry": {
         "role": "primary",
-        "displayName": "Flare",
-        "canonical": "#ff5a9a",
+        "displayName": "Berry Ink",
+        "canonical": "#4a1534",
         "tonalRamp": [
-          "oklch(15% 0.21 355)",
-          "oklch(27% 0.21 355)",
-          "oklch(38% 0.21 355)",
-          "oklch(50% 0.21 355)",
-          "oklch(61% 0.21 355)",
-          "oklch(72% 0.21 355)",
-          "oklch(84% 0.21 355)",
-          "oklch(95% 0.21 355)"
+          "oklch(15% 0.089 347.8)",
+          "oklch(26.4% 0.089 347.8)",
+          "oklch(37.9% 0.089 347.8)",
+          "oklch(49.3% 0.089 347.8)",
+          "oklch(60.7% 0.089 347.8)",
+          "oklch(72.1% 0.089 347.8)",
+          "oklch(83.6% 0.089 347.8)",
+          "oklch(95% 0.089 347.8)"
         ]
       },
-      "citrus": {
+      "milk": {
         "role": "primary",
-        "displayName": "Citrus",
-        "canonical": "#ff7a2e",
+        "displayName": "Strawberry Milk",
+        "canonical": "#ffe5f0",
         "tonalRamp": [
-          "oklch(15% 0.19 45)",
-          "oklch(27% 0.19 45)",
-          "oklch(38% 0.19 45)",
-          "oklch(50% 0.19 45)",
-          "oklch(61% 0.19 45)",
-          "oklch(72% 0.19 45)",
-          "oklch(84% 0.19 45)",
-          "oklch(95% 0.19 45)"
+          "oklch(15% 0.032 350.2)",
+          "oklch(26.4% 0.032 350.2)",
+          "oklch(37.9% 0.032 350.2)",
+          "oklch(49.3% 0.032 350.2)",
+          "oklch(60.7% 0.032 350.2)",
+          "oklch(72.1% 0.032 350.2)",
+          "oklch(83.6% 0.032 350.2)",
+          "oklch(95% 0.032 350.2)"
         ]
       },
-      "sun": {
+      "blush": {
         "role": "secondary",
-        "displayName": "Sun",
-        "canonical": "#ffd15c",
+        "displayName": "Blush Coral",
+        "canonical": "#fa715a",
         "tonalRamp": [
-          "oklch(15% 0.15 88)",
-          "oklch(27% 0.15 88)",
-          "oklch(38% 0.15 88)",
-          "oklch(50% 0.15 88)",
-          "oklch(61% 0.15 88)",
-          "oklch(72% 0.15 88)",
-          "oklch(84% 0.15 88)",
-          "oklch(95% 0.15 88)"
+          "oklch(15% 0.16 31.4)",
+          "oklch(26.4% 0.16 31.4)",
+          "oklch(37.9% 0.16 31.4)",
+          "oklch(49.3% 0.16 31.4)",
+          "oklch(60.7% 0.16 31.4)",
+          "oklch(72.1% 0.16 31.4)",
+          "oklch(83.6% 0.16 31.4)",
+          "oklch(95% 0.16 31.4)"
+        ]
+      },
+      "yolk": {
+        "role": "secondary",
+        "displayName": "Yolk",
+        "canonical": "#feb62a",
+        "tonalRamp": [
+          "oklch(15% 0.16 77.9)",
+          "oklch(26.4% 0.16 77.9)",
+          "oklch(37.9% 0.16 77.9)",
+          "oklch(49.3% 0.16 77.9)",
+          "oklch(60.7% 0.16 77.9)",
+          "oklch(72.1% 0.16 77.9)",
+          "oklch(83.6% 0.16 77.9)",
+          "oklch(95% 0.16 77.9)"
+        ]
+      },
+      "shell": {
+        "role": "tertiary",
+        "displayName": "Shell Pink",
+        "canonical": "#fff5f8",
+        "tonalRamp": [
+          "oklch(15% 0.011 357)",
+          "oklch(26.4% 0.011 357)",
+          "oklch(37.9% 0.011 357)",
+          "oklch(49.3% 0.011 357)",
+          "oklch(60.7% 0.011 357)",
+          "oklch(72.1% 0.011 357)",
+          "oklch(83.6% 0.011 357)",
+          "oklch(95% 0.011 357)"
+        ]
+      },
+      "candy": {
+        "role": "tertiary",
+        "displayName": "Candy Pink",
+        "canonical": "#ff9ebe",
+        "tonalRamp": [
+          "oklch(15% 0.121 358.9)",
+          "oklch(26.4% 0.121 358.9)",
+          "oklch(37.9% 0.121 358.9)",
+          "oklch(49.3% 0.121 358.9)",
+          "oklch(60.7% 0.121 358.9)",
+          "oklch(72.1% 0.121 358.9)",
+          "oklch(83.6% 0.121 358.9)",
+          "oklch(95% 0.121 358.9)"
         ]
       },
       "mint": {
         "role": "tertiary",
-        "displayName": "Mint",
-        "canonical": "#7ee0c3",
+        "displayName": "Mint Cream",
+        "canonical": "#bfead3",
         "tonalRamp": [
-          "oklch(15% 0.11 170)",
-          "oklch(27% 0.11 170)",
-          "oklch(38% 0.11 170)",
-          "oklch(50% 0.11 170)",
-          "oklch(61% 0.11 170)",
-          "oklch(72% 0.11 170)",
-          "oklch(84% 0.11 170)",
-          "oklch(95% 0.11 170)"
+          "oklch(15% 0.055 161.7)",
+          "oklch(26.4% 0.055 161.7)",
+          "oklch(37.9% 0.055 161.7)",
+          "oklch(49.3% 0.055 161.7)",
+          "oklch(60.7% 0.055 161.7)",
+          "oklch(72.1% 0.055 161.7)",
+          "oklch(83.6% 0.055 161.7)",
+          "oklch(95% 0.055 161.7)"
         ]
       },
       "white": {
@@ -115,59 +115,145 @@
         "canonical": "#ffffff",
         "tonalRamp": [
           "oklch(15% 0 0)",
-          "oklch(27% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(50% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
+          "oklch(26.4% 0 0)",
+          "oklch(37.9% 0 0)",
+          "oklch(49.3% 0 0)",
+          "oklch(60.7% 0 0)",
+          "oklch(72.1% 0 0)",
+          "oklch(83.6% 0 0)",
           "oklch(95% 0 0)"
         ]
       }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "City names over the city still: solid white Lilita One with .photo-copy." },
-      "headline": { "displayName": "Headline", "purpose": "Spot and passport names over the still, white; admin title in night on foam." },
-      "section": { "displayName": "Section", "purpose": "Section heads on foam: featured cities, board, seed tail, hours, search results." },
-      "title": { "displayName": "Title", "purpose": "The name painted onto a photo card; panel titles." },
-      "lede": { "displayName": "Lede", "purpose": "The hero sentence under the painted wordmark, white on the still." },
-      "body": { "displayName": "Body", "purpose": "Hours, addresses, brag text; night or night/75 on light surfaces." },
-      "label": { "displayName": "Label", "purpose": "Candy keys, buttons, segments, card meta, back-to-city." },
-      "script": { "displayName": "Script accent", "purpose": "#bragfast signatures only: footer in sun, Instagram embed in citrus. Not the wordmark." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "PageHeroTitle size lg: a page title on a berry slab, in white."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Hero titles that are neither a name nor a poster."
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "Section heads in berry on white, such as local favorites and house rules."
+      },
+      "title": {
+        "displayName": "Card title",
+        "purpose": "A spot name on the milk caption of a spot card, in berry."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Opening paragraph: white or milk on a hero, berry in content."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text in berry or berry/70."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, segments, card meta and footer nav; counts in tabular numerals."
+      }
     },
-    "gradients": [
-      { "name": "flare-citrus", "value": "linear-gradient(to bottom, #ff5a9a, #ff7a2e)", "purpose": "The one brand gradient: baked into /wordmark.png; fills primary button, active candy key, and rank burst. Never CSS gradient-text." }
-    ],
     "textShadows": [
-      { "name": "photo-copy", "value": "0 1px 1px rgba(27,21,64,0.4), 0 10px 28px rgba(27,21,64,0.32)", "purpose": "Local legibility on a bright still. Replaces full-bleed indigo overlays." }
-    ],
-    "scrims": [
-      { "name": "card-foot", "value": "linear-gradient(to top, rgba(27,21,64,0.55), transparent)", "purpose": "Short bottom 40% fade on photo cards only. Heroes have none." }
+      {
+        "name": "photo",
+        "value": "0 1px 1px rgb(74 21 52 / 0.4), 0 10px 28px rgb(74 21 52 / 0.32)",
+        "purpose": "White type over the home still. Never a full-bleed overlay."
+      }
     ],
     "shadows": [
-      { "name": "candy-key-rest", "value": "inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 0 rgba(27,21,64,0.12), 0 4px 0 rgba(27,21,64,0.16)", "purpose": "3D drum-machine foot on chips and segments. A key, not a card side-tab." },
-      { "name": "candy-key-pressed", "value": "inset 0 2px 0 rgba(255,255,255,0.4), inset 0 -2px 0 rgba(27,21,64,0.18), 0 2px 0 rgba(27,21,64,0.12)", "purpose": "Active candy key; pair with translateY(2px)." },
-      { "name": "stamp-foot", "value": "inset 0 2px 0 rgba(255,255,255,0.55), 0 3px 0 rgba(27,21,64,0.18)", "purpose": "Sun atmosphere stamp." },
-      { "name": "pink-glow", "value": "0 8px 20px rgba(255,90,154,0.35)", "purpose": "Under the primary button." },
-      { "name": "pink-glow-burst", "value": "drop-shadow(0 8px 18px rgba(255,90,154,0.5))", "purpose": "Under the rank burst." },
-      { "name": "ink-lift", "value": "0 16px 40px rgba(27,21,64,0.25)", "purpose": "The search pill floating on the hero still." },
-      { "name": "wordmark-lift", "value": "drop-shadow(0 2px 16px rgba(27,21,64,0.35))", "purpose": "Under the painted wordmark raster." },
-      { "name": "ink-rest", "value": "0 12px 32px rgba(27,21,64,0.08)", "purpose": "Brag cards resting on foam." }
+      {
+        "name": "lift",
+        "value": "0 8px 0 rgb(74 21 52 / 0.12), 0 12px 24px rgb(74 21 52 / 0.14)",
+        "purpose": "The search pill, popovers, and a spot card on hover: a hard berry foot plus a soft cast."
+      },
+      {
+        "name": "stamp",
+        "value": "inset 0 2px 0 rgb(255 255 255 / 0.55), 0 3px 0 rgb(250 113 90 / 0.22)",
+        "purpose": "Enamel sticker: the empty-state icon disc and the gallery camera disc."
+      },
+      {
+        "name": "sticker-ring",
+        "value": "0 0 0 3px #fff, 0 10px 20px rgb(22 4 14 / 0.35)",
+        "purpose": ".sticker: a white die-cut and deep berry cast for count chips and labels pressed onto a slab."
+      },
+      {
+        "name": "sticker-drop",
+        "value": "drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 6px 16px rgb(74 21 52 / 0.22))",
+        "purpose": "Filter for the lockup and the egg so the SVG survives any ground."
+      },
+      {
+        "name": "print-cast",
+        "value": "0 1px 0 rgb(74 21 52 / 0.06), 0 3px 0 rgb(22 4 14 / 0.12), 0 24px 48px -12px rgb(22 4 14 / 0.55)",
+        "purpose": "A brag print lying on the slab."
+      },
+      {
+        "name": "step-enamel",
+        "value": "inset 0 3px 0 rgb(255 255 255 / 0.45)",
+        "purpose": "Top lip of a filled podium step; no cast because the step stands on the floor."
+      }
     ],
     "motion": [
-      { "name": "ken", "value": "ken 22s ease-out alternate infinite (scale 1.04 → 1.14)", "purpose": "Home hero still drift; disabled under prefers-reduced-motion." },
-      { "name": "card-zoom", "value": "transform 700ms (scale 1 → 1.05)", "purpose": "Photo card image on hover." },
-      { "name": "key-press", "value": "transform: translateY(2px)", "purpose": "Active candy key sits down." },
-      { "name": "colors", "value": "color, background-color, border-color 150ms", "purpose": "Default state transitions on pills and chips." }
+      {
+        "name": "duration-press",
+        "value": "160ms",
+        "purpose": "Presses, hovers, segment changes."
+      },
+      {
+        "name": "duration-popover",
+        "value": "180ms",
+        "purpose": "Combobox, select, menu."
+      },
+      {
+        "name": "duration-modal",
+        "value": "220ms",
+        "purpose": "Dialog and drawer."
+      },
+      {
+        "name": "ease-out-strong",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Arrivals and presses; every authored moment."
+      },
+      {
+        "name": "ease-in-out-strong",
+        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "purpose": "Symmetric moves."
+      },
+      {
+        "name": "ease-drawer",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "Sheets."
+      },
+      {
+        "name": "ease-spring",
+        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "purpose": "One overshoot, for exactly two sticker moments: poster letters landing and the like heart popping."
+      },
+      {
+        "name": "press-scale",
+        "value": "scale(0.97)",
+        "purpose": "Uniform :active feedback on anything pressable."
+      }
     ],
-    "focus": [
-      { "name": "ring-sun", "value": "outline: 2px solid #ffd15c; outline-offset: 2px", "purpose": "Page-level focus on buttons, links and photo cards." },
-      { "name": "ring-flare", "value": "box-shadow: 0 0 0 2px #ff5a9a", "purpose": "Fields inside white panels." }
-    ],
+    "focus": {
+      "value": "2px solid #feb62a",
+      "offset": "2px",
+      "purpose": "Every focus ring, on every ground: yolk, 2px, offset 2px."
+    },
     "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px" }
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
     ]
   },
   "components": [
@@ -175,136 +261,169 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Flare-to-citrus pill with a pink glow; the one call to action on a surface.",
-      "html": "<button class=\"ds-btn-primary\">Log in om te braggen</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 20px; border: none; border-radius: 9999px; background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); color: #fff; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; box-shadow: 0 8px 20px rgba(255,90,154,0.35); cursor: pointer; transition: filter 150ms; } .ds-btn-primary:hover { filter: brightness(1.1); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; pointer-events: none; }"
+      "description": "Flat blush pill for the one action on a surface.",
+      "html": "<button class=\"ds-btn-primary\">Zoek</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 20px; border-radius: 9999px; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; transition: color 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms cubic-bezier(0.23,1,0.32,1), border-color 160ms cubic-bezier(0.23,1,0.32,1), transform 160ms cubic-bezier(0.23,1,0.32,1); border: 0; background: var(--color-blush, #fa715a); color: #fff; } .ds-btn-primary:hover { filter: brightness(1.1); } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; }"
     },
     {
       "name": "Outline Button",
       "kind": "button",
       "refersTo": "button-outline",
-      "description": "Quiet white pill with an indigo hairline; turns flare on hover.",
-      "html": "<button class=\"ds-btn-outline\">Dichtbij</button>",
-      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 20px; border: 1px solid rgba(27,21,64,0.15); border-radius: 9999px; background: #fff; color: var(--color-night, #1b1540); font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; transition: color 150ms, border-color 150ms; } .ds-btn-outline:hover { border-color: var(--color-flare, #ff5a9a); color: var(--color-flare, #ff5a9a); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+      "description": "White pill with a berry hairline; ink and border turn blush on hover. Disabled store keys read Coming soon.",
+      "html": "<button class=\"ds-btn-outline\">Coming soon</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 20px; border-radius: 9999px; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; transition: color 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms cubic-bezier(0.23,1,0.32,1), border-color 160ms cubic-bezier(0.23,1,0.32,1), transform 160ms cubic-bezier(0.23,1,0.32,1); border: 1px solid rgb(74 21 52 / 0.15); background: #fff; color: var(--color-berry, #4a1534); } .ds-btn-outline:hover { border-color: var(--color-blush, #fa715a); color: var(--color-blush, #fa715a); } .ds-btn-outline:active { transform: scale(0.97); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; }"
     },
     {
-      "name": "Candy Key",
-      "kind": "chip",
-      "refersTo": "chip-sky",
-      "description": "3D drum-machine key. Rest fills are sky, mint or sun; pressed fill is flare → citrus with translateY(2px).",
-      "html": "<span class=\"ds-chip-row\"><a class=\"ds-chip ds-chip-sun\" href=\"#\">Open nu</a><a class=\"ds-chip ds-chip-mint\" href=\"#\">Met brags</a><a class=\"ds-chip ds-chip-active\" href=\"#\" data-active=\"true\">Geselecteerd</a></span>",
-      "css": ".ds-chip-row { display: inline-flex; gap: 8px; font-family: Figtree, system-ui, sans-serif; } .ds-chip { display: inline-flex; align-items: center; justify-content: center; padding: 6px 16px; border-radius: 9999px; text-decoration: none; font-size: 0.875rem; font-weight: 700; color: var(--color-night, #1b1540); box-shadow: inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 0 rgba(27,21,64,0.12), 0 4px 0 rgba(27,21,64,0.16); } .ds-chip-sun { background: var(--color-sun, #ffd15c); } .ds-chip-mint { background: var(--color-mint, #7ee0c3); } .ds-chip-sky { background: var(--color-sky, #8fd4f8); } .ds-chip-active, .ds-chip[data-active=\"true\"] { background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); color: #fff; transform: translateY(2px); box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), inset 0 -2px 0 rgba(27,21,64,0.18), 0 2px 0 rgba(27,21,64,0.12); } .ds-chip:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
-    },
-    {
-      "name": "Segmented Control",
-      "kind": "nav",
-      "refersTo": "segment",
-      "description": "White pill tray holding candy-key segments; the current one is flare → citrus and sits pressed.",
-      "html": "<div class=\"ds-seg\" role=\"group\"><a class=\"ds-seg-item\" href=\"#\" aria-current=\"true\">Lijst</a><a class=\"ds-seg-item\" href=\"#\">Kaart</a></div>",
-      "css": ".ds-seg { display: inline-flex; align-items: center; padding: 2px; border-radius: 9999px; border: 1px solid rgba(27,21,64,0.12); background: #fff; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; } .ds-seg-item { display: inline-flex; align-items: center; justify-content: center; padding: 6px 14px; border-radius: 9999px; color: var(--color-night, #1b1540); text-decoration: none; box-shadow: inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 0 rgba(27,21,64,0.12), 0 4px 0 rgba(27,21,64,0.16); } .ds-seg-item[aria-current=\"true\"] { background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); color: #fff; transform: translateY(2px); box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), inset 0 -2px 0 rgba(27,21,64,0.18), 0 2px 0 rgba(27,21,64,0.12); } .ds-seg-item:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Berry label on nothing; milk fills in on hover.",
+      "html": "<button class=\"ds-btn-ghost\">Leaderboard</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 20px; border-radius: 9999px; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; transition: color 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms cubic-bezier(0.23,1,0.32,1), border-color 160ms cubic-bezier(0.23,1,0.32,1), transform 160ms cubic-bezier(0.23,1,0.32,1); border: 0; background: transparent; color: var(--color-berry, #4a1534); } .ds-btn-ghost:hover { background: var(--color-milk, #ffe5f0); } .ds-btn-ghost:active { transform: scale(0.97); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; }"
     },
     {
       "name": "Search Pill",
       "kind": "input",
       "refersTo": "search-pill",
-      "description": "The hero's one control: a 64px frosted white pill with an ink lift, floating on the photograph.",
-      "html": "<form class=\"ds-search\" role=\"search\"><span class=\"ds-search-mark\" aria-hidden=\"true\"></span><input class=\"ds-search-input\" type=\"search\" placeholder=\"Bijvoorbeeld Haarlem of een bakkerij\"></form>",
-      "css": ".ds-search { display: flex; align-items: center; gap: 12px; height: 64px; max-width: 36rem; padding: 0 20px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.92); box-shadow: 0 16px 40px rgba(27,21,64,0.25); } .ds-search-mark { width: 10px; height: 10px; flex-shrink: 0; border-radius: 9999px; background: var(--color-flare, #ff5a9a); } .ds-search-input { flex: 1; min-width: 0; border: none; background: transparent; outline: none; color: var(--color-night, #1b1540); font-family: Figtree, system-ui, sans-serif; font-size: 1rem; } .ds-search-input::placeholder { color: rgba(27,21,64,0.45); } .ds-search:focus-within { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+      "description": "The hero's one control: a 64px white pill with a berry foot, blush glyph and a blush submit. Focus rings the whole group in yolk.",
+      "html": "<label class=\"ds-search\"><span class=\"ds-search__icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg></span><input class=\"ds-search__input\" type=\"search\" placeholder=\"Haarlem, Den Haag, Giethoorn\" aria-label=\"Zoek een plaats\"><button class=\"ds-search__go\" type=\"button\">Zoek</button></label>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 8px; height: 64px; max-width: 36rem; padding: 0 8px 0 20px; border: 1px solid rgb(255 255 255 / 0.4); border-radius: 9999px; background: rgb(255 255 255 / 0.92); box-shadow: 0 8px 0 rgb(74 21 52 / 0.12), 0 12px 24px rgb(74 21 52 / 0.14); } .ds-search:focus-within { box-shadow: 0 0 0 2px var(--color-yolk, #feb62a), 0 8px 0 rgb(74 21 52 / 0.12), 0 12px 24px rgb(74 21 52 / 0.14); } .ds-search__icon { display: flex; color: var(--color-blush, #fa715a); } .ds-search__input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; color: var(--color-berry, #4a1534); caret-color: var(--color-blush, #fa715a); font: 400 1rem/1.5 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-search__input::placeholder { color: rgb(74 21 52 / 0.45); } .ds-search__go { height: 40px; padding: 0 20px; border: 0; border-radius: 9999px; background: var(--color-blush, #fa715a); color: #fff; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; } .ds-search__go:hover { filter: brightness(1.1); } .ds-search__go:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; }"
     },
     {
-      "name": "Photo Card",
+      "name": "Like Pill",
+      "kind": "chip",
+      "refersTo": "button-outline",
+      "description": "Heart and count in tabular numerals; outline at rest, flat blush with a filled white heart when liked.",
+      "html": "<div class=\"ds-like-row\"><button class=\"ds-like\" aria-pressed=\"false\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg><span>13</span></button><button class=\"ds-like\" aria-pressed=\"true\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg><span>14</span></button></div>",
+      "css": ".ds-like-row { display: flex; gap: 12px; } .ds-like { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid rgb(74 21 52 / 0.15); border-radius: 9999px; background: #fff; color: var(--color-berry, #4a1534); font: 700 0.75rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); font-variant-numeric: tabular-nums; cursor: pointer; transition: color 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms cubic-bezier(0.23,1,0.32,1), border-color 160ms cubic-bezier(0.23,1,0.32,1), transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-like svg { color: var(--color-blush, #fa715a); } .ds-like:hover { border-color: var(--color-blush, #fa715a); color: var(--color-blush, #fa715a); } .ds-like[aria-pressed=\"true\"] { border-color: transparent; background: var(--color-blush, #fa715a); color: #fff; } .ds-like[aria-pressed=\"true\"] svg { color: #fff; } .ds-like:active { transform: scale(0.97); } .ds-like:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "nav",
+      "refersTo": "segment",
+      "description": "White tray with a berry hairline; the pressed key is a blush pill with white ink.",
+      "html": "<div class=\"ds-segment\" role=\"group\" aria-label=\"Weergave\"><a class=\"ds-segment__key\" aria-current=\"true\" href=\"#\">Lijst</a><a class=\"ds-segment__key\" href=\"#\">Kaart</a></div>",
+      "css": ".ds-segment { display: inline-flex; align-items: center; padding: 2px; border: 1px solid rgb(74 21 52 / 0.12); border-radius: 9999px; background: #fff; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-segment__key { display: inline-flex; align-items: center; padding: 8px 14px; border-radius: 9999px; color: var(--color-berry, #4a1534); text-decoration: none; transition: color 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms cubic-bezier(0.23,1,0.32,1), border-color 160ms cubic-bezier(0.23,1,0.32,1), transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-segment__key:hover { background: var(--color-milk, #ffe5f0); } .ds-segment__key[aria-current=\"true\"] { background: var(--color-blush, #fa715a); color: #fff; } .ds-segment__key:active { transform: scale(0.97); } .ds-segment__key:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Spot Card",
       "kind": "card",
-      "refersTo": "photo-card",
-      "description": "City still with a short foot fade, white Lilita title, sun Sfeerbeeld stamp, and optional rank burst. Not venue photography.",
-      "html": "<a class=\"ds-photo-card\" href=\"#\"><span class=\"ds-photo-card-still\"></span><span class=\"ds-photo-card-foot\"></span><span class=\"ds-rank\" aria-hidden=\"true\"><svg viewBox=\"0 0 64 64\"><defs><linearGradient id=\"ds-rank-fill\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#ff5a9a\"/><stop offset=\"100%\" stop-color=\"#ff7a2e\"/></linearGradient></defs><path d=\"M32.00,1.00L37.18,12.68L47.50,5.15L46.14,17.86L58.85,16.50L51.32,26.82L63.00,32.00L51.32,37.18L58.85,47.50L46.14,46.14L47.50,58.85L37.18,51.32L32.00,63.00L26.82,51.32L16.50,58.85L17.86,46.14L5.15,47.50L12.68,37.18L1.00,32.00L12.68,26.82L5.15,16.50L17.86,17.86L16.50,5.15L26.82,12.68Z\" fill=\"url(#ds-rank-fill)\"/></svg><span class=\"ds-rank-n\">01</span></span><span class=\"ds-stamp\">Sfeerbeeld</span><span class=\"ds-photo-card-text\"><span class=\"ds-photo-card-title\">Anne&amp;Max Haarlem</span><span class=\"ds-photo-card-meta\">Grote Houtstraat 97</span></span></a>",
-      "css": ".ds-photo-card { position: relative; display: block; min-height: 224px; overflow: hidden; border-radius: 28px; text-decoration: none; } .ds-photo-card-still { position: absolute; inset: 0; background: linear-gradient(160deg, #8fd4f8 0%, #ffd15c 42%, #ff7a2e 100%); } .ds-photo-card-foot { position: absolute; left: 0; right: 0; bottom: 0; height: 40%; background: linear-gradient(to top, rgba(27,21,64,0.55), transparent); } .ds-photo-card-text { position: absolute; left: 0; right: 0; bottom: 0; padding: 20px; } .ds-photo-card-title { display: block; font-family: 'Lilita One', Impact, sans-serif; font-size: 1.5rem; letter-spacing: 0.025em; color: #fff; text-shadow: 0 1px 1px rgba(27,21,64,0.4), 0 10px 28px rgba(27,21,64,0.32); } .ds-photo-card-meta { display: block; margin-top: 4px; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; color: #fff; text-shadow: 0 1px 1px rgba(27,21,64,0.4), 0 10px 28px rgba(27,21,64,0.32); } .ds-rank { position: absolute; left: 12px; top: 12px; display: flex; width: 4.35rem; height: 4.35rem; align-items: center; justify-content: center; transform: rotate(-14deg); filter: drop-shadow(0 8px 18px rgba(255,90,154,0.5)); } .ds-rank svg { position: absolute; inset: 0; width: 100%; height: 100%; } .ds-rank-n { position: relative; font-family: 'Lilita One', Impact, sans-serif; font-size: 1.25rem; color: #fff; } .ds-stamp { position: absolute; right: 12px; top: 12px; transform: rotate(8deg); border-radius: 9999px; background: var(--color-sun, #ffd15c); color: var(--color-night, #1b1540); padding: 4px 10px; font-family: Figtree, system-ui, sans-serif; font-size: 0.75rem; font-weight: 800; box-shadow: inset 0 2px 0 rgba(255,255,255,0.55), 0 3px 0 rgba(27,21,64,0.18); } .ds-photo-card:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
+      "refersTo": "spot-card",
+      "description": "Milk slab holding a 4:3 print at the concentric 20px radius, the name in Bagel Fat One berry on the caption, the like pill beside it. Lifts 4px on hover.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card__print\"></div><div class=\"ds-card__caption\"><div><h3 class=\"ds-card__name\">Café Dooier</h3><p class=\"ds-card__meta\">Markt 7</p></div><span class=\"ds-card__like\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg>14</span></div></article>",
+      "css": ".ds-card { max-width: 20rem; padding: 8px; border-radius: 28px; background: var(--color-milk, #ffe5f0); transition: translate 300ms cubic-bezier(0.23,1,0.32,1), box-shadow 300ms cubic-bezier(0.23,1,0.32,1); } .ds-card:hover { translate: 0 -4px; box-shadow: 0 8px 0 rgb(74 21 52 / 0.12), 0 12px 24px rgb(74 21 52 / 0.14); } .ds-card__print { aspect-ratio: 4 / 3; border-radius: 20px; background: rgb(255 158 190 / 0.4); box-shadow: inset 0 0 0 1px rgb(74 21 52 / 0.1); } .ds-card__caption { display: flex; align-items: center; gap: 12px; padding: 14px 12px 8px; } .ds-card__caption > div { flex: 1; min-width: 0; } .ds-card__name { margin: 0; color: var(--color-berry, #4a1534); font: 400 1.5rem/1.08 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); letter-spacing: 0.025em; } .ds-card__meta { margin: 4px 0 0; color: rgb(74 21 52 / 0.7); font: 600 0.875rem/1.3 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-card__like { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid rgb(74 21 52 / 0.15); border-radius: 9999px; background: #fff; color: var(--color-berry, #4a1534); font: 700 0.75rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); font-variant-numeric: tabular-nums; } .ds-card__like svg { color: var(--color-blush, #fa715a); }"
     },
     {
-      "name": "Rank Burst",
+      "name": "Count Sticker",
+      "kind": "chip",
+      "refersTo": "chip-yolk",
+      "description": "A yolk pill in Bagel Fat One with a 3px white die-cut and a deep berry cast, tilted as if pressed onto a berry slab.",
+      "html": "<div class=\"ds-sticker-ground\"><span class=\"ds-sticker\">3 plekken</span></div>",
+      "css": ".ds-sticker-ground { padding: 28px; border-radius: 28px; background: var(--color-berry, #4a1534); } .ds-sticker { display: inline-block; padding: 8px 16px; border-radius: 9999px; background: var(--color-yolk, #feb62a); color: var(--color-berry, #4a1534); font: 400 1.125rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); letter-spacing: 0.025em; font-variant-numeric: tabular-nums; rotate: -3deg; box-shadow: 0 0 0 3px #fff, 0 10px 20px rgb(22 4 14 / 0.35); }"
+    },
+    {
+      "name": "Leaderboard Row",
       "kind": "custom",
-      "refersTo": "rank-burst",
-      "description": "12-point SVG flash sticker, rotated, flare → citrus fill, zero-padded Lilita number. Not a circle.",
-      "html": "<span class=\"ds-rank-burst\"><svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><defs><linearGradient id=\"ds-burst-fill\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#ff5a9a\"/><stop offset=\"100%\" stop-color=\"#ff7a2e\"/></linearGradient></defs><path d=\"M32.00,1.00L37.18,12.68L47.50,5.15L46.14,17.86L58.85,16.50L51.32,26.82L63.00,32.00L51.32,37.18L58.85,47.50L46.14,46.14L47.50,58.85L37.18,51.32L32.00,63.00L26.82,51.32L16.50,58.85L17.86,46.14L5.15,47.50L12.68,37.18L1.00,32.00L12.68,26.82L5.15,16.50L17.86,17.86L16.50,5.15L26.82,12.68Z\" fill=\"url(#ds-burst-fill)\"/></svg><span>03</span></span>",
-      "css": ".ds-rank-burst { position: relative; display: inline-flex; width: 4.35rem; height: 4.35rem; align-items: center; justify-content: center; transform: rotate(-14deg); filter: drop-shadow(0 8px 18px rgba(255,90,154,0.5)); } .ds-rank-burst svg { position: absolute; inset: 0; width: 100%; height: 100%; } .ds-rank-burst span { position: relative; font-family: 'Lilita One', Impact, sans-serif; font-size: 1.25rem; color: #fff; }"
+      "refersTo": "rank-sticker",
+      "description": "Milk slab row from fourth place down: yolk rank circle, @username in Bagel Fat One with a blush @, a blush like bar against the leader, the like count.",
+      "html": "<a class=\"ds-row\" href=\"#\"><span class=\"ds-row__rank\">4</span><span class=\"ds-row__who\"><span class=\"ds-row__name\"><span class=\"ds-row__at\">@</span>ochtendmens</span><span class=\"ds-row__meta\">4 plekken</span></span><span class=\"ds-row__bar\"><span></span></span><span class=\"ds-row__likes\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg>31 likes</span></a>",
+      "css": ".ds-row { display: grid; grid-template-columns: auto minmax(0,1fr) minmax(0,10rem) auto; align-items: center; gap: 20px; padding: 12px 20px 12px 12px; border-radius: 28px; background: var(--color-milk, #ffe5f0); color: var(--color-berry, #4a1534); text-decoration: none; transition: background-color 160ms cubic-bezier(0.23,1,0.32,1); } .ds-row:hover { background: var(--color-shell, #fff5f8); } .ds-row:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; } .ds-row__rank { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 9999px; background: var(--color-yolk, #feb62a); font: 400 1.25rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); } .ds-row__who { display: flex; flex-direction: column; } .ds-row__name { font: 400 1.5rem/1.2 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); letter-spacing: 0.025em; } .ds-row__at { color: var(--color-blush, #fa715a); } .ds-row__meta { color: rgb(74 21 52 / 0.7); font: 600 0.875rem/1.4 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-row__bar { height: 10px; overflow: hidden; border-radius: 9999px; background: #fff; } .ds-row__bar span { display: block; width: 65%; height: 100%; border-radius: 9999px; background: var(--color-blush, #fa715a); } .ds-row__likes { display: inline-flex; align-items: center; gap: 6px; font: 800 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); font-variant-numeric: tabular-nums; white-space: nowrap; } .ds-row__likes svg { color: var(--color-blush, #fa715a); }"
     },
     {
       "name": "Nav Bar",
       "kind": "nav",
       "refersTo": "nav-bar",
-      "description": "Frosted night header over the still: waffle icon, painted wordmark PNG in production, #bragfast in Lilita sun, frosted language toggle.",
-      "html": "<header class=\"ds-nav\"><a class=\"ds-nav-brand\" href=\"#\" aria-label=\"brag.fast\"><span class=\"ds-nav-icon\" aria-hidden=\"true\"></span><span class=\"ds-nav-wm\" aria-hidden=\"true\"></span></a><span class=\"ds-nav-tag\">#bragfast</span><div class=\"ds-nav-right\"><div class=\"ds-lang\"><button class=\"ds-lang-item\" aria-pressed=\"true\">nl</button><button class=\"ds-lang-item\">en</button></div><button class=\"ds-nav-login\">Inloggen</button></div></header>",
-      "css": ".ds-nav { display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 20px; background: rgba(27,21,64,0.75); backdrop-filter: blur(12px); color: #fff; } .ds-nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; } .ds-nav-icon { width: 40px; height: 40px; border-radius: 9999px; background: var(--color-sun, #ffd15c); box-shadow: inset 0 2px 0 rgba(255,255,255,0.55); } .ds-nav-wm { display: inline-block; height: 36px; width: 148px; border-radius: 4px; background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); filter: drop-shadow(0 2px 16px rgba(27,21,64,0.35)); } .ds-nav-tag { font-family: 'Lilita One', Impact, sans-serif; font-size: 0.875rem; letter-spacing: 0.025em; color: var(--color-sun, #ffd15c); } .ds-nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; } .ds-lang { display: flex; align-items: center; padding: 2px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); font-family: Figtree, system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; } .ds-lang-item { padding: 6px 10px; border: none; border-radius: 9999px; background: transparent; color: #fff; font: inherit; cursor: pointer; } .ds-lang-item[aria-pressed=\"true\"] { background: var(--color-flare, #ff5a9a); } .ds-nav-login { height: 32px; padding: 0 12px; border: none; border-radius: 9999px; background: linear-gradient(to bottom, var(--color-flare, #ff5a9a), var(--color-citrus, #ff7a2e)); color: #fff; font-family: Figtree, system-ui, sans-serif; font-size: 0.75rem; font-weight: 700; cursor: pointer; } .ds-nav-brand:focus-visible, .ds-lang-item:focus-visible, .ds-nav-login:focus-visible { outline: 2px solid var(--color-sun, #ffd15c); outline-offset: 2px; }"
-    },
-    {
-      "name": "Panel Field",
-      "kind": "input",
-      "refersTo": "field",
-      "description": "A 48px white field inside a panel; 16px radius, indigo hairline, flare focus ring.",
-      "html": "<input class=\"ds-field\" type=\"text\" placeholder=\"Naam van de plek\">",
-      "css": ".ds-field { display: block; width: 100%; height: 48px; padding: 0 16px; border: 1px solid rgba(27,21,64,0.15); border-radius: 16px; background: #fff; color: var(--color-night, #1b1540); font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; outline: none; } .ds-field::placeholder { color: rgba(27,21,64,0.45); } .ds-field:focus { box-shadow: 0 0 0 2px var(--color-flare, #ff5a9a); }"
-    },
-    {
-      "name": "Brag Card",
-      "kind": "card",
-      "refersTo": "panel",
-      "description": "Always shows maker name and time. Seed 1×1 photos are a sky slab; the hosted img stays sr-only.",
-      "html": "<article class=\"ds-brag\"><div class=\"ds-brag-media\"><p class=\"ds-brag-maker\">Ada</p><p class=\"ds-brag-when\">31 aug 2026, 15:36</p></div><img class=\"ds-brag-sr\" alt=\"\" src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\"><footer class=\"ds-brag-foot\"><p>Ada <span>31 aug 2026, 15:36</span></p></footer></article>",
-      "css": ".ds-brag { overflow: hidden; border-radius: 28px; background: color-mix(in srgb, var(--color-sky, #8fd4f8) 35%, transparent); box-shadow: 0 12px 32px rgba(27,21,64,0.08); } .ds-brag-media { display: flex; height: 20rem; flex-direction: column; justify-content: flex-end; background: var(--color-sky, #8fd4f8); padding: 24px 20px; } .ds-brag-maker { margin: 0; font-family: 'Lilita One', Impact, sans-serif; font-size: 1.5rem; letter-spacing: 0.025em; color: var(--color-night, #1b1540); } .ds-brag-when { margin: 4px 0 0; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; color: rgba(27,21,64,0.7); } .ds-brag-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; } .ds-brag-foot { display: flex; align-items: center; border-top: 1px solid rgba(27,21,64,0.08); background: #fff; padding: 12px 20px; font-family: Figtree, system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; color: var(--color-night, #1b1540); } .ds-brag-foot span { margin-left: 8px; font-weight: 600; color: rgba(27,21,64,0.55); }"
+      "description": "Strawberry milk at 85% with a backdrop blur: lockup and #bragfast left, chrome links, language tray and a blush sign-in right.",
+      "html": "<header class=\"ds-nav\"><span class=\"ds-nav__brand\">brag.fast</span><span class=\"ds-nav__tag\">#bragfast</span><nav class=\"ds-nav__links\"><a href=\"#\">Hoe het werkt</a><a href=\"#\">Leaderboard</a><button class=\"ds-nav__cta\" type=\"button\">Inloggen</button></nav></header>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 20px; background: rgb(255 229 240 / 0.85); backdrop-filter: blur(12px); color: var(--color-berry, #4a1534); } .ds-nav__brand { font: 400 1.5rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); } .ds-nav__tag { color: var(--color-blush, #fa715a); font: 400 0.875rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); } .ds-nav__links { display: flex; align-items: center; gap: 16px; margin-left: auto; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-nav__links a { color: var(--color-berry, #4a1534); text-decoration: none; transition: color 160ms cubic-bezier(0.23,1,0.32,1); } .ds-nav__links a:hover { color: var(--color-blush, #fa715a); } .ds-nav__links a:focus-visible, .ds-nav__cta:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; border-radius: 9999px; } .ds-nav__cta { height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: var(--color-blush, #fa715a); color: #fff; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; }"
     }
   ],
   "narrative": {
-    "northStar": "Golden-hour film still",
-    "overview": "Every public surface of brag.fast opens inside a photograph. The still is the product: a synthetic golden-hour breakfast scene runs edge to edge, bright, with no wash over it. Type sits on the photo the way a title is painted onto a sleeve. The wordmark is paint — a hand-brushed raster at `/wordmark.png` with bubblegum-to-tangerine baked into the strokes — not a costume gradient on a geometric font.\n\nThe world is warm light on a cool base. The photographs carry the tangerine hour; the page around them is a cold, pale sky-white (foam) so the warmth stays inside the frame. Ink is deep indigo (night), never black. The candy set is the only saturated UI: bubblegum flare, tangerine citrus, sun yellow, sky blue, mint. Flare fading into citrus is the brand's one gradient. It is baked into the painted wordmark, and it fills pressed-on objects (primary button, active candy key, rank burst). It is never applied as CSS gradient-text. Rank is a rotated 12-point flash sticker, not a table row and not a circle.\n\nDensity is generous and rounded. Controls are 3D candy keys, panels are 28px-radius slabs, spacing runs on a loose 4px rhythm with wide section gaps. Dutch is the default UI language; the atmosphere stamp reads **Sfeerbeeld**. Confirmed anti-references: cream and maple surfaces, the Syne display face, `.flare-text` on geometric fonts, full-bleed indigo hero overlays, circular rank badges, and directory-style cards where a thumbnail is boxed beside a text column.",
+    "northStar": "Kawaii egg on strawberry milk.",
+    "overview": "The home page opens inside a full-bleed breakfast still. Every other page — city, spot, passport, leaderboard, how it works — opens on a **berry slab** (`bg-berry`, `#4a1534`) that the milk header sits over. The spot slab carries the adder's photo as a tilted print instead of a backdrop, and the print's own light pools softly around it, so the berry still reads as the ground. Chrome around either is strawberry milk, berry ink, blush and yolk stickers. Cocoa brown lives on the egg SVG and nowhere else.\n\nThe header is pink milk at 85% with a backdrop blur. Content sits on white. Ink is berry — never black, never cocoa, never indigo. Buttons and pressed segments are flat blush; nothing in this system carries a CSS gradient. Density is generous and rounded: pills for anything pressable, 28px slabs for anything that holds content.\n\nDutch is the default UI language. The brand is English (`brag.fast`, `#bragfast`).",
     "keyCharacteristics": [
-      "Photo-first: hero, city and spot headers are full-bleed stills with no overlay; copy uses local text-shadow so the still stays bright.",
-      "Wordmark is a painted raster (`/wordmark.png`), used in the hero and the header. No CSS gradient-text.",
-      "Cool ground, warm subject: foam and white surfaces; the heat lives in the photography and the candy accents.",
-      "One gradient, pressed-on only: flare → citrus on the painted wordmark, the primary button, the active candy key, and the rank burst.",
-      "Indigo ink on light surfaces; solid white Lilita One with photo-copy on photographs.",
-      "Candy keys for filters and segments (sky / mint / sun at rest, flare → citrus when pressed); 28px slabs for content.",
-      "Two display voices: Lilita One for shouted titles; Pacifico only for `#bragfast` signatures."
+      "Photo-first on home only. City, spot, passport and leaderboard heroes are berry slabs. The city slab is a poster: the woonplaats name set edge to edge, ending in a bakery-awning scallop. The spot slab holds the brag print, which hangs over the slab's bottom edge. The passport slab carries the adder's woonplaatsen as rubber stamps; the leaderboard slab is a stage whose podium stands on its floor. The how-it-works slab carries the four verbs as tilted stickers that jump to four verb posters below it, each poster alternating berry, milk and white grounds.",
+      "The wordmark is the SVG lockup `/brag_fast_logo.svg`, rendered through `<Logo>`. The mascot is `/brag_fast_egg.svg`, rendered through `<Egg>` in the footer and as the favicon. Neither is ever recreated in CSS.",
+      "Two type voices: Bagel Fat One shouts names and `#bragfast`; Nunito carries body, labels and controls.",
+      "Flat blush for primary buttons and pressed segments. White trays with a berry/12 hairline for the things they sit in.",
+      "Spot cards are milk slabs holding an inset 4:3 photo print, the name in Bagel Fat One on the caption and the heart like pill beside it. No egg overlay, no rank badge."
     ],
     "rules": [
-      { "name": "The Warm Inside the Frame Rule", "body": "Warm colour comes from the photograph and the candy accents. Page grounds and panels are foam or white; no beige, cream or maple surface exists in this system.", "section": "colors" },
-      { "name": "The One Gradient Rule", "body": "The only gradient is flare → citrus, top to bottom. It is baked into `/wordmark.png` and fills pressed-on objects (primary button, active candy key, rank burst). Do not invent a second gradient, reverse this one, or apply it as CSS gradient-text.", "section": "colors" },
-      { "name": "The Indigo Ink Rule", "body": "Text is night, never `#000`. Night at alpha tints the header, borders, and a short card-foot fade. It does not wash the hero.", "section": "colors" },
-      { "name": "The Sun Points the Way Rule", "body": "On any night or photographic ground, links and focus rings are sun. Flare is for selected state, not for links.", "section": "colors" },
-      { "name": "The Paint, Not Costume Rule", "body": "The wordmark is a painted raster. Never apply a CSS gradient to a geometric display face and call it the wordmark.", "section": "typography" },
-      { "name": "The Painted Title Rule", "body": "A title on a photograph is Lilita One in solid white with `.photo-copy`, placed bottom-left. It is never boxed in a caption bar and never filled with flare → citrus.", "section": "typography" },
-      { "name": "The No Eyebrow Rule", "body": "Headlines are not preceded by a small uppercase kicker. The hashtag `#bragfast` is a brand signature in the header and footer, not a label above content.", "section": "typography" },
-      { "name": "The Two Shouts Rule", "body": "Lilita One shouts names. Pacifico signs `#bragfast` only. Body copy, labels and controls are always Figtree.", "section": "typography" },
-      { "name": "The Still First Rule", "body": "No public page starts with a heading on a flat ground. The first viewport is a photograph with the title and, on home, the search pill placed on it.", "section": "layout" },
-      { "name": "The Photo-Copy Rule", "body": "Legibility on a bright still comes from local text-shadow (`.photo-copy`), never from a full-bleed indigo overlay.", "section": "elevation" },
-      { "name": "The Coloured Glow Rule", "body": "Shadows are tinted with the thing casting them: flare under flare objects, night under white, photographic, or candy-key objects. No grey or black shadow.", "section": "elevation" },
-      { "name": "The Candy Key Rule", "body": "Filters and segments are 3D keys. The night-tinted foot is how a key sits on the desk. Do not flatten them into white-bordered chips and do not read the foot as a card side-tab.", "section": "elevation" },
-      { "name": "The Pill or Slab Rule", "body": "If a user can press it, it is a pill (and if it is a filter or segment, it is a candy key). If it holds content, it is a 28px slab. Rank is a burst. Nothing else.", "section": "shapes" },
-      { "name": "The Burst Rank Rule", "body": "Board rank is a rotated 12-point flare → citrus burst with a zero-padded Lilita number. Never a circle, never a table index.", "section": "shapes" }
+      {
+        "name": "The Berry Ink Rule",
+        "body": "Text is berry, never `#000`. Berry at alpha tints hairlines and secondary copy. It does not wash a photograph.",
+        "section": "colors"
+      },
+      {
+        "name": "The Yolk Focus Rule",
+        "body": "Focus is always yolk, always 2px, always offset 2px, on every ground. Do not restyle a focus ring per component.",
+        "section": "colors"
+      },
+      {
+        "name": "The Flat Fill Rule",
+        "body": "No CSS gradient on a button, chip, tray or type face. Depth comes from the shadow vocabulary below, not from a ramp.",
+        "section": "colors"
+      },
+      {
+        "name": "The Warm Inside the Frame Rule",
+        "body": "Warmth comes from the photograph and the candy set. Page grounds are white, milk or shell. No beige, cream or maple surface exists here.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Bagel Fat One shouts names and `#bragfast`. Everything else is Nunito. There is no script face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Painted Title Rule",
+        "body": "A title over a still or a berry slab is Bagel Fat One in solid white; over a photo it also takes `text-shadow-photo`. Card names sit on the milk caption in berry — never white on the still.",
+        "section": "typography"
+      },
+      {
+        "name": "The Photo-Copy Rule",
+        "body": "Legibility on a bright still comes from `text-shadow-photo` (`0 1px 1px berry/40, 0 10px 28px berry/32`), never from a full-bleed overlay. No title sits on a photo outside home: the spot name sits on flat berry beside its print.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tinted Shadow Rule",
+        "body": "Every shadow is berry or blush at alpha. A grey or black shadow, or a border standing in for elevation, is off-system.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Pill or Slab Rule",
+        "body": "If a user can press it, it is a pill. If it holds content, it is a slab. There is no third radius; a print inside a slab takes the slab's concentric radius.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Awning Edge",
+        "body": "The city poster ends in a row of berry scallops (`.scallop-edge`, a repeat-`round` mask so the row always ends on a whole scallop). Only the city hero has it.",
+        "section": "shapes"
+      }
     ],
     "dos": [
-      "Do open every public page with a full-bleed still pulled under the translucent night header, title bottom-left in white Lilita with `.photo-copy`.",
-      "Do use the painted `/wordmark.png` in the hero and the header.",
-      "Do use flare → citrus only on the painted wordmark, the primary button, the active candy key, and the rank burst.",
-      "Do make filters and segments 3D candy keys (sky / mint / sun at rest) and every content container a 28px slab.",
-      "Do mark spot cards with the city still plus a sun Sfeerbeeld/Atmosphere stamp; put rank in a rotated 12-point burst.",
-      "Do show maker name and time on every brag card; keep seed placeholder images in the DOM as `sr-only` behind a sky fallback.",
-      "Do put the back-to-city link below the spot address.",
-      "Do use sun for links and focus rings on photographs and night grounds; flare for selected state.",
-      "Do keep body copy, labels and controls in Figtree; Lilita One shouts names; Pacifico signs `#bragfast` only.",
-      "Do keep the page ground foam and panels white so the photograph stays the warmest thing on screen."
+      "**Do** open home with a full-bleed still under the milk header, copy bottom-left in white with `text-shadow-photo`.",
+      "**Do** give city, spot, passport, leaderboard and how it works a berry `PageHero` slab — with a photo print on spot.",
+      "**Do** use `<Logo>` (`/brag_fast_logo.svg`) in the header and hero, and `<Egg>` in the footer and favicon.",
+      "**Do** use flat blush for primary buttons and the pressed segment.",
+      "**Do** make anything pressable a pill and anything holding content a 28px slab.",
+      "**Do** keep every focus ring 2px yolk at offset 2.",
+      "**Do** put card names in Bagel Fat One berry on the milk caption.",
+      "**Do** reach for `components/ui/*` before writing a primitive; add missing ones with `npx shadcn@latest add` and restyle to this palette.",
+      "**Do** gate hover behind `pointer-fine` and honour `prefers-reduced-motion`."
     ],
     "donts": [
-      "Don't introduce cream, beige or maple surfaces, or bring back Syne.",
-      "Don't restore `.flare-text` or put a CSS gradient on Lilita, Pacifico, or any geometric display face.",
-      "Don't wash a hero, city or spot still with a full-bleed indigo overlay.",
-      "Don't treat spot cards as venue photography; they are city stills with an atmosphere stamp.",
-      "Don't draw rank as a circle or a table number.",
-      "Don't flatten candy keys into white-bordered chips.",
-      "Don't box a thumbnail beside a text column; a list item is a photo with the title painted on it.",
-      "Don't put a small uppercase kicker above a headline.",
-      "Don't use `#000` for text or fades; ink is night.",
-      "Don't add a second gradient, reverse the flare → citrus direction, or use citrus as a flat button fill.",
-      "Don't use grey or black drop shadows, or borders to fake elevation.",
-      "Don't hide maker name or time on a brag card."
+      "**Don't** reintroduce indigo, foam, flare, citrus, sun or sky — those tokens are retired and do not exist in `globals.css`.",
+      "**Don't** set type in Lilita One, Pacifico or Figtree, or use the painted `/wordmark.png`. The lockup is the SVG.",
+      "**Don't** recreate the lockup or the egg with CSS gradient text.",
+      "**Don't** put a CSS gradient on a button, chip, tray or type face.",
+      "**Don't** use `#000` for text or a grey/black drop shadow; ink is berry and shadows are tinted.",
+      "**Don't** wash a hero with a full-bleed overlay — use `text-shadow-photo`.",
+      "**Don't** put white type on a spot card still; names sit on the milk caption.",
+      "**Don't** draw board rank as a burst, and don't put rank or the egg on a spot card.",
+      "**Don't** add type chips (Café / Bakker / Hotel / Overig) — they were removed on purpose.",
+      "**Don't** split a city page into a board and a \"Nog niet gebragd\" tail.",
+      "**Don't** put a small uppercase kicker above a headline.",
+      "**Don't** give a card a \"most liked\" stamp or number; the podium print's size is the only rank signal on the city board."
     ]
   }
 }

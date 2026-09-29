@@ -15,7 +15,7 @@ typography:
     fontFamily: "Bagel Fat One, Arial Rounded MT Bold, sans-serif"
     fontSize: "clamp(3rem, 10vw, 7rem)"
     fontWeight: 400
-    lineHeight: 0.9
+    lineHeight: 0.92
     letterSpacing: "0.025em"
   headline:
     fontFamily: "Bagel Fat One, Arial Rounded MT Bold, sans-serif"
@@ -52,12 +52,6 @@ typography:
     fontSize: "0.875rem"
     fontWeight: 700
     lineHeight: 1.25
-    letterSpacing: "normal"
-  script:
-    fontFamily: "Bagel Fat One, Arial Rounded MT Bold, sans-serif"
-    fontSize: "1.5rem"
-    fontWeight: 400
-    lineHeight: 1.2
     letterSpacing: "normal"
 rounded:
   card: "28px"
@@ -147,11 +141,12 @@ components:
     rounded: "{rounded.field}"
     padding: "0 16px"
     height: "48px"
-  photo-card:
-    textColor: "{colors.white}"
+  spot-card:
+    backgroundColor: "{colors.milk}"
+    textColor: "{colors.berry}"
     typography: "{typography.title}"
     rounded: "{rounded.card}"
-    padding: "20px"
+    padding: "8px"
   panel:
     backgroundColor: "{colors.white}"
     textColor: "{colors.berry}"
@@ -251,9 +246,11 @@ supplies the warmth.
 
 - **Shell** (`{colors.shell}`, `#fff5f8`): the quietest surface — empty-state wells and
   leaderboard-row hover.
-- **Candy** (`{colors.candy}`, `#ff9ebe`): mixed 28% into milk for the Leaflet canvas.
-- **Mint** (`{colors.mint}`, `#bfead3`): declared for the candy set; no component uses it
-  today. Reach for it before inventing a ninth colour.
+- **Candy** (`{colors.candy}`, `#ff9ebe`): the second podium step, a passport stamp ink, the
+  heart on a white/12 like pill, the **Gesloten** and **Voorbeeld** stickers, the photo well
+  while a print loads (at 40%), and the Leaflet canvas (28% into milk).
+- **Mint** (`{colors.mint}`, `#bfead3`): the third podium step, a passport stamp ink, and the
+  Like sticker in the how-it-works hero. Reach for it before inventing a ninth colour.
 
 ### White
 
@@ -626,7 +623,7 @@ is a URL (`?view=map`), so it is a link, not a toggle.
 
 `components/ui/toast.tsx`, mounted once in the root layout.
 
-## Motion
+### Motion
 
 Three durations and three easings, all tokens:
 
