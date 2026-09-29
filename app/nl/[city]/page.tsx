@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { CitySpots } from "@/components/city-spots";
 import { EmptyCityBoard } from "@/components/empty-city-board";
-import { PageHero, PageHeroTitle } from "@/components/page-hero";
+import { PageHero, PageHeroPoster } from "@/components/page-hero";
 import { loadCityPage } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
-import type { Locale } from "@/domain/messages";
+import { t, uniqueSpotsLabel, type Locale } from "@/domain/messages";
 import { canonicalCitySlug } from "@/domain/cities";
 
 type Params = { city: string };
@@ -62,11 +62,21 @@ export default async function CityPage({
 
   return (
     <main>
-      <PageHero size="city">
-        <PageHeroTitle size="lg">{name}</PageHeroTitle>
+      <PageHero size="poster" edge="scallop">
+        <PageHeroPoster>{name}</PageHeroPoster>
+        {board.kind === "empty" ? null : (
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 sm:mt-7">
+            <p className="sticker w-fit -rotate-3 rounded-full bg-yolk px-4 py-1.5 text-base font-extrabold text-berry tabular-nums">
+              {uniqueSpotsLabel(locale, board.spots.length)}
+            </p>
+            <p className="text-lg font-semibold text-milk sm:text-xl">
+              {t(locale, "cityBoardLead")}
+            </p>
+          </div>
+        )}
       </PageHero>
 
-      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-12">
+      <div className="mx-auto w-full max-w-6xl px-5 pb-14 pt-14 sm:px-8 sm:pb-20 sm:pt-16">
         {board.kind === "empty" ? (
           <EmptyCityBoard locale={locale} />
         ) : (
