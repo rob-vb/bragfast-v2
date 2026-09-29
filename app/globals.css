@@ -117,6 +117,20 @@ input {
   text-wrap: balance;
 }
 
+/* A spot name shares its row with the print, so it tops out smaller, and
+   a long one takes an even two lines rather than a tall stack of words */
+.poster-title--spot {
+  font-size: clamp(
+    2.5rem,
+    max(
+      calc(98cqi / var(--fit-line)),
+      min(calc(98cqi / var(--fit-pair)), 4.5rem)
+    ),
+    7rem
+  );
+  line-height: 0.92;
+}
+
 .poster-letter {
   display: inline-block;
   animation: letter-in 720ms var(--ease-spring) both;
@@ -153,6 +167,167 @@ input {
   box-shadow:
     0 0 0 3px #fff,
     0 10px 20px rgb(22 4 14 / 0.35);
+}
+
+/* Spot hero: the adder's photo as a print pressed onto the slab. It lands
+   once, from a little above and a little more tilted, and its shadow
+   tightens as it meets the slab. */
+.brag-print {
+  --print-pad: 0.5rem;
+  --tilt: -2deg;
+  --print-shadow: 0 1px 0 rgb(74 21 52 / 0.06), 0 3px 0 rgb(22 4 14 / 0.12),
+    0 24px 48px -12px rgb(22 4 14 / 0.55);
+  position: relative;
+  margin: 0;
+  padding: var(--print-pad) var(--print-pad) 0;
+  border-radius: var(--radius-slab);
+  background: #fff;
+  rotate: var(--tilt);
+  box-shadow: var(--print-shadow);
+  animation: print-land 1000ms var(--ease-out-strong) 80ms both;
+}
+
+.brag-print__photo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: calc(var(--radius-slab) - var(--print-pad));
+  background: color-mix(in srgb, var(--color-candy) 40%, #fff);
+}
+
+.brag-print__photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brag-print__photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(74 21 52 / 0.1);
+  pointer-events: none;
+}
+
+.brag-print.is-closed .brag-print__photo img {
+  filter: grayscale(0.9);
+}
+
+@media (min-width: 64rem) {
+  .brag-print {
+    --print-pad: 0.625rem;
+    --tilt: 2.5deg;
+  }
+}
+
+@keyframes print-land {
+  from {
+    opacity: 0.2;
+    translate: 0 -2.5rem;
+    rotate: calc(var(--tilt) * -2.5);
+    scale: 1.07;
+    box-shadow: 0 1px 0 rgb(74 21 52 / 0), 0 3px 0 rgb(22 4 14 / 0),
+      0 64px 72px -16px rgb(22 4 14 / 0.3);
+  }
+}
+
+/* The print's own light, blurred past recognition, pooling on the slab
+   around the print and falling off to plain berry */
+.print-glow {
+  --glow-at: 50% 100%;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mask: radial-gradient(
+    ellipse 70% 60% at var(--glow-at),
+    #000 10%,
+    #0000 100%
+  );
+}
+
+.print-glow img {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  object-fit: cover;
+  filter: blur(72px) saturate(1.8);
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  animation: glow-in 1600ms var(--ease-out-strong) 200ms both;
+}
+
+@media (min-width: 64rem) {
+  .print-glow {
+    --glow-at: 78% 90%;
+    mask: radial-gradient(
+      ellipse 42% 80% at var(--glow-at),
+      #000 10%,
+      #0000 100%
+    );
+  }
+}
+
+@keyframes glow-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The board tile's fan of prints; it opens a little wider on hover */
+.board-fan {
+  position: absolute;
+  top: 2.25rem;
+  right: 2.75rem;
+  z-index: 0;
+  width: min(44%, 12rem);
+  aspect-ratio: 4 / 3;
+}
+
+.board-fan img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: calc(var(--radius-slab) / 2);
+  background: var(--color-candy);
+  box-shadow:
+    0 0 0 3px #fff,
+    0 10px 20px rgb(22 4 14 / 0.35);
+  rotate: calc(var(--x) * 8deg);
+  translate: calc(var(--x) * 22%) calc(var(--x) * var(--x) * 6%);
+  transition:
+    rotate 420ms var(--ease-out-strong),
+    translate 420ms var(--ease-out-strong);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group\/board:hover .board-fan img {
+    rotate: calc(var(--x) * 12deg);
+    translate: calc(var(--x) * 34%) calc(var(--x) * var(--x) * 10%);
+  }
+}
+
+/* Before Leaflet arrives the well is the map's own candy canvas */
+.map-well {
+  background: color-mix(in srgb, var(--color-candy) 28%, var(--color-milk));
+}
+
+.lightbox-photo {
+  box-shadow: 0 24px 64px rgb(22 4 14 / 0.5);
+  animation: photo-in 320ms var(--ease-out-strong);
+}
+
+@keyframes photo-in {
+  from {
+    opacity: 0.35;
+    translate: calc(var(--from) * 2rem) 0;
+  }
 }
 
 @keyframes like-pop {
@@ -198,6 +373,9 @@ input {
 @media (prefers-reduced-motion: reduce) {
   .poster-letter,
   .like-pop,
+  .brag-print,
+  .print-glow img,
+  .lightbox-photo,
   ::view-transition-group(*),
   ::view-transition-old(*),
   ::view-transition-new(*) {
@@ -224,6 +402,12 @@ input {
 .leaflet-container {
   font-family: var(--font-body);
   background: color-mix(in srgb, var(--color-candy) 28%, var(--color-milk));
+}
+
+/* Leaflet's panes carry z-indexes up to 1000; keep them inside the map so
+   a dialog or menu always paints above it */
+.spot-map {
+  isolation: isolate;
 }
 
 .spot-map .leaflet-bar {

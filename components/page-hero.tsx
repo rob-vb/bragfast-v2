@@ -78,21 +78,34 @@ export function PageHeroTitle({
 const POSTER_TRACKING = 0.012;
 
 /**
- * A woonplaats name set edge to edge. The letters land one by one like
- * stickers pressed onto the slab; the heading's name is the plain text.
+ * A name set edge to edge. On a woonplaats the letters land one by one like
+ * stickers pressed onto the slab; the heading's name is the plain text. A
+ * spot sets its name in the column beside its print, and the print is the
+ * page's moment, so its letters stay put.
  */
-export function PageHeroPoster({ children }: { children: string }) {
+export function PageHeroPoster({
+  children,
+  fit: measure = "city",
+}: {
+  children: string;
+  fit?: "city" | "spot";
+}) {
   const fit = displayFit(children, POSTER_TRACKING);
   const words = displayWords(children);
+  const land = measure === "city";
   let index = 0;
   return (
     <h1
       aria-label={children}
-      className="poster-title font-display text-white"
+      className={cn(
+        "poster-title font-display text-white",
+        measure === "spot" && "poster-title--spot",
+      )}
       style={
         {
           "--fit-line": fit.line,
           "--fit-word": fit.word,
+          "--fit-pair": fit.pair,
           letterSpacing: `${POSTER_TRACKING}em`,
         } as CSSProperties
       }
@@ -101,18 +114,20 @@ export function PageHeroPoster({ children }: { children: string }) {
         <span key={w}>
           {w === 0 ? null : words[w - 1].endsWith("-") ? <wbr /> : " "}
           <span className="inline-block whitespace-nowrap">
-            {[...word].map((letter) => {
-              const i = index++;
-              return (
-                <span
-                  key={i}
-                  className="poster-letter"
-                  style={{ "--i": i, "--tilt": i % 2 ? 7 : -9 } as CSSProperties}
-                >
-                  {letter}
-                </span>
-              );
-            })}
+            {land
+              ? [...word].map((letter) => {
+                  const i = index++;
+                  return (
+                    <span
+                      key={i}
+                      className="poster-letter"
+                      style={{ "--i": i, "--tilt": i % 2 ? 7 : -9 } as CSSProperties}
+                    >
+                      {letter}
+                    </span>
+                  );
+                })
+              : word}
           </span>
         </span>
       ))}

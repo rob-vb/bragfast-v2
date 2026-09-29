@@ -1,8 +1,14 @@
 import { v } from "convex/values";
 import { query, type QueryCtx } from "./_generated/server";
-import type { Doc } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import { NL_CITIES } from "../domain/cities";
-import { DomainParseError, parseCitySlug, parseSpotSlug } from "../domain/ids";
+import {
+  DomainParseError,
+  parseCitySlug,
+  parseSpotSlug,
+  parseUserSlug,
+  type UserSlug,
+} from "../domain/ids";
 import { searchWoonplaatsHits } from "../domain/searchMatch";
 import { sortCityBoard } from "../domain/like";
 import { parseSpot } from "../domain/spot";
@@ -123,6 +129,25 @@ export const listedSpotsByCity = query({
   },
 });
 
+/** The public passport slug, or null for an account without one. */
+async function passportSlug(
+  ctx: QueryCtx,
+  userId: Id<"users">,
+): Promise<UserSlug | null> {
+  const user = await ctx.db.get(userId);
+  if (!user?.passport) {
+    return null;
+  }
+  try {
+    return parseUserSlug(user.passport.slug);
+  } catch (error) {
+    if (error instanceof DomainParseError) {
+      return null;
+    }
+    throw error;
+  }
+}
+
 export const spotPage = query({
   args: { citySlug: v.string(), spotSlug: v.string() },
   handler: async (ctx, args): Promise<SpotPageData | null> => {
@@ -153,6 +178,18 @@ export const spotPage = query({
     const photoUrl = row.photoId
       ? await ctx.storage.getUrl(row.photoId)
       : null;
+    const passports = new Map<Id<"users">, UserSlug | null>();
+    const passportOf = async (
+      userId: Id<"users"> | undefined,
+    ): Promise<UserSlug | null> => {
+      if (userId === undefined) {
+        return null;
+      }
+      if (!passports.has(userId)) {
+        passports.set(userId, await passportSlug(ctx, userId));
+      }
+      return passports.get(userId) ?? null;
+    };
     const photoRows = await ctx.db
       .query("photos")
       .withIndex("by_spot_created", (q) => q.eq("spotId", row._id))
@@ -168,6 +205,7 @@ export const spotPage = query({
         id: photo._id,
         url,
         uploadedBy: photo.uploadedBy,
+        uploaderSlug: await passportOf(photo.uploadedBy),
         createdAt: photo.createdAt,
       });
     }
@@ -186,6 +224,8 @@ export const spotPage = query({
       photos,
       canonicalPath: `/nl/${city.slug}/${spot.slug}`,
       likeCount: row.likeCount ?? 0,
+      adderSlug: await passportOf(row.addedBy),
+      addedAt: row._creationTime,
     };
   },
 });

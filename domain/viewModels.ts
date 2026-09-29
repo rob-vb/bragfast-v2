@@ -34,6 +34,8 @@ export type SpotPagePhoto = {
   id: GenericId<"photos">;
   url: string;
   uploadedBy: GenericId<"users">;
+  /** The uploader's passport, when they have one. */
+  uploaderSlug: UserSlug | null;
   createdAt: number;
 };
 
@@ -51,6 +53,9 @@ export type SpotPageData = {
   photos: SpotPagePhoto[];
   canonicalPath: string;
   likeCount: number;
+  /** The passport of the account that added the spot, when it has one. */
+  adderSlug: UserSlug | null;
+  addedAt: number;
 };
 
 export type SearchHit = {
