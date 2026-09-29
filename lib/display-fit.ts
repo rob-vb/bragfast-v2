@@ -26,17 +26,34 @@ export function displayWords(text: string): string[] {
 }
 
 /**
- * How many ems wide a name is set in Bagel Fat One: on one line, and at its
- * widest unbreakable word. CSS divides the container width by these to fit
- * the name edge to edge without measuring in the browser.
+ * How many ems wide a name is set in Bagel Fat One: on one line, at its
+ * widest unbreakable word, and at the wider half of its most even two-line
+ * break. CSS divides the container width by these to fit the name edge to
+ * edge without measuring in the browser.
  */
 export function displayFit(
   text: string,
   tracking: number,
-): { line: number; word: number } {
+): { line: number; word: number; pair: number } {
   const words = displayWords(text);
+  const join = (chunk: string[]) =>
+    chunk.reduce(
+      (line, word, i) => line + (i === 0 || chunk[i - 1].endsWith("-") ? "" : " ") + word,
+      "",
+    );
+  let pair = emWidth(text, tracking);
+  for (let i = 1; i < words.length; i += 1) {
+    pair = Math.min(
+      pair,
+      Math.max(
+        emWidth(join(words.slice(0, i)), tracking),
+        emWidth(join(words.slice(i)), tracking),
+      ),
+    );
+  }
   return {
     line: emWidth(text, tracking),
     word: Math.max(...words.map((word) => emWidth(word, tracking))),
+    pair,
   };
 }

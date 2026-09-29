@@ -75,6 +75,14 @@ export const nlMessages = {
   like: "Leuk",
   photosHeading: "Foto's",
   deletePhoto: "Wissen",
+  confirmDeletePhoto: "Echt wissen?",
+  deletePhotoFailed: "Wissen lukte niet",
+  discoveredBy: "Ontdekt door",
+  gettingThere: "Zo kom je er",
+  directions: "Route",
+  opensGoogleMaps: "opent Google Maps",
+  previousPhoto: "Vorige foto",
+  nextPhoto: "Volgende foto",
 } as const;
 
 export type MessageKey = keyof typeof nlMessages;
@@ -156,6 +164,14 @@ export const enMessages = {
   like: "Like",
   photosHeading: "Photos",
   deletePhoto: "Delete",
+  confirmDeletePhoto: "Really delete?",
+  deletePhotoFailed: "Could not delete",
+  discoveredBy: "Discovered by",
+  gettingThere: "Getting there",
+  directions: "Directions",
+  opensGoogleMaps: "opens Google Maps",
+  previousPhoto: "Previous photo",
+  nextPhoto: "Next photo",
 } as const satisfies Record<MessageKey, string>;
 
 export type Locale = "nl" | "en";
@@ -207,6 +223,24 @@ export function localFavoritesHeading(locale: Locale, city: string): string {
 
 export function seeAllInCity(locale: Locale, city: string): string {
   return locale === "en" ? `All spots in ${city}` : `Alle plekken in ${city}`;
+}
+
+export function moreInCity(locale: Locale, city: string): string {
+  return locale === "en" ? `More in ${city}` : `Meer in ${city}`;
+}
+
+/** "Foto 2 van 5" */
+export function photoPosition(locale: Locale, n: number, total: number): string {
+  return locale === "en" ? `Photo ${n} of ${total}` : `Foto ${n} van ${total}`;
+}
+
+export function shortDate(locale: Locale, at: number): string {
+  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "nl-NL", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/Amsterdam",
+  }).format(at);
 }
 
 export function likeCountLabel(locale: Locale, count: number): string {

@@ -98,7 +98,17 @@ export async function loadSpotPage(
     if (!page) {
       return null;
     }
-    return { ...page, likeCount: page.likeCount ?? 0, photos: page.photos ?? [] };
+    // Tolerate a Convex deployment that predates a field
+    return {
+      ...page,
+      likeCount: page.likeCount ?? 0,
+      photos: (page.photos ?? []).map((photo) => ({
+        ...photo,
+        uploaderSlug: photo.uploaderSlug ?? null,
+      })),
+      adderSlug: page.adderSlug ?? null,
+      addedAt: page.addedAt ?? 0,
+    };
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;

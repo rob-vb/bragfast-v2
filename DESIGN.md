@@ -193,8 +193,8 @@ code disagree, the code is the fact and this file is the bug.
 
 The home page opens inside a full-bleed breakfast still. Every other page — city, spot,
 passport, leaderboard — opens on a **berry slab** (`bg-berry`, `#4a1534`) that the milk header
-sits over. Only the spot page puts a photo behind its slab, at 45% opacity, so the berry still
-reads as the ground. Chrome around either is strawberry milk, berry ink, blush and yolk
+sits over. The spot slab carries the adder's photo as a tilted print instead of a backdrop,
+and the print's own light pools softly around it, so the berry still reads as the ground. Chrome around either is strawberry milk, berry ink, blush and yolk
 stickers. Cocoa brown lives on the egg SVG and nowhere else.
 
 The header is pink milk at 85% with a backdrop blur. Content sits on white. Ink is berry —
@@ -208,7 +208,7 @@ Dutch is the default UI language. The brand is English (`brag.fast`, `#bragfast`
 
 - Photo-first on home only. City, spot, passport and leaderboard heroes are berry slabs. The
   city slab is a poster: the woonplaats name set edge to edge, ending in a bakery-awning
-  scallop.
+  scallop. The spot slab holds the brag print, which hangs over the slab's bottom edge.
 - The wordmark is the SVG lockup `/brag_fast_logo.svg`, rendered through `<Logo>`. The mascot
   is `/brag_fast_egg.svg`, rendered through `<Egg>` in the footer and as the favicon. Neither
   is ever recreated in CSS.
@@ -290,6 +290,10 @@ voices, no third.
   and hands CSS the name's width in ems; `.poster-title` divides the hero's container width by
   it, so the name runs edge to edge between 2.25rem and 11.5rem. A long name breaks between
   words (and after hyphens) at up to 5.5rem instead of shrinking to one thin line.
+- **Spot poster** (`PageHeroPoster fit="spot"`, `.poster-title--spot`): the spot name, fitted
+  to the text column beside the print between 2.5rem and 7rem, line-height 0.92. A name that
+  fits one line big takes it; a long one takes its most even two-line break (`--fit-pair`)
+  at up to 4.5rem. Its letters do not land; the print is the spot page's moment.
 - **Display** (Bagel Fat One, `clamp(3rem, 10vw, 7rem)`, line-height 0.92, tracking wide,
   white): `PageHeroTitle size="lg"`.
 - **Headline** (Bagel Fat One, `clamp(2.4rem, 8vw, 5.5rem)`, white): spot, passport and
@@ -315,8 +319,8 @@ white; over a photo it also takes `text-shadow-photo`. Card names sit on the mil
 berry — never white on the still.
 
 **The Photo-Copy Rule.** Legibility on a bright still comes from `text-shadow-photo`
-(`0 1px 1px berry/40, 0 10px 28px berry/32`), never from a full-bleed overlay. The one
-exception is the spot hero, where the photo runs at 45% behind the berry slab.
+(`0 1px 1px berry/40, 0 10px 28px berry/32`), never from a full-bleed overlay. No title sits
+on a photo outside home: the spot name sits on flat berry beside its print.
 
 ## Layout
 
@@ -329,6 +333,11 @@ Heroes pull up under the fixed-height header with `-mt-16` / `sm:-mt-[4.5rem]` a
 down with `pt-28`, so the header floats on the hero. Hero heights come from `PageHero`:
 `board` 42svh, `poster` 46svh (city), `spot` 58svh; home is its own `92svh` section. The
 hero's inner column is a size container, which is what the poster title measures.
+
+The spot page runs a 7/5 split on `lg`: name, address and actions left; the print right,
+hanging 152px (lg) / 96px (mobile) below the slab. Under the slab the same split holds the
+gallery left and **Zo kom je er** right, the right column padded to clear the print. **Meer
+in {woonplaats}** runs full width below both.
 
 Spot grids are `grid gap-4 sm:grid-cols-2 lg:grid-cols-3`. The city board is a podium when
 it is sorted by likes, descending, and its top spot has at least one like: that print spans
@@ -348,6 +357,9 @@ Four shadow tokens, all tinted — no grey or black drop shadows anywhere.
 - **`.sticker`** (a 3px white die-cut ring plus a deep berry cast): the yolk count chip on the
   city poster, tilted -3deg, so it reads as a sticker pressed onto the slab.
 - **Card lift**: a spot print rises 4px and takes `shadow-lift` on fine-pointer hover.
+- **Print cast** (`.brag-print`: `0 1px 0 berry/6, 0 3px 0 deep-berry/12, 0 24px 48px -12px
+  deep-berry/55`, where deep berry is `rgb(22 4 14)`, the `.sticker` cast): the spot hero print,
+  so it reads as paper lying on the slab and, where it hangs, on the white page.
 - **`shadow-rest`** and **`drop-shadow-burst`** are declared but unused. Leave them alone or
   delete them; do not invent a use.
 
@@ -456,11 +468,52 @@ An empty board is a designed state, not a failure — it is the intended look of
 nobody has photographed yet. The empty city board swaps the disc for the egg (76px, -8deg,
 `drop-shadow-sticker`) and sets the title in Bagel Fat One.
 
+### Spot print (`components/spot-print.tsx`)
+
+The adder's photo as a white slab (`rounded-slab`, 8px pad, 10px on `lg`) holding a 4:3 photo
+at the concentric inner radius, tilted -2deg (mobile) / 2.5deg (`lg`), with the print cast.
+Its lip is a `figcaption`: "Ontdekt door" in Nunito 700 `text-xs` `berry/70` over the adder's
+`@username` in Bagel Fat One berry with a blush `@`, linked to the passport, and the add date
+right-aligned in `tabular-nums`. A spot whose adder has no passport captions `#bragfast` in
+blush instead. Closed spots desaturate the photo to 10% and show a candy `.sticker` **Gesloten**
+beside the name. `PrintGlow` renders the same photo blurred 72px at 50% with `screen` blend,
+masked to a soft pool around the print; it is light, not a wash.
+
+### Spot gallery (`components/spot-photos.tsx`)
+
+**Foto's** with the count in Nunito 800 `berry/50`. A two-column grid of square prints (milk
+slab, 8px pad, 20px photo) that lift like spot cards on hover and open the lightbox. The
+last cell is the app slot: a shell well with a 2px dashed candy border, the yolk camera disc
+with `shadow-stamp`, and the app-row copy; it spans both columns when it would sit alone.
+Your own photo carries a white trash pill that arms on the first press ("Echt wissen?", blush)
+and deletes on the second, disarming after 4s or on blur.
+
+The lightbox is a Base UI dialog over `berry/94` with a blur: counter top-left, white/12 pill
+controls, the photo `object-contain` at the 20px radius, and the uploader's `@username` and
+date below. Arrow keys and a 48px swipe page through; arrows sit at the sides from `sm` and in
+the caption row below it.
+
+### Location slab (`components/spot-location.tsx`)
+
+A milk slab holding a still Leaflet print (no pan, zoom or keyboard, so it never traps a
+scrolling thumb) with the egg at 52px on the door, then the street in Bagel Fat One `text-2xl`,
+the postcode line in `berry/70`, and a blush **Route** button to Google Maps directions. Leaflet
+loads only when the slab is within 320px of the viewport; until then the well is the candy
+canvas with the egg centred. `.spot-map` isolates its stacking context so Leaflet's pane
+z-indexes never paint over a dialog.
+
+### Board tile
+
+The last cell of **Meer in {woonplaats}**: a berry slab linking to the board, with up to three
+of the board's photos fanned top-right (3px white die-cut, deep-berry cast, ±8deg, opening to
+±12deg on hover), the yolk count `.sticker`, `seeAllInCity` in Bagel Fat One, and a blush
+arrow disc. Neighbour spots before it are ordinary `SpotLinkCard`s, at most two.
+
 ### Photo frame
 
 `PhotoFrame` is absolute-inset `object-cover`. With `ken`, it runs `hero-ken` — a 22s
 scale 1.04 → 1.14 alternating drift, disabled under `prefers-reduced-motion`. Used full-bleed
-on the home hero and at `opacity-45` behind the spot hero.
+on the home hero.
 
 ### Map
 
@@ -485,6 +538,11 @@ Three durations and three easings, all tokens:
   sticker moments: the poster letters landing and the like heart popping. Nothing else
   springs.
 
+**The spot page's one authored moment** is the print landing: it drops from 2.5rem above,
+tilted 2.5 times its resting angle and scaled 1.07, at 20% opacity, and settles over 1000ms
+`ease-out-strong` while its cast tightens from a wide soft shadow to the print cast. The glow
+fades in behind it. Lightbox photos slide 2rem in the paging direction over 320ms.
+
 **The city page's one authored moment** is the poster name: each letter lands from a small
 drop and tilt with a 34ms stagger (`.poster-letter`), starting from a visible 20% opacity. The
 heading keeps the plain name as its `aria-label` and text. Re-sorting the board runs the state
@@ -494,8 +552,9 @@ frame and old ones clear in 140ms.
 
 Press feedback is uniform: `active:scale-[0.97]`. Hover effects are gated behind the
 `pointer-fine` variant so a touch device never sticks in a hover state. Under
-`prefers-reduced-motion` the ken-burns, poster letters, like pop and sort glide stop, and every
-popup transition falls back to opacity with transforms removed.
+`prefers-reduced-motion` the ken-burns, poster letters, print landing, glow fade, lightbox
+slide, like pop and sort glide stop, and every popup transition falls back to opacity with
+transforms removed.
 
 ## Do's and Don'ts
 
@@ -504,7 +563,7 @@ popup transition falls back to opacity with transforms removed.
 - **Do** open home with a full-bleed still under the milk header, copy bottom-left in white
   with `text-shadow-photo`.
 - **Do** give city, spot, passport and leaderboard a berry `PageHero` slab — with a photo
-  backdrop at 45% only on spot.
+  print on spot.
 - **Do** use `<Logo>` (`/brag_fast_logo.svg`) in the header and hero, and `<Egg>` in the footer
   and favicon.
 - **Do** use flat blush for primary buttons and the pressed segment.
