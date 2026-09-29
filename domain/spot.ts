@@ -261,3 +261,28 @@ export function planSpotUpsert(input: {
 
   return { action: "insert" };
 }
+
+/**
+ * "Grootestraat 13, 7571 EJ Oldenzaal, Nederland" →
+ * { street: "Grootestraat 13", place: "7571 EJ Oldenzaal" }.
+ * Every spot is Dutch, so the country line is noise.
+ */
+export function addressLines(address: string): { street: string; place: string | null } {
+  const parts = address
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (parts.length > 1 && /^(nederland|netherlands|the netherlands)$/i.test(parts.at(-1)!)) {
+    parts.pop();
+  }
+  const [street = address, ...rest] = parts;
+  return { street, place: rest.length > 0 ? rest.join(", ") : null };
+}
+
+/** "7571 EJ Oldenzaal" → { postalCode: "7571 EJ", locality: "Oldenzaal" }. */
+export function splitDutchPlace(place: string): { postalCode: string | null; locality: string } {
+  const match = /^(\d{4}\s?[A-Z]{2})\s+(.+)$/.exec(place);
+  return match
+    ? { postalCode: match[1], locality: match[2] }
+    : { postalCode: null, locality: place };
+}

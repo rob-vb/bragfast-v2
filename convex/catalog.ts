@@ -230,7 +230,7 @@ export const spotPage = query({
   },
 });
 
-/** Every spot live on a board, for the sitemap and the woonplaats index. */
+/** Every spot live on a board, for the sitemap, `llms.txt` and the woonplaats index. */
 export const liveSpots = query({
   args: {},
   handler: async (ctx): Promise<LiveSpotRef[]> => {
@@ -241,7 +241,14 @@ export const liveSpots = query({
         continue;
       }
       try {
-        live.push({ citySlug: parseCitySlug(row.citySlug), slug: parseSpotSlug(row.slug) });
+        live.push({
+          citySlug: parseCitySlug(row.citySlug),
+          slug: parseSpotSlug(row.slug),
+          name: row.name,
+          likeCount: row.likeCount ?? 0,
+          lastLikedAt: row.lastLikedAt ?? 0,
+          addedAt: row._creationTime,
+        });
       } catch (error) {
         if (!(error instanceof DomainParseError)) {
           throw error;

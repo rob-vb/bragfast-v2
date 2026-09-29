@@ -117,12 +117,18 @@ export type AdminSpotRow = {
 
 export type SitemapEntry = {
   path: string;
+  /** Epoch ms of the last add or like the page shows; absent on pages that don't move with the catalog. */
+  lastModified?: number;
 };
 
 /** A spot that is live on its board: listed, with a hosted photo. */
 export type LiveSpotRef = {
   citySlug: CitySlug;
   slug: SpotSlug;
+  name: string;
+  likeCount: number;
+  lastLikedAt: number;
+  addedAt: number;
 };
 
 /** A woonplaats board that has at least one live spot. */

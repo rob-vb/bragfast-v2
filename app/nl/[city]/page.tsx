@@ -3,9 +3,9 @@ import { notFound, redirect } from "next/navigation";
 import { CitySpots } from "@/components/city-spots";
 import { EggEmpty } from "@/components/egg-empty";
 import { PageHero, PageHeroPoster } from "@/components/page-hero";
-import { loadCityPage } from "@/lib/catalog";
+import { loadCityPage, publicSiteUrl } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
-import { pageMetadata } from "@/lib/seo";
+import { SITE_NAME, pageMetadata } from "@/lib/seo";
 import {
   cityMetaDescription,
   cityMetaTitle,
@@ -14,6 +14,12 @@ import {
   type Locale,
 } from "@/domain/messages";
 import { canonicalCitySlug } from "@/domain/cities";
+import {
+  breadcrumbJsonLd,
+  itemListJsonLd,
+  jsonLdGraph,
+  jsonLdScript,
+} from "@/domain/jsonld";
 
 type Params = { city: string };
 type Search = {
@@ -75,9 +81,37 @@ export default async function CityPage({
   }
 
   const name = cityName(locale, board.city);
+  const origin = publicSiteUrl();
+  const boardUrl = `${origin}/nl/${board.city.slug}`;
+  // An empty board is noindex; it has nothing to describe
+  const jsonLd =
+    board.kind === "empty"
+      ? null
+      : jsonLdGraph([
+          itemListJsonLd({
+            name: cityMetaTitle(locale, name),
+            url: boardUrl,
+            order: "ranked",
+            items: board.spots.map((spot) => ({
+              name: spot.name,
+              url: `${origin}/nl/${spot.citySlug}/${spot.slug}`,
+            })),
+          }),
+          breadcrumbJsonLd([
+            { name: SITE_NAME, url: `${origin}/` },
+            { name: t(locale, "townIndex"), url: `${origin}/nl/woonplaatsen` },
+            { name, url: boardUrl },
+          ]),
+        ]);
 
   return (
     <main>
+      {jsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+        />
+      ) : null}
       <PageHero size="poster" edge="scallop">
         <PageHeroPoster>{name}</PageHeroPoster>
         {board.kind === "empty" ? null : (
