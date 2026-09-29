@@ -81,16 +81,18 @@ const POSTER_TRACKING = 0.012;
  * A name set edge to edge. On a woonplaats the letters land one by one like
  * stickers pressed onto the slab; the heading's name is the plain text. A
  * spot sets its name in the column beside its print, and the print is the
- * page's moment, so its letters stay put.
+ * page's moment, so its letters stay put. A passport sets the username the
+ * same way, behind a blush @, beside its stamps.
  */
 export function PageHeroPoster({
   children,
   fit: measure = "city",
 }: {
   children: string;
-  fit?: "city" | "spot";
+  fit?: "city" | "spot" | "handle";
 }) {
-  const fit = displayFit(children, POSTER_TRACKING);
+  const handle = measure === "handle";
+  const fit = displayFit(handle ? `@${children}` : children, POSTER_TRACKING);
   const words = displayWords(children);
   const land = measure === "city";
   let index = 0;
@@ -99,7 +101,7 @@ export function PageHeroPoster({
       aria-label={children}
       className={cn(
         "poster-title font-display text-white",
-        measure === "spot" && "poster-title--spot",
+        measure !== "city" && "poster-title--spot",
       )}
       style={
         {
@@ -114,6 +116,7 @@ export function PageHeroPoster({
         <span key={w}>
           {w === 0 ? null : words[w - 1].endsWith("-") ? <wbr /> : " "}
           <span className="inline-block whitespace-nowrap">
+            {handle && w === 0 ? <span className="text-blush">@</span> : null}
             {land
               ? [...word].map((letter) => {
                   const i = index++;

@@ -1,6 +1,6 @@
 import type { GenericId } from "convex/values";
 import type { CitySlug, SpotSlug, UserSlug } from "./ids";
-import type { AdderRow } from "./leaderboard";
+import type { AdderRow, LeaderboardStanding } from "./leaderboard";
 import type { OpeningHours, SpotLifecycle, SpotType } from "./spot";
 
 export type CitySpotCard = {
@@ -133,6 +133,17 @@ export type PassportData = {
   slug: UserSlug;
   uniqueSpotCount: number;
   spots: PassportSpotCard[];
+};
+
+/** A listed spot's like pill; a closed spot has none. */
+export type PassportSpotLike = {
+  spotId: GenericId<"spots">;
+  likeCount: number;
+};
+
+export type PassportPageData = Omit<PassportData, "spots"> & {
+  spots: (PassportSpotCard & { like: PassportSpotLike | null })[];
+  standing: LeaderboardStanding | null;
 };
 
 export type LeaderboardData = {
