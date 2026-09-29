@@ -29,6 +29,7 @@
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   --duration-press: 160ms;
   --duration-popover: 180ms;
@@ -57,6 +58,13 @@
 html,
 body {
   background: #fff;
+}
+
+html {
+  accent-color: var(--color-blush);
+  caret-color: var(--color-blush);
+  scrollbar-color: rgb(74 21 52 / 0.32) transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -93,7 +101,109 @@ input {
   animation: ken 22s ease-out alternate infinite;
 }
 
+/* City poster: the woonplaats name set edge to edge. --fit-line and
+   --fit-word are the name's width in ems (lib/display-fit.ts). A name that
+   fits one line big takes it; a long one breaks between words instead. */
+.poster-title {
+  font-size: clamp(
+    2.25rem,
+    max(
+      calc(98cqi / var(--fit-line)),
+      min(calc(98cqi / var(--fit-word)), 5.5rem)
+    ),
+    11.5rem
+  );
+  line-height: 0.86;
+  text-wrap: balance;
+}
+
+.poster-letter {
+  display: inline-block;
+  animation: letter-in 720ms var(--ease-spring) both;
+  animation-delay: calc(90ms + var(--i) * 34ms);
+}
+
+@keyframes letter-in {
+  from {
+    opacity: 0.2;
+    transform: translateY(0.32em) rotate(calc(var(--tilt) * 1deg)) scale(0.86);
+  }
+}
+
+/* The berry slab ends in a bakery-awning scallop */
+.scallop-edge {
+  --scallop: 2.75rem;
+  height: calc(var(--scallop) / 2);
+  background: var(--color-berry);
+  mask: radial-gradient(
+      circle calc(var(--scallop) / 2) at 50% 0,
+      #000 calc(100% - 0.75px),
+      #0000 100%
+    )
+    50% 0 / var(--scallop) 100% round no-repeat;
+}
+
+@media (min-width: 40rem) {
+  .scallop-edge {
+    --scallop: 3.5rem;
+  }
+}
+
+.sticker {
+  box-shadow:
+    0 0 0 3px #fff,
+    0 10px 20px rgb(22 4 14 / 0.35);
+}
+
+@keyframes like-pop {
+  30% {
+    transform: scale(1.4) rotate(-12deg);
+  }
+  60% {
+    transform: scale(0.92) rotate(4deg);
+  }
+}
+
+.like-pop {
+  animation: like-pop 520ms var(--ease-spring);
+}
+
+/* Re-sorting the board glides each card to its new place */
+::view-transition-group(*) {
+  animation-duration: 460ms;
+  animation-timing-function: var(--ease-out-strong);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* No double exposure: the new print is solid from the first frame and the
+   old one gets out of the way fast */
+::view-transition-new(*) {
+  animation: none;
+}
+
+::view-transition-old(*) {
+  animation-duration: 140ms;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .poster-letter,
+  .like-pop,
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
   .hero-ken,
   .spot-map.is-intro .spot-egg img,
   .spot-popup {

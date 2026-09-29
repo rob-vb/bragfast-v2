@@ -71,6 +71,10 @@ export function PhotoFrame({
   );
 }
 
+/**
+ * A milk slab holding a photo print. The whole slab is the link (a stretched
+ * ::after), so the action can sit beside the name without nesting controls.
+ */
 export function SpotLinkCard({
   href,
   src,
@@ -78,45 +82,74 @@ export function SpotLinkCard({
   meta,
   className,
   action,
+  featured,
+  eager,
+  heading: Heading = "h3",
 }: {
   href: string;
   src: string;
   title: string;
   meta?: string;
+  /** Classes for the photo well, e.g. its aspect ratio. */
   className?: string;
   action?: ReactNode;
+  featured?: boolean;
+  /** Above-the-fold prints skip lazy loading. */
+  eager?: boolean;
+  heading?: "h2" | "h3";
 }) {
   return (
-    <div className="overflow-hidden rounded-slab bg-milk">
-      <Link
-        href={href}
-        className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk"
+    <article
+      className={cn(
+        "group/card relative flex h-full flex-col rounded-slab bg-milk p-2",
+        "transition-[translate,scale,box-shadow] duration-300 ease-out-strong has-[a:active]:scale-[0.985]",
+        "pointer-fine:hover:-translate-y-1 pointer-fine:hover:shadow-lift",
+      )}
+    >
+      <div
+        className={cn(
+          "relative aspect-[4/3] overflow-hidden rounded-[1.25rem] bg-candy/40",
+          className,
+        )}
       >
-        <div
-          className={cn(
-            "relative aspect-[4/3] overflow-hidden outline outline-1 -outline-offset-1 outline-black/10",
-            className,
-          )}
-        >
-          <img
-            src={src}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out-strong pointer-fine:group-hover:scale-[1.03]"
-          />
-        </div>
-        <span className="block px-4 py-3">
-          <span className="block font-display text-2xl tracking-wide text-berry">
-            {title}
-          </span>
+        <img
+          src={src}
+          alt=""
+          loading={eager ? "eager" : "lazy"}
+          decoding="async"
+          className="absolute inset-0 size-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out-strong pointer-fine:group-hover/card:scale-[1.045]"
+        />
+        <span className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-berry/10 ring-inset" />
+      </div>
+      <div
+        className={cn(
+          "flex items-center gap-3 px-3 pt-3.5 pb-2",
+          featured && "sm:px-4 sm:pt-4 sm:pb-3",
+        )}
+      >
+        <div className="min-w-0 flex-1">
+          <Heading
+            className={cn(
+              "font-display leading-[1.08] tracking-wide text-balance text-berry",
+              featured ? "text-2xl sm:text-3xl lg:text-4xl" : "text-2xl",
+            )}
+          >
+            <Link
+              href={href}
+              className="focus-visible:outline-none! after:absolute after:inset-0 after:rounded-slab after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-yolk"
+            >
+              {title}
+            </Link>
+          </Heading>
           {meta ? (
-            <span className="mt-1 block text-sm font-semibold text-berry/70">
+            <p className="mt-1 truncate text-sm font-semibold text-berry/70">
               {meta}
-            </span>
+            </p>
           ) : null}
-        </span>
-      </Link>
-      {action ? <div className="px-4 pb-3">{action}</div> : null}
-    </div>
+        </div>
+        {action ? <div className="relative z-10 shrink-0">{action}</div> : null}
+      </div>
+    </article>
   );
 }
 
@@ -138,7 +171,7 @@ export function Segmented({
       aria-label={label}
       aria-labelledby={labelledBy}
       className={cn(
-        "flex items-center rounded-full border border-berry/12 bg-white p-0.5 text-sm font-bold",
+        "flex w-fit items-center rounded-full border border-berry/12 bg-white p-0.5 text-sm font-bold",
         className,
       )}
     >
@@ -148,7 +181,7 @@ export function Segmented({
 }
 
 const segmentKeyClass =
-  "candy-key px-3.5 py-1.5 text-berry transition-[color,background-color,transform] duration-press ease-out-strong pointer-fine:hover:bg-milk active:scale-[0.97] aria-current:bg-blush aria-current:text-white pointer-fine:aria-current:hover:bg-blush";
+  "candy-key gap-1.5 px-3.5 py-2 text-berry transition-[color,background-color,transform] duration-press ease-out-strong pointer-fine:hover:bg-milk active:scale-[0.97] aria-current:bg-blush aria-current:text-white pointer-fine:aria-current:hover:bg-blush";
 
 export function SegmentLink({
   href,

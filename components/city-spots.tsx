@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
+import { flushSync } from "react-dom";
+import { LayoutGrid, MapIcon } from "lucide-react";
 import {
   applyCityBoardSort,
   DEFAULT_CITY_BOARD_SORT,
@@ -20,6 +22,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SegmentLink, Segmented, SpotLinkCard } from "@/components/visual";
+import { cn } from "@/lib/utils";
+
+/** "Grootestraat 13, 7571 EJ Oldenzaal, Nederland" → "Grootestraat 13" */
+function streetLine(address: string): string {
+  return address.split(",")[0]?.trim() || address;
+}
+
+/** Glide cards to their new places where the browser can. */
+function withViewTransition(update: () => void) {
+  if (
+    typeof document.startViewTransition !== "function" ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    update();
+    return;
+  }
+  document.startViewTransition(() => flushSync(update));
+}
 
 export function CitySpots({
   locale,
@@ -49,83 +69,118 @@ export function CitySpots({
     { value: "asc", label: t(locale, "sortDirAsc") },
   ];
 
+  // The most liked spot gets the big print, but only on the likes board and
+  // only once it has earned a like; otherwise every print is the same size.
+  const featured =
+    sort.key === "likes" && sort.dir === "desc" && ordered[0].likeCount > 0;
+  const alone = ordered.length === 1;
+
+  function changeSort(next: CityBoardSort) {
+    withViewTransition(() => setSort(next));
+  }
+
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-2">
-          <Select
-            items={keyItems}
-            value={sort.key}
-            onValueChange={(value) => {
-              if (value) {
-                setSort(parseCityBoardSort(value, sort.dir));
-              }
-            }}
-          >
-            <SelectTrigger size="sm" aria-label={t(locale, "sortKey")}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {keyItems.map((item) => (
-                <SelectItem key={item.value} value={item.value}>
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            items={dirItems}
-            value={sort.dir}
-            onValueChange={(value) => {
-              if (value) {
-                setSort(parseCityBoardSort(sort.key, value));
-              }
-            }}
-          >
-            <SelectTrigger size="sm" aria-label={t(locale, "sortDir")}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {dirItems.map((item) => (
-                <SelectItem key={item.value} value={item.value}>
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Segmented label={t(locale, "viewMode")}>
+      <div className="flex items-center justify-between gap-3">
+        {view === "list" ? (
+          <div className="flex min-w-0 gap-2">
+            <Select
+              items={keyItems}
+              value={sort.key}
+              onValueChange={(value) => {
+                if (value) {
+                  changeSort(parseCityBoardSort(value, sort.dir));
+                }
+              }}
+            >
+              <SelectTrigger aria-label={t(locale, "sortKey")}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {keyItems.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              items={dirItems}
+              value={sort.dir}
+              onValueChange={(value) => {
+                if (value) {
+                  changeSort(parseCityBoardSort(sort.key, value));
+                }
+              }}
+            >
+              <SelectTrigger aria-label={t(locale, "sortDir")}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {dirItems.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        ) : null}
+        <Segmented label={t(locale, "viewMode")} className="ml-auto shrink-0">
           <SegmentLink href={listHref} active={view === "list"}>
-            {t(locale, "viewList")}
+            <LayoutGrid aria-hidden className="size-4" strokeWidth={2.5} />
+            <span className="max-sm:sr-only">{t(locale, "viewList")}</span>
           </SegmentLink>
           <SegmentLink href={mapHref} active={view === "map"}>
-            {t(locale, "viewMap")}
+            <MapIcon aria-hidden className="size-4" strokeWidth={2.5} />
+            <span className="max-sm:sr-only">{t(locale, "viewMap")}</span>
           </SegmentLink>
         </Segmented>
       </div>
       {view === "map" ? (
-        <div className="mt-8">
+        <div className="mt-6">
           <CityMap locale={locale} spots={spots} />
         </div>
       ) : (
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {ordered.map((spot) => (
-            <li key={spot.slug}>
-              <SpotLinkCard
-                href={`/nl/${spot.citySlug}/${spot.slug}`}
-                src={spot.photoUrl}
-                title={spot.name}
-                meta={spot.address}
-                action={
-                  <LikeButton
-                    locale={locale}
-                    spotId={spot.id}
-                    likeCount={spot.likeCount}
-                  />
-                }
-              />
-            </li>
-          ))}
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+          {ordered.map((spot, index) => {
+            const big = featured && index === 0;
+            return (
+              <li
+                key={spot.slug}
+                style={{ viewTransitionName: `spot-${spot.slug}` } as CSSProperties}
+                className={cn(
+                  big && "sm:col-span-2",
+                  big && ordered.length > 2 && "lg:row-span-2",
+                )}
+              >
+                <SpotLinkCard
+                  href={`/nl/${spot.citySlug}/${spot.slug}`}
+                  src={spot.photoUrl}
+                  title={spot.name}
+                  meta={streetLine(spot.address)}
+                  heading="h2"
+                  featured={big}
+                  eager={index < 3}
+                  className={
+                    big
+                      ? cn(
+                          "sm:aspect-[16/9]",
+                          !alone && "lg:aspect-auto lg:min-h-56 lg:flex-1",
+                        )
+                      : undefined
+                  }
+                  action={
+                    <LikeButton
+                      locale={locale}
+                      spotId={spot.id}
+                      likeCount={spot.likeCount}
+                    />
+                  }
+                />
+              </li>
+            );
+          })}
         </ul>
       )}
     </>

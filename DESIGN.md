@@ -206,7 +206,9 @@ Dutch is the default UI language. The brand is English (`brag.fast`, `#bragfast`
 
 **Key characteristics**
 
-- Photo-first on home only. City, spot, passport and leaderboard heroes are berry slabs.
+- Photo-first on home only. City, spot, passport and leaderboard heroes are berry slabs. The
+  city slab is a poster: the woonplaats name set edge to edge, ending in a bakery-awning
+  scallop.
 - The wordmark is the SVG lockup `/brag_fast_logo.svg`, rendered through `<Logo>`. The mascot
   is `/brag_fast_egg.svg`, rendered through `<Egg>` in the footer and as the favicon. Neither
   is ever recreated in CSS.
@@ -214,8 +216,8 @@ Dutch is the default UI language. The brand is English (`brag.fast`, `#bragfast`
   and controls.
 - Flat blush for primary buttons and pressed segments. White trays with a berry/12 hairline
   for the things they sit in.
-- Spot cards are milk slabs with a 4:3 photo and the name in Bagel Fat One on the caption.
-  No egg overlay, no rank badge.
+- Spot cards are milk slabs holding an inset 4:3 photo print, the name in Bagel Fat One on the
+  caption and the heart like pill beside it. No egg overlay, no rank badge.
 
 ## Colors
 
@@ -283,15 +285,21 @@ voices, no third.
 
 ### Hierarchy
 
+- **Poster** (Bagel Fat One, fitted, line-height 0.86, tracking 0.012em, white): the city name
+  on a city hero, via `PageHeroPoster`. `lib/display-fit.ts` holds the face's advance widths
+  and hands CSS the name's width in ems; `.poster-title` divides the hero's container width by
+  it, so the name runs edge to edge between 2.25rem and 11.5rem. A long name breaks between
+  words (and after hyphens) at up to 5.5rem instead of shrinking to one thin line.
 - **Display** (Bagel Fat One, `clamp(3rem, 10vw, 7rem)`, line-height 0.92, tracking wide,
-  white): the city name on a city hero.
+  white): `PageHeroTitle size="lg"`.
 - **Headline** (Bagel Fat One, `clamp(2.4rem, 8vw, 5.5rem)`, white): spot, passport and
   leaderboard hero titles.
 - **Home hero** (Bagel Fat One, `clamp(1.875rem, 6vw, 3.25rem)`, line-height 1.05, white with
   `text-shadow-photo`): deliberately smaller than a city name — the still is the loud thing.
 - **Section** (Bagel Fat One, `text-3xl`→`text-4xl`, berry): section heads such as local
   favorites.
-- **Card title** (Bagel Fat One, `text-2xl`, berry on the milk caption).
+- **Card title** (Bagel Fat One, `text-2xl`, berry on the milk caption; the featured print
+  steps to `text-3xl`/`text-4xl`).
 - **Lede** (Nunito 600, `text-lg`, white on a hero, berry in content).
 - **Body** (Nunito 400, 1rem, line-height 1.75, berry or berry/70).
 - **Label** (Nunito 700, 0.875rem): buttons, segments, card meta, footer nav. Counts are
@@ -319,9 +327,13 @@ legal pages) narrow to `max-w-3xl`, and the search pill to `max-w-xl`.
 
 Heroes pull up under the fixed-height header with `-mt-16` / `sm:-mt-[4.5rem]` and pad back
 down with `pt-28`, so the header floats on the hero. Hero heights come from `PageHero`:
-`board` 42svh, `city` 52svh, `spot` 58svh; home is its own `92svh` section.
+`board` 42svh, `poster` 46svh (city), `spot` 58svh; home is its own `92svh` section. The
+hero's inner column is a size container, which is what the poster title measures.
 
-Spot grids are `grid gap-4 sm:grid-cols-2 lg:grid-cols-3`.
+Spot grids are `grid gap-4 sm:grid-cols-2 lg:grid-cols-3`. The city board is a podium when
+it is sorted by likes, descending, and its top spot has at least one like: that print spans
+two columns (and two rows on `lg` once there are three spots), and the rest stack beside it.
+Any other sort, or a board with no likes yet, is a plain grid of equal prints.
 
 ## Elevation & Depth
 
@@ -332,7 +344,10 @@ Four shadow tokens, all tinted — no grey or black drop shadows anywhere.
 - **`shadow-stamp`** (`inset 0 2px 0 white/55, 0 3px 0 blush/22`): the empty-state icon disc. An
   inset highlight plus a short blush foot reads as an enamel sticker.
 - **`drop-shadow-sticker`** (a white 2px outline on four sides plus `0 6px 16px berry/22`): the
-  hero lockup, so the SVG survives any still behind it.
+  hero lockup and the empty-board egg, so the SVG survives any ground behind it.
+- **`.sticker`** (a 3px white die-cut ring plus a deep berry cast): the yolk count chip on the
+  city poster, tilted -3deg, so it reads as a sticker pressed onto the slab.
+- **Card lift**: a spot print rises 4px and takes `shadow-lift` on fine-pointer hover.
 - **`shadow-rest`** and **`drop-shadow-burst`** are declared but unused. Leave them alone or
   delete them; do not invent a use.
 
@@ -347,10 +362,15 @@ Two silhouettes and one well.
   search pill, the rank circle, the header lockup's focus target.
 - **Slab** (`rounded-slab`, 28px): anything that holds content — spot cards, leaderboard rows,
   panels, empty wells.
+- **Print** (20px): the photo inside a spot card. It is not a third silhouette but the slab's
+  concentric inner radius (28px minus the 8px card padding).
 - **Field** (`rounded-field`, 16px): text inputs and the combobox popup.
 
 **The Pill or Slab Rule.** If a user can press it, it is a pill. If it holds content, it is a
-slab. There is no third radius.
+slab. There is no third radius; a print inside a slab takes the slab's concentric radius.
+
+**The Awning Edge.** The city poster ends in a row of berry scallops (`.scallop-edge`, a
+repeat-`round` mask so the row always ends on a whole scallop). Only the city hero has it.
 
 ## Components
 
@@ -362,7 +382,8 @@ lockup linked to `/` with `aria-label="brag.fast"`, then `#bragfast` in Bagel Fa
 
 ### Footer
 
-`bg-blush` with berry ink, `py-10`. The egg at 56px rotated `-6deg`, the footer line in Bagel
+`bg-blush` with berry ink, `py-10`, its columns on the same `max-w-6xl px-5 sm:px-8` gutter as
+the header. The egg at 56px rotated `-6deg`, the footer line in Bagel
 Fat One `text-3xl`, `#bragfast` at `text-2xl`, then a wrapped nav of chrome and legal links in
 Nunito 700.
 
@@ -385,10 +406,21 @@ the pill with collision avoidance off, so it never flips above the fold.
 
 ### Spot card (`SpotLinkCard`)
 
-A milk slab: 4:3 photo with a `black/10` inset outline, scaling to 1.03 on hover for fine
-pointers only, then a caption with the name in Bagel Fat One `text-2xl` berry and meta in
-Nunito 600 `berry/70`. An optional action (the like button) sits below the caption. **No egg
-overlay and no rank number on a card.**
+An `<article>` milk slab with 8px padding holding a 4:3 photo print (20px radius, `candy/40`
+while loading, a `berry/10` inset ring), scaling to 1.045 on fine-pointer hover while the slab
+lifts. Under it, the name in Bagel Fat One `text-2xl` berry as an `h2`/`h3` link, and meta in
+Nunito 600 `berry/70` (the city board shows the street line only; the woonplaats is already
+the page). The link stretches over the whole slab with `::after`, which also carries the yolk
+focus ring, so the optional action (the like pill) sits beside the name without nesting
+controls. `featured` enlarges the title; the caller sizes the photo well. **No egg overlay and
+no rank number on a card.**
+
+### Like pill (`LikeButton`)
+
+A `sm` pill: a blush Lucide heart and the count in `tabular-nums`, `outline` at rest, flat
+blush with a filled white heart when liked. The accessible name stays "Leuk, N likes". The
+hit area extends 6px past the pill to 44px. Toggling is optimistic, and a new like pops the
+heart once (`.like-pop`). Signed out, it opens sign-in and writes nothing.
 
 ### Segmented control and language switch
 
@@ -408,12 +440,21 @@ Rank exists **only on the leaderboard**: a `size-10` yolk circle with the positi
 One `tabular-nums`, at the head of a milk `rounded-slab` row that turns shell on hover. No
 burst, no zero-padding, no rank on spot cards or city tiles.
 
+### City poster (`app/nl/[city]/page.tsx`)
+
+The `poster` `PageHero` with the scallop edge: `PageHeroPoster` for the name, then a row with
+the yolk `.sticker` count ("3 plekken") and a milk lede ("Ontbijt en brunch, op volgorde van
+likes."). An empty board shows the name alone. Below the scallop, the toolbar puts the sort
+selects (list view only) left and the Lijst/Kaart segment right, icons plus labels, labels
+screen-reader-only under `sm`.
+
 ### Empty states (`BoardEmpty`)
 
 A shell well with a milk hairline, `max-w-xl`, `py-14`: a yolk `size-12` disc carrying a blush
 Lucide glyph with `shadow-stamp`, then a bold berry title and optional `berry/70` description.
 An empty board is a designed state, not a failure — it is the intended look of a woonplaats
-nobody has photographed yet.
+nobody has photographed yet. The empty city board swaps the disc for the egg (76px, -8deg,
+`drop-shadow-sticker`) and sets the title in Bagel Fat One.
 
 ### Photo frame
 
@@ -440,11 +481,21 @@ Three durations and three easings, all tokens:
 - `duration-modal` 220ms — dialog and drawer.
 - `ease-out-strong` for arrivals and presses, `ease-in-out-strong` for symmetric moves,
   `ease-drawer` for sheets.
+- `ease-spring` (`cubic-bezier(0.34, 1.56, 0.64, 1)`), a single overshoot, for exactly two
+  sticker moments: the poster letters landing and the like heart popping. Nothing else
+  springs.
+
+**The city page's one authored moment** is the poster name: each letter lands from a small
+drop and tilt with a 34ms stagger (`.poster-letter`), starting from a visible 20% opacity. The
+heading keeps the plain name as its `aria-label` and text. Re-sorting the board runs the state
+change inside `document.startViewTransition`, with each card named `spot-{slug}`, so prints
+glide to their new places and the podium print morphs; new snapshots are solid from the first
+frame and old ones clear in 140ms.
 
 Press feedback is uniform: `active:scale-[0.97]`. Hover effects are gated behind the
 `pointer-fine` variant so a touch device never sticks in a hover state. Under
-`prefers-reduced-motion` the ken-burns stops and every popup transition falls back to opacity
-with transforms removed.
+`prefers-reduced-motion` the ken-burns, poster letters, like pop and sort glide stop, and every
+popup transition falls back to opacity with transforms removed.
 
 ## Do's and Don'ts
 
@@ -480,3 +531,5 @@ with transforms removed.
 - **Don't** add type chips (Café / Bakker / Hotel / Overig) — they were removed on purpose.
 - **Don't** split a city page into a board and a "Nog niet gebragd" tail.
 - **Don't** put a small uppercase kicker above a headline.
+- **Don't** give a card a "most liked" stamp or number; the podium print's size is the only
+  rank signal on the city board.

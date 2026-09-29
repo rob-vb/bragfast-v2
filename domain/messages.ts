@@ -17,6 +17,7 @@ export const nlMessages = {
   noSpotsYet: "Nog geen plekken in deze stad.",
   emptyBoardAppHint:
     "Een plek verschijnt hier wanneer iemand de eerste foto toevoegt in de app.",
+  cityBoardLead: "Ontbijt en brunch, op volgorde van likes.",
   closed: "Gesloten",
   backToCity: "Terug naar",
   signIn: "Inloggen",
@@ -97,6 +98,7 @@ export const enMessages = {
   noSpotsYet: "No spots in this city yet.",
   emptyBoardAppHint:
     "A spot appears here when someone adds the first photo in the app.",
+  cityBoardLead: "Breakfast and brunch, ranked by likes.",
   closed: "Closed",
   backToCity: "Back to",
   signIn: "Sign in",

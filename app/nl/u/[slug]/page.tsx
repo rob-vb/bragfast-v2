@@ -109,6 +109,7 @@ export default async function PassportPage({
                       src={spot.photoUrl ?? stillFor(spot.slug)}
                       title={spot.name}
                       meta={spot.closed ? t(locale, "closed") : undefined}
+                      heading="h2"
                     />
                   </li>
                 ))}

@@ -6,8 +6,8 @@ import { FooterNavLink } from "@/components/chrome-nav-link";
 
 export function SiteFooter({ locale }: { locale: Locale }) {
   return (
-    <footer className="bg-blush px-5 py-10 text-berry sm:px-8">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-6">
+    <footer className="bg-blush py-10 text-berry">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-6 px-5 sm:px-8">
         <div className="flex items-end gap-4">
           <Egg size={56} className="-rotate-6" />
           <div>
@@ -21,7 +21,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         </div>
         <p className="font-display text-2xl">#bragfast</p>
       </div>
-      <nav className="mx-auto mt-6 flex max-w-6xl flex-wrap items-center gap-2 text-sm font-bold">
+      <nav className="mx-auto mt-6 flex max-w-6xl flex-wrap items-center gap-2 px-5 text-sm font-bold sm:px-8">
         {chromeLinks("footer").map((item) => (
           <FooterNavLink key={item.href} href={item.href}>
             {t(locale, item.label)}
