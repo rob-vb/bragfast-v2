@@ -3,17 +3,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
-import { foodEstablishmentJsonLd } from "@/domain/jsonld";
+import { foodEstablishmentJsonLd, jsonLdScript } from "@/domain/jsonld";
 import { canonicalCitySlug } from "@/domain/cities";
 import {
   moreInCity,
   seeAllInCity,
+  spotMetaDescription,
   t,
   uniqueSpotsLabel,
   type Locale,
 } from "@/domain/messages";
 import { loadCityPage, loadSpotPage, publicSiteUrl } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/seo";
 import { SpotShare } from "@/components/spot-share";
 import { LikeButton } from "@/components/like-button";
 import { SpotPhotos } from "@/components/spot-photos";
@@ -64,23 +66,20 @@ export async function generateMetadata({
   }
   const page = await loadSpotPage(city, spot);
   if (!page) {
-    return { title: "brag.fast" };
+    return {};
   }
+  const locale = await getLocale();
   const { street, place } = addressLines(page.address);
-  const description = place ? `${street}, ${place}` : street;
-  const image = page.licensedImage?.url;
-  return {
-    title: `${page.name} · brag.fast`,
-    description,
-    openGraph: {
-      title: page.name,
-      description,
-      url: `${publicSiteUrl()}${page.canonicalPath}`,
-      siteName: "brag.fast",
-      images: image ? [{ url: image }] : undefined,
-    },
-    twitter: { card: image ? "summary_large_image" : "summary" },
-  };
+  return pageMetadata(locale, {
+    title: `${page.name}, ${cityName(locale, page.city)}`,
+    description: spotMetaDescription(locale, {
+      name: page.name,
+      address: place ? `${street}, ${place}` : street,
+      likeCount: page.likeCount,
+    }),
+    path: page.canonicalPath,
+    image: page.licensedImage?.url,
+  });
 }
 
 function cityName(locale: Locale, city: { nameNl: string; nameEn: string }): string {
@@ -151,7 +150,7 @@ export default async function SpotPage({
     <main>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <PageHero
         size="spot"

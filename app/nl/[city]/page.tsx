@@ -5,7 +5,14 @@ import { EggEmpty } from "@/components/egg-empty";
 import { PageHero, PageHeroPoster } from "@/components/page-hero";
 import { loadCityPage } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
-import { t, uniqueSpotsLabel, type Locale } from "@/domain/messages";
+import { pageMetadata } from "@/lib/seo";
+import {
+  cityMetaDescription,
+  cityMetaTitle,
+  t,
+  uniqueSpotsLabel,
+  type Locale,
+} from "@/domain/messages";
 import { canonicalCitySlug } from "@/domain/cities";
 
 type Params = { city: string };
@@ -25,11 +32,20 @@ export async function generateMetadata({
   }
   const board = await loadCityPage(city);
   if (!board) {
-    return { title: "brag.fast" };
+    return {};
   }
   const locale = await getLocale();
-  const name = locale === "en" ? board.city.nameEn : board.city.nameNl;
-  return { title: `${name} · brag.fast` };
+  const name = cityName(locale, board.city);
+  const count = board.kind === "empty" ? 0 : board.spots.length;
+  return {
+    ...pageMetadata(locale, {
+      title: cityMetaTitle(locale, name),
+      description: cityMetaDescription(locale, name, count),
+      path: `/nl/${board.city.slug}`,
+    }),
+    // Search still finds an empty board; it is indexed from its first spot
+    ...(board.kind === "empty" ? { robots: { index: false, follow: true } } : {}),
+  };
 }
 
 function cityName(

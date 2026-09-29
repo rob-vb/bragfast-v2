@@ -1,6 +1,17 @@
+import type { Metadata } from "next";
 import { getLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/seo";
 import { t } from "@/domain/messages";
 import { PageHero, PageHeroTitle } from "@/components/page-hero";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return pageMetadata(locale, {
+    title: t(locale, "privacy"),
+    description: t(locale, "privacyMetaDescription"),
+    path: "/privacy",
+  });
+}
 
 export default async function PrivacyPage() {
   const locale = await getLocale();

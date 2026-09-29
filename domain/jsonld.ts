@@ -60,3 +60,44 @@ export function foodEstablishmentJsonLd(input: {
 
   return node;
 }
+
+/**
+ * The home page's WebSite and Organization nodes, so search shows the site
+ * as "brag.fast" with its own mark.
+ */
+export function siteJsonLd(input: {
+  origin: string;
+  description: string;
+  language: string;
+  logo: string;
+}): Record<string, unknown> {
+  const home = `${input.origin}/`;
+  const organization = `${input.origin}/#organization`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${input.origin}/#website`,
+        url: home,
+        name: "brag.fast",
+        alternateName: ["bragfast", "brag fast"],
+        description: input.description,
+        inLanguage: input.language,
+        publisher: { "@id": organization },
+      },
+      {
+        "@type": "Organization",
+        "@id": organization,
+        name: "brag.fast",
+        url: home,
+        logo: `${input.origin}${input.logo}`,
+      },
+    ],
+  };
+}
+
+/** JSON for a `<script type="application/ld+json">`, with `<` escaped so no value can close the tag. */
+export function jsonLdScript(node: Record<string, unknown>): string {
+  return JSON.stringify(node).replace(/</g, "\\u003c");
+}

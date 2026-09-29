@@ -9,11 +9,13 @@ import { PassportStamps } from "@/components/passport-stamps";
 import { PageHero, PageHeroPoster } from "@/components/page-hero";
 import { loadPassport, loadPassportPage } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/seo";
 import { NL_CITIES } from "@/domain/cities";
 import {
   inCitiesLabel,
   leaderboardRankLabel,
   likeCountLabel,
+  passportMetaDescription,
   shortDate,
   t,
   uniqueSpotsLabel,
@@ -38,9 +40,14 @@ export async function generateMetadata({
   if (!page) {
     return { title: "brag.fast" };
   }
+  const locale = await getLocale();
   const indexable = page.uniqueSpotCount > 0;
   return {
-    title: `${page.slug} · brag.fast`,
+    ...pageMetadata(locale, {
+      title: `@${page.slug}`,
+      description: passportMetaDescription(locale, page.slug, page.uniqueSpotCount),
+      path: `/nl/u/${page.slug}`,
+    }),
     robots: { index: indexable, follow: indexable },
   };
 }

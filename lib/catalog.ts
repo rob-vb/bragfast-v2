@@ -6,13 +6,16 @@ import { parseCitySlug } from "@/domain/ids";
 import { sortCityBoard } from "@/domain/like";
 import { boardFromListedSpots, type WoonplaatsBoard } from "@/domain/board";
 import { planAppStores, planLocalFavorites } from "@/domain/homepage";
+import { boardIndex, planSitemap } from "@/domain/seo";
 import { standingOf } from "@/domain/leaderboard";
 import { assignPlaceSlug } from "@/domain/woonplaatsen";
 import type {
   AppStores,
+  BoardIndexEntry,
   CitySpotCard,
   HomepageData,
   LeaderboardData,
+  LiveSpotRef,
   PassportData,
   PassportPageData,
   PassportSpotLike,
@@ -125,12 +128,23 @@ export async function loadSpotPage(
   }
 }
 
+async function loadLiveSpots(): Promise<LiveSpotRef[]> {
+  try {
+    return await fetchQuery(api.catalog.liveSpots, {});
+  } catch (error) {
+    if (!isMissingConvexFunction(error)) {
+      throw error;
+    }
+    return [];
+  }
+}
+
 export async function loadSitemap(): Promise<SitemapEntry[]> {
-  return [
-    { path: "/" },
-    { path: "/nl/leaderboard" },
-    ...NL_CITIES.map((city) => ({ path: `/nl/${city.slug}` })),
-  ];
+  return planSitemap(await loadLiveSpots());
+}
+
+export async function loadBoardIndex(): Promise<BoardIndexEntry[]> {
+  return boardIndex(await loadLiveSpots());
 }
 
 export async function loadLeaderboard(): Promise<LeaderboardData> {
