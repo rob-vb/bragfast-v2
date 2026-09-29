@@ -34,9 +34,10 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 **Ship in v1**
 
 - Crawlable site, NL woonplaats boards, spot + profile + leaderboard pages
-- Homepage: woonplaats autocomplete over the BAG gazetteer; IP local-favorites when that woonplaats board has at least 3 listed spots with a photo; two app rows with per-store Coming soon. No featured woonplaatsen. No GPS. No spot search on `/`. No national feed.
+- Homepage: woonplaats autocomplete over the BAG gazetteer, with plain links to how it works and the woonplaats index under it; IP local-favorites when that woonplaats board has at least 3 listed spots with a photo; the four-step band; two app rows with per-store Coming soon. No featured woonplaatsen. No GPS. No spot search on `/`. No national feed.
 - Woonplaats page: list of spots added in the app, empty state when none, list default, map toggle when spots exist
-- Empty woonplaats: `noSpotsYet` and `emptyBoardAppHint`. No add control. No sort or map on empty.
+- Empty woonplaats: `noSpotsYet` and `emptyBoardAppHint`. No add control. No sort or map on empty. `noindex, follow` and out of the sitemap until the first spot.
+- Woonplaats index `/nl/woonplaatsen`: every board with at least one live spot, A to Z.
 - Spot page: name, address, like count, the adder’s photo as hero, and a gallery of hosted photos on that spot. Hours stay in data and JSON-LD, not in seeker chrome.
 - Ranking: like count on the spot. Tie-break is the most recent like, then recency of the add
 - Auth: Better Auth with Google, Apple, and `emailAndPassword`. Unique public `username` (`UserSlug`) at signup. Password login accepts email or username. Google or Apple first login that lacks a username stays on the same dialog until the username is set. No magic link.
@@ -44,7 +45,7 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 - Leaderboard: adders ranked by likes on spots they added. Tie-break is number of spots added, then earliest add. An account with zero adds is absent.
 - Photo upload on add, Convex storage
 - i18n: `nl` / `en` UI on the **same** URLs
-- SEO: server-rendered HTML, JSON-LD `FoodEstablishment`, sitemap of woonplaatsen and live spots
+- SEO: server-rendered HTML, JSON-LD `FoodEstablishment` on spots and `WebSite` + `Organization` on `/`, a canonical URL and share card on every public page, `robots.txt`, sitemap of chrome pages, woonplaatsen with a live spot, and live spots
 - Admin: reports, closed override
 
 **Not v1**
@@ -81,6 +82,7 @@ The owner sets the "idea is working" bar. Do not block v1 on a metric.
 /nl/{city}/{spot}         spot page
 /nl/u/{slug}              public passport
 /nl/leaderboard           adder leaderboard
+/nl/woonplaatsen          woonplaats index (boards with a live spot)
 /how-it-works             how it works (chrome page, explainer)
 ```
 
@@ -89,6 +91,8 @@ The owner sets the "idea is working" bar. Do not block v1 on a metric.
 - `/nl/` is **country**, not language. Language is a UI switch (cookie or `Accept-Language`, default Dutch).
 - Do not clone the tree under `/en/...` in v1.
 - Passports with zero added spots: noindex. After the first add: index.
+- Woonplaats boards with zero live spots: noindex, follow, and not in the sitemap. After the first spot: index. Search still reaches every board.
+- A live spot is listed and has a hosted photo, the same rule the board uses.
 
 ## Ranking
 
@@ -127,7 +131,7 @@ Permanently closed (`business_status` CLOSED): strip from woonplaats lists and s
 
 ### Homepage
 
-**Hero.** One sentence of what it is (breakfast and brunch spots per woonplaats). One search box: woonplaats autocomplete over the BAG gazetteer (`searchWoonplaatsHits` / `NL_CITIES`). English intro: "Search a city." Dutch intro keeps woonplaats. Exact pick navigates to `/nl/{city}`. There is no `/?q=` results list, no GPS or near-me control, no spot search on `/`, and no nationwide ticker or live social feed.
+**Hero.** One sentence of what it is (breakfast and brunch spots per woonplaats), then an intro that says what the site and app do: search a place, visitors add spots with a photo in the app, likes set the order. One search box: woonplaats autocomplete over the BAG gazetteer (`searchWoonplaatsHits` / `NL_CITIES`). English intro starts "Search a city." Dutch intro keeps woonplaats. Exact pick navigates to `/nl/{city}`. Under the search, two plain links: **Hoe het werkt** (`/how-it-works`) and **Woonplaatsen met plekken** (`/nl/woonplaatsen`). The search needs script; these links are how a crawler leaves `/`. There is no `/?q=` results list, no GPS or near-me control, no spot search on `/`, and no nationwide ticker or live social feed.
 
 **Local favorites.** Optional block under the search. Infer a point from the request IP (GeoIP/MaxMind-style). No browser geolocation prompt. Map that point through BAG point-in-polygon to one woonplaats (same assignment as add).
 
@@ -137,14 +141,16 @@ When it renders: heading is that woonplaats (copy not frozen). Order is `sortCit
 
 Do not ship featured woonplaatsen or **Steden om te ontdekken**. Stock city scenes are not a homepage module.
 
-**App rows.** Two bands under favorites (or under search when favorites is omitted). Always show them.
+**Steps.** One berry band under favorites (or under the hero when favorites is omitted), titled **Zo werkt brag.fast**: the four verbs of how it works (Zoek, Brag, Like, Klim) as stickers, one sentence each, each card linking to its poster on `/how-it-works`, and one link to the whole page. Always show it. It explains; it does not list woonplaatsen or spots.
+
+**App rows.** Two bands under the steps band. Always show them.
 
 1. First to brag a spot (create in the app).
 2. Show off your breakfast (extra photos in the app).
 
 No third row. No recent-brags feed on `/`. GPS stays in the app. Copy is not frozen; do not put **adder** in Dutch UI sentences.
 
-Each row: title, one sentence, per-store download controls, a device frame. Empty phone shells are allowed while the site is in development. Swap in real stills or looping mp4 later without changing the layout.
+Each row: title, one or two sentences, per-store download controls, a device frame. Empty phone shells are allowed while the site is in development. Swap in real stills or looping mp4 later without changing the layout.
 
 Store buttons: one iOS, one Android. Each is independently **live** (href to that store URL) or **disabled + Coming soon**. iOS ships first; Android may stay coming-soon after iOS is live. Do not href a store that is not actually listed.
 
@@ -175,6 +181,10 @@ Username (`UserSlug`), count of spots added, list/map of those spots. No avatar,
 ### Leaderboard `/nl/leaderboard`
 
 List of adders. Readable signed-out. Header and footer link here. Empty copy when nobody has added yet.
+
+### Woonplaats index `/nl/woonplaatsen`
+
+Every woonplaats board with at least one live spot, A to Z by the name the visitor reads (`'s-Hertogenbosch` under H), grouped by letter, each with its spot count. A board joins with its first spot. The order is the alphabet; this is an index, not featured woonplaatsen, and it never ranks boards. Berry header with the search box, so a place that is not listed is one search away. With no boards yet: an empty state and `noindex`. Footer and the homepage hero link here.
 
 ### How it works `/how-it-works`
 

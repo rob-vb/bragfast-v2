@@ -609,9 +609,34 @@ print and the podium, a plain candy chip under the example board).
 
 ### Photo frame
 
-`PhotoFrame` is absolute-inset `object-cover`. With `ken`, it runs `hero-ken` — a 22s
-scale 1.04 → 1.14 alternating drift, disabled under `prefers-reduced-motion`. Used full-bleed
-on the home hero.
+`PhotoFrame` is absolute-inset `object-cover` over a `Scene` (`lib/scenes.ts`): a `<picture>`
+with AVIF and WebP landscape widths for `srcset`, and a centred 3:4 crop for portrait screens,
+all cut from one PNG by `scripts/hero-scene.mjs`. The image is `fetchpriority="high"`: it is
+home's largest paint. With `ken`, it runs `hero-ken` — a 22s scale 1.04 → 1.14 alternating
+drift, disabled under `prefers-reduced-motion`. Used full-bleed on the home hero.
+
+### Home hero links
+
+Under the search pill, two Nunito 700 links in white with `text-shadow-photo`, each ending in a
+Lucide arrow: **Hoe het werkt** and **Woonplaatsen met plekken**. Hover (fine pointer) turns
+them yolk. They are how a crawler leaves home; the search only works with script.
+
+### Home steps (`Steps` in `components/home-view.tsx`)
+
+A berry band under local favorites (or the hero), titled in Section type in white. Four slabs
+of `white/7` with a `white/10` ring, each holding one how-it-works verb as its `.sticker`
+(the same ink and tilt as `VerbStickers`) and one milk/85 sentence. The whole slab links to
+that verb's poster on how it works; hover or focus straightens the sticker and scales it 1.05,
+as on the how-it-works hero. Mobile sets the sticker beside its sentence; `sm` and up stack
+them in two, then four, columns. The band ends in the white `h-12` pill link to how it works.
+
+### Woonplaats index (`app/nl/woonplaatsen/page.tsx`)
+
+A `board` berry `PageHero`: Display title, the yolk count `.sticker` ("2 plaatsen"), a milk
+lede and the search pill. Below, on white, one row per letter between `berry/12` hairlines:
+the letter in Bagel Fat One `text-4xl`/`text-5xl` berry in a fixed left column, and the
+boards as milk pills (Bagel Fat One name, white count chip in Nunito 700 `berry/75`) that
+turn candy/45 on hover. No boards yet: `EggEmpty`.
 
 ### Map
 
