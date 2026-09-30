@@ -1,24 +1,24 @@
 export const nlMessages = {
   hero: "Ontbijt- en brunchplekken, per stad.",
   intro:
-    "Zoek je woonplaats en zie waar het ontbijt goed is. Bezoekers zetten plekken erop met een foto in de app, likes bepalen de volgorde.",
+    "Zoek je woonplaats en zie waar je goed ontbijt of bruncht. Bezoekers zetten plekken erop met een foto in de app, likes bepalen de volgorde.",
   heroTownIndex: "Woonplaatsen met plekken",
   searchLabel: "Zoek een plaats",
   searchPlaceholder: "Haarlem, Den Haag, Giethoorn",
   searchSubmit: "Zoek",
   appRowBragTitle: "Brag als eerste",
   appRowBragBody:
-    "Staat jouw ontbijtplek er nog niet op? Kies de plek in de app en maak de eerste foto. Die zet hem op de board van jouw woonplaats, met jouw naam eronder.",
-  appRowPhotosTitle: "Laat je ontbijt zien",
+    "Staat jouw favoriete plek er nog niet op? Kies de plek in de app en maak de eerste foto. Die zet hem op de board van jouw woonplaats, met jouw naam eronder.",
+  appRowPhotosTitle: "Laat je bord zien",
   appRowPhotosBody:
     "Was je er ook? Voeg je eigen foto's toe aan de galerij van een plek, zodat iedereen ziet wat er op tafel komt.",
   stepsTitle: "Zo werkt brag.fast",
   stepSearchBody:
     "Elke stad en elk dorp in Nederland heeft een eigen board. Kijken kan zonder account.",
   stepBragBody:
-    "Ontbijt je ergens dat er nog niet op staat? Eén foto in de app zet de plek op de board.",
+    "Ontbijt of brunch je ergens dat er nog niet op staat? Eén foto in de app zet de plek op de board.",
   stepLikeBody:
-    "Like de plekken waar het ontbijt goed is. De meeste likes staan bovenaan: geen sterren, niets betaald.",
+    "Like de plekken waar het goed is. De meeste likes staan bovenaan: geen sterren, niets betaald.",
   stepClimbBody:
     "Elke like op een plek die jij toevoegde, telt voor jou op de leaderboard.",
   stepsMore: "Lees hoe het werkt",
@@ -35,14 +35,14 @@ export const nlMessages = {
   townIndexMetaDescription:
     "Alle steden en dorpen in Nederland met ontbijt- en brunchplekken op brag.fast, van A tot Z, met het aantal plekken per plaats.",
   leaderboardMetaDescription:
-    "Wie zette de meest gelikete ontbijtplekken op brag.fast? De leaderboard rangschikt iedereen op de likes op de plekken die ze toevoegden.",
+    "Wie zette de meest gelikete plekken op brag.fast? De leaderboard rangschikt iedereen op de likes op de plekken die ze toevoegden.",
   privacyMetaDescription: "Welke gegevens brag.fast bewaart, en waarom.",
   dataDeletionMetaDescription:
     "Zo wis je je eigen foto's of je hele brag.fast-account.",
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   appStoreOn: "Download in de",
-  addBreakfast: "Voeg je ontbijt toe",
+  addBreakfast: "Zet je plek erop",
   noSearchResults: "Geen stad met die naam. Probeer Haarlem of Amsterdam.",
   footerLine: "Brag je ontbijt.",
   footerExplain: "Plekken voeg je toe in de app.",
@@ -129,16 +129,16 @@ export const nlMessages = {
   hiwVerbLike: "Like",
   hiwVerbClimb: "Klim",
   hiwSearchBody:
-    "Elke woonplaats in Nederland heeft een eigen board, van de grote stad tot het kleinste dorp. Zoek een plaats en zie waar het ontbijt goed is.",
+    "Elke woonplaats in Nederland heeft een eigen board, van de grote stad tot het kleinste dorp. Zoek een plaats en zie waar je goed ontbijt of bruncht.",
   hiwSearchNote: "Kijken kan zonder account.",
   hiwMapLabel: "Kaart van Nederland met een stip voor elke woonplaats",
   hiwBragBody:
-    "Ontbijt je ergens dat nog niet op brag.fast staat? Kies de plek in de app en maak de eerste foto. Die foto zet de plek op de board, met jouw naam eronder.",
+    "Ontbijt of brunch je ergens dat nog niet op brag.fast staat? Kies de plek in de app en maak de eerste foto. Die foto zet de plek op de board, met jouw naam eronder.",
   hiwBragFactPhoto: "Eén foto is genoeg om een plek toe te voegen.",
   hiwBragFactTown: "De plek komt op de board van de plaats waar hij staat.",
   hiwBragFactGallery: "Daarna voegt iedereen extra foto's toe in de app.",
   hiwLikeBody:
-    "Log in en like de plekken waar je lekker hebt ontbeten. De plek met de meeste likes staat bovenaan. Geen sterren, geen betaalde plekken.",
+    "Log in en like de plekken waar je lekker hebt ontbeten of gebruncht. De plek met de meeste likes staat bovenaan. Geen sterren, geen betaalde plekken.",
   hiwLikeRuleOne: "Eén like per persoon per plek",
   hiwLikeRuleUndo: "Nog een keer tikken haalt je like weg",
   hiwLikeRuleTie: "Gelijkspel? De nieuwste like wint",
@@ -167,7 +167,7 @@ export const nlMessages = {
   hiwRuleClosedTitle: "Dicht is dicht",
   hiwRuleClosedBody:
     "Een plek die voorgoed dicht is, gaat van de board. De pagina blijft, met Gesloten erop.",
-  hiwCloseBody: "Staat jouw ontbijtplek er nog niet op? Met de app ben jij de eerste.",
+  hiwCloseBody: "Staat jouw favoriete plek er nog niet op? Met de app ben jij de eerste.",
   hiwSearchAPlace: "Zoek een plaats",
 } as const;
 
@@ -176,24 +176,24 @@ export type MessageKey = keyof typeof nlMessages;
 export const enMessages = {
   hero: "Breakfast and brunch spots, by city.",
   intro:
-    "Search a city and see where breakfast is good. Visitors add spots with a photo in the app, and likes set the order.",
+    "Search a city and see where to eat a good breakfast or brunch. Visitors add spots with a photo in the app, and likes set the order.",
   heroTownIndex: "Towns with spots",
   searchLabel: "Search a city",
   searchPlaceholder: "Haarlem, Den Haag, Giethoorn",
   searchSubmit: "Search",
   appRowBragTitle: "Be first to brag",
   appRowBragBody:
-    "Is your breakfast spot not on here yet? Pick the place in the app and take the first photo. It lands on your town's board, with your name under it.",
-  appRowPhotosTitle: "Show off your breakfast",
+    "Is your favourite spot not on here yet? Pick the place in the app and take the first photo. It lands on your town's board, with your name under it.",
+  appRowPhotosTitle: "Show off your plate",
   appRowPhotosBody:
     "Been there too? Add your own photos to a spot's gallery, so everyone can see what comes to the table.",
   stepsTitle: "How brag.fast works",
   stepSearchBody:
     "Every city and village in the Netherlands has its own board. No account needed to look.",
   stepBragBody:
-    "Having breakfast somewhere that isn't on here yet? One photo in the app puts the spot on the board.",
+    "Having breakfast or brunch somewhere that isn't on here yet? One photo in the app puts the spot on the board.",
   stepLikeBody:
-    "Like the spots where breakfast is good. Most likes sit on top: no stars, nothing paid.",
+    "Like the spots that are good. Most likes sit on top: no stars, nothing paid.",
   stepClimbBody: "Every like on a spot you added counts for you on the leaderboard.",
   stepsMore: "Read how it works",
   metaHomeTitle: "Breakfast and brunch by city in the Netherlands | brag.fast",
@@ -208,13 +208,13 @@ export const enMessages = {
   townIndexMetaDescription:
     "Every city and village in the Netherlands with breakfast and brunch spots on brag.fast, A to Z, with the number of spots in each.",
   leaderboardMetaDescription:
-    "Who put the most-liked breakfast spots on brag.fast? The leaderboard ranks everyone by the likes on the spots they added.",
+    "Who put the most-liked spots on brag.fast? The leaderboard ranks everyone by the likes on the spots they added.",
   privacyMetaDescription: "What brag.fast stores, and why.",
   dataDeletionMetaDescription: "How to delete your own photos or your whole brag.fast account.",
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   appStoreOn: "Download on the",
-  addBreakfast: "Add your breakfast",
+  addBreakfast: "Add your spot",
   noSearchResults: "No city by that name. Try Haarlem or Amsterdam.",
   footerLine: "Brag your breakfast.",
   footerExplain: "Add spots in the app.",
@@ -301,16 +301,16 @@ export const enMessages = {
   hiwVerbLike: "Like",
   hiwVerbClimb: "Climb",
   hiwSearchBody:
-    "Every town in the Netherlands has its own board, from the big city to the smallest village. Search a place and see where breakfast is good.",
+    "Every town in the Netherlands has its own board, from the big city to the smallest village. Search a place and see where to eat a good breakfast or brunch.",
   hiwSearchNote: "No account needed to look.",
   hiwMapLabel: "Map of the Netherlands with a dot for every town",
   hiwBragBody:
-    "Having breakfast somewhere that isn't on brag.fast yet? Pick the place in the app and take the first photo. That photo puts the spot on the board, with your name under it.",
+    "Having breakfast or brunch somewhere that isn't on brag.fast yet? Pick the place in the app and take the first photo. That photo puts the spot on the board, with your name under it.",
   hiwBragFactPhoto: "One photo is all it takes to add a spot.",
   hiwBragFactTown: "The spot lands on the board of the town it's in.",
   hiwBragFactGallery: "After that, anyone can add more photos in the app.",
   hiwLikeBody:
-    "Sign in and like the spots where you had a great breakfast. The spot with the most likes sits at the top. No stars, no paid placement.",
+    "Sign in and like the spots where you had a great breakfast or brunch. The spot with the most likes sits at the top. No stars, no paid placement.",
   hiwLikeRuleOne: "One like per person per spot",
   hiwLikeRuleUndo: "Tap again to take your like back",
   hiwLikeRuleTie: "A tie? The newest like wins",
@@ -337,7 +337,7 @@ export const enMessages = {
   hiwRuleClosedTitle: "Closed is closed",
   hiwRuleClosedBody:
     "A spot that closes for good leaves the board. Its page stays, marked Closed.",
-  hiwCloseBody: "Is your breakfast spot not on here yet? With the app, you're first.",
+  hiwCloseBody: "Is your favourite spot not on here yet? With the app, you're first.",
   hiwSearchAPlace: "Search a place",
 } as const satisfies Record<MessageKey, string>;
 

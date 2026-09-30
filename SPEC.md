@@ -146,7 +146,7 @@ Do not ship featured woonplaatsen or **Steden om te ontdekken**. Stock city scen
 **App rows.** Two bands under the steps band. Always show them.
 
 1. First to brag a spot (create in the app).
-2. Show off your breakfast (extra photos in the app).
+2. Show off your plate (extra photos in the app).
 
 No third row. No recent-brags feed on `/`. GPS stays in the app. Copy is not frozen; do not put **adder** in Dutch UI sentences.
 
@@ -274,6 +274,7 @@ Geclaimd means "this page has a paying owner," not "we checked KvK" and not "thi
 ## Copy (Dutch default)
 
 Homepage one-liner: **Ontbijt- en brunchplekken, per stad.**  
+Ontbijt and brunch: say the pair where copy states what the site is (hero, meta titles and descriptions, board title and lead, SEO, llms.txt). Elsewhere talk about the **plek** or the **bord**, or use both verbs (*ontbijt of brunch je*, *ontbeten of gebruncht*). Never **ontbijt** or **breakfast** alone, except the brand line **Brag je ontbijt.** / **Brag your breakfast.**  
 Hashtag in UI: `#bragfast`.  
 Homepage app-row and local-favorites headings: not frozen; owner rewrites later. Do not use **adder** in Dutch UI sentences. Disabled store buttons: **Coming soon**.  
 Board empty: **Nog geen plekken in deze stad.** (`noSpotsYet`) plus `emptyBoardAppHint`.  
