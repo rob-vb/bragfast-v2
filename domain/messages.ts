@@ -24,13 +24,13 @@ export const nlMessages = {
   metaHomeTitle: "Ontbijt en brunch per stad in Nederland | brag.fast",
   metaHomeDescription:
     "Vind ontbijt- en brunchplekken in elke stad en elk dorp van Nederland. Gerangschikt op likes van bezoekers, niet op sterren of betaalde plekken.",
-  townIndex: "Woonplaatsen",
+  townIndex: "Steden",
   townIndexLead:
-    "Elke woonplaats met minstens één plek, van A tot Z. Staat jouw plaats er niet bij? Zoek hem hieronder, of zet de eerste plek erop in de app.",
-  townIndexEmpty: "Nog geen woonplaats met plekken.",
+    "Elke stad met minstens één plek, van A tot Z. Staat jouw stad er niet bij? Zoek hem hieronder, of zet de eerste plek erop in de app.",
+  townIndexEmpty: "Nog geen stad met plekken.",
   townIndexEmptyHint:
-    "Een woonplaats verschijnt hier zodra iemand de eerste foto toevoegt in de app.",
-  townIndexMetaTitle: "Woonplaatsen met ontbijt- en brunchplekken",
+    "Een stad verschijnt hier zodra iemand de eerste foto toevoegt in de app.",
+  townIndexMetaTitle: "Steden met ontbijt- en brunchplekken",
   townIndexMetaDescription:
     "Alle steden en dorpen in Nederland met ontbijt- en brunchplekken op brag.fast, van A tot Z, met het aantal plekken per plaats.",
   leaderboardMetaDescription:
@@ -198,12 +198,12 @@ export const enMessages = {
   metaHomeTitle: "Breakfast and brunch by city in the Netherlands | brag.fast",
   metaHomeDescription:
     "Find breakfast and brunch spots in every city and village in the Netherlands. Ranked by visitors' likes, not by stars or paid placement.",
-  townIndex: "Towns",
+  townIndex: "Cities",
   townIndexLead:
-    "Every town with at least one spot, A to Z. Not seeing yours? Search it below, or put the first spot on it in the app.",
-  townIndexEmpty: "No town has a spot yet.",
-  townIndexEmptyHint: "A town shows up here once someone adds the first photo in the app.",
-  townIndexMetaTitle: "Towns with breakfast and brunch spots",
+    "Every city with at least one spot, A to Z. Not seeing yours? Search it below, or put the first spot on it in the app.",
+  townIndexEmpty: "No city has a spot yet.",
+  townIndexEmptyHint: "A city shows up here once someone adds the first photo in the app.",
+  townIndexMetaTitle: "Cities with breakfast and brunch spots",
   townIndexMetaDescription:
     "Every city and village in the Netherlands with breakfast and brunch spots on brag.fast, A to Z, with the number of spots in each.",
   leaderboardMetaDescription:
@@ -518,10 +518,10 @@ export function leaderboardRankLabel(locale: Locale, rank: number): string {
     : `#${rank} op de leaderboard`;
 }
 
-/** "2503 plaatsen": every woonplaats has a board */
+/** "2503 steden": every woonplaats has a board */
 export function townCountLabel(locale: Locale, count: number): string {
   const n = count.toLocaleString(locale === "en" ? "en-GB" : "nl-NL");
-  return locale === "en" ? `${n} towns` : `${n} plaatsen`;
+  return locale === "en" ? `${n} cities` : `${n} steden`;
 }
 
 /** Announced when the example board's order changes */

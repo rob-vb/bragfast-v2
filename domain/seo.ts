@@ -8,7 +8,7 @@ import type { BoardIndexEntry, LiveSpotRef, SitemapEntry } from "./viewModels";
 const STATIC_PATHS = ["/", "/how-it-works"] as const;
 
 /** Chrome pages that change with every add or like. */
-const CATALOG_PATHS = ["/nl/woonplaatsen", "/nl/leaderboard"] as const;
+const CATALOG_PATHS = ["/nl", "/nl/leaderboard"] as const;
 
 /**
  * The boards that have something on them. An empty board stays reachable
@@ -105,7 +105,7 @@ export function llmsTxt(origin: string, spots: readonly LiveSpotRef[]): string {
     "",
     `- [Home](${origin}/): search any Dutch woonplaats`,
     `- [How it works](${origin}/how-it-works): the steps and the house rules`,
-    `- [Woonplaatsen](${origin}/nl/woonplaatsen): every board with at least one spot, A to Z`,
+    `- [Steden](${origin}/nl): every board with at least one spot, A to Z`,
     `- [Leaderboard](${origin}/nl/leaderboard): people ranked by the likes on the spots they added`,
   ];
   for (const board of boards) {

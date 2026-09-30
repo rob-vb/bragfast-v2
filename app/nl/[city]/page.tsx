@@ -99,7 +99,7 @@ export default async function CityPage({
           }),
           breadcrumbJsonLd([
             { name: SITE_NAME, url: `${origin}/` },
-            { name: t(locale, "townIndex"), url: `${origin}/nl/woonplaatsen` },
+            { name: t(locale, "townIndex"), url: `${origin}/nl` },
             { name, url: boardUrl },
           ]),
         ]);

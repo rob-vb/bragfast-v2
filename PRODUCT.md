@@ -26,7 +26,7 @@ Public pages are server-rendered Next.js on a VPS. The owner-facing site is http
 
 Specified in `SPEC.md`, not all shipped yet: woonplaats boards for every Dutch BAG woonplaats, app-only catalog writes with Places autocomplete and one required photo, a spot gallery of hosted photos (app attaches extras), signed-in likes (one per spot), adder leaderboard, Better Auth Google + Apple + `emailAndPassword`.
 
-Shipped in the current tree and still true until later PRs land: homepage search, woonplaats list, map toggle, sign-in chrome, admin reports. Featured woonplaatsen and near-me are retired; `/` follows the Homepage section in `SPEC.md` (an intro that explains site and app, links to how it works and the woonplaats index under the search, IP local-favorites when the board qualifies, the four-step band, two app rows, no GPS). `/nl/woonplaatsen` lists the boards that have a live spot; empty boards are noindex until their first spot.
+Shipped in the current tree and still true until later PRs land: homepage search, woonplaats list, map toggle, sign-in chrome, admin reports. Featured woonplaatsen and near-me are retired; `/` follows the Homepage section in `SPEC.md` (an intro that explains site and app, links to how it works and the woonplaats index under the search, IP local-favorites when the board qualifies, the four-step band, two app rows, no GPS). `/nl` lists the boards that have a live spot; empty boards are noindex until their first spot.
 
 Type chips (Café/Bakker/Hotel/Overig) were removed on purpose. Do not put them back.
 
