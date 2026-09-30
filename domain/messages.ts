@@ -44,7 +44,7 @@ export const nlMessages = {
   appStoreOn: "Download in de",
   addBreakfast: "Zet je plek erop",
   noSearchResults: "Geen stad met die naam. Probeer Haarlem of Amsterdam.",
-  footerLine: "Brag je ontbijt.",
+  footerLine: "Eerst de foto, dan de hap.",
   footerExplain: "Plekken voeg je toe in de app.",
   noSpotsYet: "Nog geen plekken in deze stad.",
   emptyBoardAppHint:
@@ -216,7 +216,7 @@ export const enMessages = {
   appStoreOn: "Download on the",
   addBreakfast: "Add your spot",
   noSearchResults: "No city by that name. Try Haarlem or Amsterdam.",
-  footerLine: "Brag your breakfast.",
+  footerLine: "Photo first, then the bite.",
   footerExplain: "Add spots in the app.",
   noSpotsYet: "No spots in this city yet.",
   emptyBoardAppHint:
