@@ -20,7 +20,7 @@ import type { Locale, MessageKey } from "@/domain/messages";
 import { t } from "@/domain/messages";
 
 const MENU_ITEM_CLASS =
-  "flex cursor-default px-3 py-2 text-sm font-bold text-berry outline-none select-none data-highlighted:bg-milk data-highlighted:text-blush";
+  "flex h-10 cursor-default items-center rounded-full px-4 text-sm font-bold text-berry outline-none select-none data-highlighted:bg-milk";
 
 type DialogState =
   | { phase: "closed" }
@@ -363,15 +363,27 @@ export function AuthControl({
 
     return (
       <Menu.Root modal={false}>
-        <Menu.Trigger className="inline-flex h-8 items-center gap-1 rounded-full px-3 text-sm font-bold text-berry transition-[color,background-color,transform] duration-press ease-out-strong pointer-fine:hover:bg-milk pointer-fine:hover:text-blush active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk">
-          {t(locale, "myProfile")}
-          <ChevronDown className="size-4" aria-hidden="true" />
+        <Menu.Trigger
+          aria-label={t(locale, "myProfile")}
+          className="group/me inline-flex h-10 items-center gap-2 rounded-full border border-berry/12 bg-white pr-2.5 pl-[3px] text-sm font-bold text-berry transition-[border-color,scale] duration-press ease-out-strong active:scale-[0.97] pointer-fine:hover:border-berry/25 data-popup-open:border-berry/25"
+        >
+          <span
+            aria-hidden
+            className="flex size-8 items-center justify-center rounded-full bg-yolk pt-0.5 font-display text-base leading-none text-berry uppercase shadow-stamp"
+          >
+            {username.slice(0, 1)}
+          </span>
+          <span className="hidden lg:inline">{t(locale, "myProfile")}</span>
+          <ChevronDown
+            className="size-4 text-berry/60 transition-transform duration-popover ease-out-strong group-data-popup-open/me:rotate-180"
+            aria-hidden="true"
+          />
         </Menu.Trigger>
         <Menu.Portal>
           <Menu.Positioner className="isolate z-50 outline-none" sideOffset={8} align="end">
             <Menu.Popup
               data-slot="menu-popup"
-              className="min-w-40 origin-(--transform-origin) rounded-slab bg-white py-1 shadow-lift outline-none transition-[opacity,transform] duration-popover ease-out-strong data-ending-style:scale-[0.97] data-ending-style:opacity-0 data-starting-style:scale-[0.97] data-starting-style:opacity-0"
+              className="min-w-44 origin-(--transform-origin) rounded-slab bg-white p-1.5 shadow-lift outline-none transition-[opacity,transform] duration-popover ease-out-strong data-ending-style:scale-[0.97] data-ending-style:opacity-0 data-starting-style:scale-[0.97] data-starting-style:opacity-0"
             >
               {accountItems.map((item) =>
                 item.kind === "link" ? (
@@ -421,7 +433,7 @@ export function AuthControl({
         }
         setState(nextOpen ? SIGN_IN_OPEN : CLOSED);
       }}
-      trigger={<Button size="sm">{t(locale, "signIn")}</Button>}
+      trigger={<Button>{t(locale, "signIn")}</Button>}
       title={t(locale, "signInTitle")}
       description={t(locale, "signInIntro")}
       closeLabel={t(locale, "close")}

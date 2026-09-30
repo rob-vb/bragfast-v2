@@ -2,10 +2,11 @@ import Link from "next/link";
 import type { Preloaded } from "convex/react";
 import { t } from "@/domain/messages";
 import { chromeLinks } from "@/domain/chrome";
-import { Logo } from "@/components/visual";
+import { HeaderLockup } from "@/components/visual";
 import { LanguageSwitch } from "@/components/language-switch";
 import { AuthControl } from "@/components/auth-control";
-import { ChromeNavLink } from "@/components/chrome-nav-link";
+import { HeaderNav } from "@/components/header-nav";
+import { HeaderShell } from "@/components/header-shell";
 import { MobileMenu } from "@/components/mobile-menu";
 import { api } from "@/convex/_generated/api";
 import type { Locale } from "@/domain/messages";
@@ -21,38 +22,42 @@ export function SiteHeader({
   passportSlug: string | null;
   isOwner: boolean;
 }) {
+  const links = [
+    ...chromeLinks("header").map((item) => ({
+      href: item.href,
+      label: t(locale, item.label),
+    })),
+    ...(isOwner ? [{ href: "/admin", label: t(locale, "viewAdmin") }] : []),
+  ];
+
   return (
-    <header className="relative z-20 bg-milk/85 text-berry backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-5 sm:h-[4.5rem] sm:px-8">
+    <HeaderShell>
+      <div className="relative mx-auto flex h-full max-w-6xl items-center gap-4 px-5 sm:px-8">
         <Link
           href="/"
           aria-label="brag.fast"
-          className="flex shrink-0 items-center gap-2.5 rounded-full transition-transform duration-press ease-out-strong active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk"
+          className="header-lockup shrink-0 rounded-full transition-[scale] duration-press ease-out-strong active:scale-[0.97]"
         >
-          <Logo size="header" />
+          <HeaderLockup />
         </Link>
-        <span className="hidden font-display text-sm text-blush lg:inline">
+        <span className="header-tag hidden h-7 items-center rounded-full bg-candy px-2.5 font-display text-[0.9375rem] leading-none tracking-wide text-berry lg:inline-flex">
           #bragfast
         </span>
-        <div className="ml-auto flex items-center gap-4">
+        <div className="ml-auto flex items-center gap-2">
           {/* Below md the row does not fit beside the lockup; it moves into
               the Menu sheet. AuthControl stays mounted: it owns sign-in. */}
-          {chromeLinks("header").map((item) => (
-            <ChromeNavLink
-              key={item.href}
-              href={item.href}
-              className="hidden md:inline-flex"
-            >
-              {t(locale, item.label)}
-            </ChromeNavLink>
-          ))}
-          {isOwner ? (
-            <ChromeNavLink href="/admin" className="hidden md:inline-flex">
-              {t(locale, "viewAdmin")}
-            </ChromeNavLink>
-          ) : null}
+          <HeaderNav
+            label={t(locale, "menu")}
+            links={links}
+            className="hidden md:block"
+          />
+          <span aria-hidden className="mx-1 hidden h-5 w-px bg-berry/15 lg:block" />
           <div className="hidden md:block">
-            <LanguageSwitch locale={locale} label={t(locale, "language")} />
+            <LanguageSwitch
+              locale={locale}
+              label={t(locale, "language")}
+              variant="bar"
+            />
           </div>
           <div className="hidden md:contents">
             <AuthControl
@@ -70,6 +75,6 @@ export function SiteHeader({
           />
         </div>
       </div>
-    </header>
+    </HeaderShell>
   );
 }

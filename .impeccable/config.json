@@ -19,6 +19,15 @@
         "value": "var(--ease-spring)",
         "createdAt": "2026-09-29T13:52:03.186Z",
         "reason": "DESIGN.md Motion: --ease-spring is the sanctioned single overshoot for poster letters landing and the like heart pop; predates this session"
+      },
+      {
+        "rule": "layout-transition",
+        "value": "*",
+        "files": [
+          "app/globals.css"
+        ],
+        "createdAt": "2026-09-30T13:24:15.758Z",
+        "reason": "Claude, header polish: .nav-pill width and .header-milk insets are the designed resize/lift motion on childless absolutely positioned layers; layout work stays on those two elements"
       }
     ]
   },

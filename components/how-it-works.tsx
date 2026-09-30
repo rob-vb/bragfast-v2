@@ -62,7 +62,8 @@ export function VerbPoster({
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className={cn("relative isolate overflow-hidden", GROUND[ground])}
+      // A jump lands flush: the poster's own top padding clears the header
+      className={cn("relative isolate -scroll-mt-20 overflow-hidden", GROUND[ground])}
     >
       {backdrop}
       <div
@@ -264,7 +265,7 @@ export function HouseRules({ locale }: { locale: Locale }) {
     <section aria-labelledby="rules-title" className="bg-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-12 lg:gap-x-12">
         <div className="lg:col-span-4">
-          <div className="lg:sticky lg:top-10">
+          <div className="lg:sticky lg:top-28">
             <Egg size={76} className="-rotate-8 drop-shadow-sticker" />
             <h2
               id="rules-title"
