@@ -1,6 +1,7 @@
 /node_modules
 /.next
 /.next-*
+/.image-cache
 /.impeccable/hook.cache.json
 /.env*
 !.env.example

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { CARD_SIZES, photoSrc, WIDE_CARD_SIZES } from "@/lib/photo-src";
 import type { Scene } from "@/lib/scenes";
 import { cn } from "@/lib/utils";
 
@@ -131,7 +132,7 @@ export function SpotLinkCard({
         )}
       >
         <img
-          src={src}
+          {...photoSrc(src, featured ? WIDE_CARD_SIZES : CARD_SIZES)}
           alt=""
           loading={eager ? "eager" : "lazy"}
           decoding="async"

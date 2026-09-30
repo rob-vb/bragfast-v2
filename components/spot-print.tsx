@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import type { UserSlug } from "@/domain/ids";
 import { shortDate, t, type Locale } from "@/domain/messages";
+import { photoSrc } from "@/lib/photo-src";
 import { cn } from "@/lib/utils";
 
 /**
@@ -28,7 +29,12 @@ export function SpotPrint({
   return (
     <figure className={cn("brag-print", closed && "is-closed", className)}>
       <div className="brag-print__photo">
-        <img src={src} alt={alt} fetchPriority="high" decoding="async" />
+        <img
+          {...photoSrc(src, "(min-width: 72rem) 27rem, (min-width: 64rem) 40vw, (min-width: 40rem) 80vw, 100vw")}
+          alt={alt}
+          fetchPriority="high"
+          decoding="async"
+        />
       </div>
       <figcaption className="flex items-end justify-between gap-4 px-3 pt-3 pb-3.5 sm:px-3.5">
         {adderSlug ? (
@@ -77,7 +83,12 @@ export function PrintGlow({
       className="print-glow"
       style={at ? ({ "--glow-at": at } as CSSProperties) : undefined}
     >
-      <img src={src} alt="" decoding="async" />
+      {/* Blurred past recognition, so a thumbnail is plenty */}
+      <img
+        {...photoSrc(src, "8rem")}
+        alt=""
+        decoding="async"
+      />
     </div>
   );
 }

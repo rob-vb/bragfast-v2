@@ -11,6 +11,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { photoPosition, shortDate, t, type Locale } from "@/domain/messages";
 import type { SpotPagePhoto } from "@/domain/viewModels";
 import { notify } from "@/components/ui/toast";
+import { photoSrc } from "@/lib/photo-src";
 import { cn } from "@/lib/utils";
 
 /**
@@ -78,7 +79,7 @@ export function SpotPhotos({
               >
                 <span className="relative block aspect-square overflow-hidden rounded-[1.25rem] bg-candy/40">
                   <img
-                    src={photo.url}
+                    {...photoSrc(photo.url, "(min-width: 72rem) 20rem, (min-width: 64rem) 29vw, 50vw")}
                     alt=""
                     loading={index < 2 ? "eager" : "lazy"}
                     decoding="async"
@@ -257,7 +258,7 @@ function Lightbox({
               >
                 <img
                   key={shown.photo.id}
-                  src={shown.photo.url}
+                  {...photoSrc(shown.photo.url, "100vw")}
                   alt={`${name}, ${photoPosition(locale, shown.at + 1, total)}`}
                   draggable={false}
                   style={{ "--from": step } as CSSProperties}

@@ -10,6 +10,7 @@ import {
   uniqueSpotsLabel,
   type Locale,
 } from "@/domain/messages";
+import { photoSrc } from "@/lib/photo-src";
 
 export type MapSpot = {
   slug: string;
@@ -176,7 +177,10 @@ function spotCard(
 
   const photo = element("span", "spot-card__photo");
   const img = element("img");
-  img.setAttribute("src", spot.photoUrl);
+  const photoAttrs = photoSrc(spot.photoUrl, "18rem");
+  img.setAttribute("sizes", photoAttrs.sizes ?? "");
+  img.setAttribute("srcset", photoAttrs.srcSet ?? "");
+  img.setAttribute("src", photoAttrs.src);
   img.setAttribute("alt", "");
   photo.append(img);
   if (spot.closed) {

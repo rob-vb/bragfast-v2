@@ -21,6 +21,7 @@ import {
 } from "@/domain/messages";
 import { loadCityPage, loadSpotPage, publicSiteUrl } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
+import { photoSrc } from "@/lib/photo-src";
 import { SITE_NAME, pageMetadata } from "@/lib/seo";
 import { SpotShare } from "@/components/spot-share";
 import { LikeButton } from "@/components/like-button";
@@ -41,7 +42,7 @@ function BoardFan({ photos }: { photos: string[] }) {
       {photos.map((src, i) => (
         <img
           key={src}
-          src={src}
+          {...photoSrc(src, "12rem")}
           alt=""
           loading="lazy"
           decoding="async"

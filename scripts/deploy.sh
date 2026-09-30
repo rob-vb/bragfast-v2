@@ -12,6 +12,14 @@ cp -a .next .next-next
 if [ -d .next-live ]; then mv .next-live .next-prev; fi
 mv .next-next .next-live
 
+# Resized photos outlive a release, so a deploy does not refetch every photo
+# from Convex. henk's server writes them; the build dirs belong to root.
+mkdir -p .image-cache
+chown henk:henk .image-cache
+rm -rf .next-live/cache/images
+mkdir -p .next-live/cache
+ln -s ../../.image-cache .next-live/cache/images
+
 sudo -u henk -H pm2 startOrRestart ecosystem.config.cjs --update-env
 sudo -u henk -H pm2 save
 
