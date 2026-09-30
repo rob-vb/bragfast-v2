@@ -438,22 +438,23 @@ never moves when the milk does.
 - **Lockup.** `<HeaderLockup>` (`components/visual.tsx`) shows `/brag_fast_logo.svg` twice,
   one copy clipped to the wordmark and one to the egg, so the egg rocks -11deg on its base on
   fine-pointer hover. One file, one fetch; the lockup is never redrawn.
-- **`#bragfast`** from `lg`: a candy sticker (Bagel Fat One berry, 2px white die-cut, enamel
+- **`#bragfast`** from `xl`: a candy sticker (Bagel Fat One berry, 2px white die-cut, enamel
   lip, deep-berry cast, -4deg) pressed onto the band. It peels off (scale 0.5, -22deg, fading)
   when the band lifts and is pressed back on at the top.
-- **Page links** (`HeaderNav`, from `md`): Nunito 700 `h-10` pills in `berry/70`, the current
+- **Page links** (`HeaderNav`, from `lg`): **Hoe het werkt**, **Woonplaatsen** and
+  **Leaderboard** from `chromeLinks("header")`, as Nunito 700 `h-10` pills in `berry/70`, the current
   page in full berry. One white pill (`.nav-pill`) rests on the current page and glides to
   whichever link the mouse is over (420ms `ease-out-strong`, width and position), fading out
   in place when nothing is current or hovered. Arriving from nowhere it appears in place
   rather than sliding in. The owner's **Beheer** joins the row.
-- A `berry/15` hairline, 20px tall, separates the links from the utilities from `lg`.
+- A `berry/15` hairline, 20px tall, separates the links from the utilities.
 - **Language switch** in its `bar` variant (see below), then the auth control: signed out a
   default blush **Inloggen**; signed in a white `h-10` pill with a berry/12 hairline holding a
-  yolk initial disc (Bagel Fat One, `shadow-stamp`), **Mijn profiel** from `lg`, and a chevron
+  yolk initial disc (Bagel Fat One, `shadow-stamp`), **Mijn profiel**, and a chevron
   that turns over while the menu is open. The account menu is a white slab padded 6px with
   `h-10` pill rows that turn milk when highlighted.
 
-Below `md` the right side is one **Menu** pill (`components/mobile-menu.tsx`): white, `h-10`,
+Below `lg` the right side is one **Menu** pill (`components/mobile-menu.tsx`): white, `h-10`,
 `berry/12` hairline, a Lucide menu glyph and the word, its hit area grown 4px. It raises a
 bottom sheet (Base UI Drawer, swipe down to dismiss) shaped like the phone sign-in dialog: a
 white slab floating 12px from the edges over a `berry/45` blurred backdrop, rising over
@@ -464,7 +465,7 @@ the name in Bagel Fat One `text-2xl` and a 48px white disc with a blush arrow 8p
 end, candy/45 on hover and yolk for the current page; then a shell well holding the account
 (signed out: a full-width blush **Inloggen**; signed in: `@username` with a blush `@`, an
 outline **Paspoort** pill and a ghost **Uitloggen**) above the language switch. The header's
-AuthControl stays mounted but hidden below `md` and still owns the sign-in dialog; the sheet's
+AuthControl stays mounted but hidden below `lg` and still owns the sign-in dialog; the sheet's
 **Inloggen** closes the sheet and asks for sign-in once it is gone. Following a link closes the
 sheet, and so does any route change.
 

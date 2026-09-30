@@ -18,7 +18,7 @@ export const CHROME_LINKS: readonly ChromeLink[] = [
   {
     href: "/nl/woonplaatsen",
     label: "townIndex",
-    placements: ["menu", "footer"],
+    placements: ["header", "menu", "footer"],
   },
   {
     href: "/nl/leaderboard",
