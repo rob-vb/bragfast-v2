@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Flag, Heart, LayoutGrid, MapIcon, Trophy } from "lucide-react";
+import { Camera, Flag, Heart, LayoutGrid, MapIcon, Trophy } from "lucide-react";
 import { CityMap } from "@/components/city-map-loader";
 import { EggEmpty } from "@/components/egg-empty";
 import { PassportStamps } from "@/components/passport-stamps";
@@ -15,6 +15,7 @@ import {
   inCitiesLabel,
   leaderboardRankLabel,
   likeCountLabel,
+  likesBroughtLabel,
   passportMetaDescription,
   photoCountLabel,
   shortDate,
@@ -157,6 +158,21 @@ export default async function PassportPage({
                           strokeWidth={2.5}
                         />
                         {likeCountLabel(locale, page.standing.likeSum)}
+                      </span>
+                    </>
+                  ) : null}
+                  {page.likesBrought > 0 ? (
+                    <>
+                      <span aria-hidden className="text-candy">
+                        ·
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <Camera
+                          aria-hidden
+                          className="size-4.5 text-candy"
+                          strokeWidth={2.5}
+                        />
+                        {likesBroughtLabel(locale, page.likesBrought)}
                       </span>
                     </>
                   ) : null}

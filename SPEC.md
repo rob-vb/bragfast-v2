@@ -21,6 +21,7 @@ Scraped Places catalogs and Instagram ingest are not the product. The website is
 | **Spot** | One hospitality venue, canonicalized by Google Place ID. The app creates it from the first photo of a Place. |
 | **Woonplaats** | One Dutch BAG woonplaats board (stad or dorp). The URL slug is the name people type (`den-bosch`, `den-haag`, `hoofddorp`). CBS counts 2501 BAG woonplaatsen on 1 January 2024. |
 | **Like** | One signed-in visitor, one row per spot. Rank unit on the woonplaats board. |
+| **Credit** | The photo a like came through: the gallery photo in view when the visitor tapped like, else the hero. It tells a photographer their photo helped the spot. It never adds a like or moves rank. |
 | **Adder** | The account that added the spot. |
 | **Leaderboard** | Person board at `/nl/leaderboard`. Rank is the sum of likes on spots the adder added. |
 | **Passport** | Public profile of every photo that account posted, in any country. The photo that created a spot carries an **Ontdekt** mark. The `UserSlug` exists at signup. |
@@ -66,7 +67,7 @@ The owner sets the "idea is working" bar. Do not block v1 on a metric.
 2. Rank **spots**, not dishes. The person board is the adder leaderboard.
 3. Catalog of boards = NL woonplaatsen. One GPS point, one woonplaats. Board and spot URLs are country-prefixed for a future `/be/...`. Profiles are not: a person posts photos in more than one country.
 4. A like is a vote. No star ratings. Do not surface Google rating as "best."
-5. One like per signed-in visitor per spot. Many photos on the same spot do not add likes.
+5. One like per signed-in visitor per spot. Many photos on the same spot do not add likes. A like credits at most one photo, and the credit moves no rank.
 6. Board numbers are earned from likes. An empty woonplaats shows the empty state, not a scraped tail.
 7. Host only media the user uploaded on brag.fast.
 8. Claim (v2) is ownership and tools. Rank stays 100% likes. Paid extras are **additive** (CTA, official hero, Geclaimd mark). Unpaid pages keep the same board rules. Owners cannot hide visitor photos.
@@ -167,6 +168,7 @@ When the woonplaats has zero spots, show `noSpotsYet` and `emptyBoardAppHint`. T
 Name, address, woonplaats.  
 Like count and like control.  
 The adder’s photo as the card and page hero. A gallery of hosted photos on that spot, including the adder’s photo. Signed-in visitors can delete a gallery row they uploaded. Extra-upload is the app, not this page. Empty hero is berry with no broken image.  
+The gallery lightbox carries the same like control, under the uploader and date, beside the likes that photo brought (**12 likes via deze foto**, hidden at zero). Under the Photos heading one credit line names every uploader with a passport once, most likes brought first, then who posted first: **In beeld dankzij @anna, @bram en @cor**. Past six names it names five and counts the rest.  
 Share URL. Report.  
 Hours stay in the spot record and in JSON-LD. They are not a seeker heading, weekday list, or Open nu chip.  
 No menu, price, booking, phone-as-a-product in **v1** (optional tel link is fine). No comments. v2 claimed spots may add one owner conversion CTA. See Claim (v2).
@@ -175,7 +177,7 @@ JSON-LD `FoodEstablishment` (or `Restaurant`/`Bakery`/`Hotel` when type is clear
 
 ### Passport `/u/{slug}`
 
-Username (`UserSlug`), photo count, count of spots discovered, leaderboard standing. The body is every photo the account posted, newest first, each linking to its spot, with a list/map toggle (the map pins each photographed spot once). The photo whose publish created the spot carries an **Ontdekt** sticker (`photos.discovery`); a later photo never inherits it when that one is deleted. One stamp per woonplaats the account posted a photo in. No avatar, no display name, no email. Header is berry, no photograph. One-line bio optional. No follow. Mint the public URL at signup. Index after the first photo.
+Username (`UserSlug`), photo count, count of spots discovered, leaderboard standing, likes via the account’s photos (hidden at zero). The body is every photo the account posted, newest first, each linking to its spot, with a list/map toggle (the map pins each photographed spot once). The photo whose publish created the spot carries an **Ontdekt** sticker (`photos.discovery`); a later photo never inherits it when that one is deleted. One stamp per woonplaats the account posted a photo in. No avatar, no display name, no email. Header is berry, no photograph. One-line bio optional. No follow. Mint the public URL at signup. Index after the first photo.
 
 The path has no country prefix: profiles span countries while boards stay per country. `/nl/u/{slug}` redirects there.
 
@@ -225,6 +227,14 @@ The website has no add UI. The app creates a spot when a user publishes the firs
 - `likeCount` on the spot stays in sync in the same mutation, or is derived. The count on the spot page matches the woonplaats list.
 - Signed-out click calls `requestSignIn()` and writes nothing.
 
+**Credit.** The write that creates a like records `viaPhotoId`:
+
+- A like from the gallery lightbox credits the photo in view. A like anywhere else (the spot hero, a board card) credits the hero photo.
+- A visitor never credits their own photo. The like still counts for the spot.
+- Unlike deletes the row, so the credit goes with it. A later like credits afresh.
+- Deleting a photo clears its credit; the likes stay on the spot. No photo inherits it.
+- Likes from before credit carry none. Do not backfill.
+
 ## Default stack
 
 Empty repo: use this unless the human names another.
@@ -243,7 +253,7 @@ Do not add a second framework. Do not ship a client-only SPA for public pages.
 - `User`. brag.fast account, `UserSlug`, email
 - `Spot`. place_id unique, slug, woonplaats slug, country=`nl`, types, hours, `closed_permanently`, `addedBy`, hero photo storage id, like count
 - `Photo`. spot_id, storage id, uploaded_by, created_at, discovery (the photo that created the spot). Many per spot. Hero stays `Spot.photoId`.
-- `Like`. user_id, spot_id, created_at. Unique `(user_id, spot_id)`
+- `Like`. user_id, spot_id, created_at, via_photo_id (optional credit). Unique `(user_id, spot_id)`
 - `Report`. spot or photo, reason, status
 
 ## Claim (v2)

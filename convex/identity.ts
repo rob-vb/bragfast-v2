@@ -44,6 +44,7 @@ export const passportPhotos = query({
       .collect();
     const spots = new Map<Id<"spots">, PassportPhotoSpot | null>();
     const photos: PassportPhoto[] = [];
+    let likesBrought = 0;
     for (const row of rows) {
       if (!spots.has(row.spotId)) {
         spots.set(row.spotId, await photoSpot(ctx, row.spotId));
@@ -60,6 +61,11 @@ export const passportPhotos = query({
         discovery: row.discovery === true,
         spot,
       });
+      const credited = await ctx.db
+        .query("likes")
+        .withIndex("by_photo", (q) => q.eq("viaPhotoId", row._id))
+        .collect();
+      likesBrought += credited.length;
     }
 
     let discoveredCount = 0;
@@ -72,6 +78,7 @@ export const passportPhotos = query({
     return {
       slug,
       discoveredCount,
+      likesBrought,
       photos: listPassportPhotos(photos),
     };
   },

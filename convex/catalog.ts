@@ -10,7 +10,7 @@ import {
   type UserSlug,
 } from "../domain/ids";
 import { searchWoonplaatsHits } from "../domain/searchMatch";
-import { sortCityBoard } from "../domain/like";
+import { likesBroughtByPhoto, sortCityBoard } from "../domain/like";
 import { parseSpot } from "../domain/spot";
 import type {
   CityCard,
@@ -195,6 +195,12 @@ export const spotPage = query({
       .withIndex("by_spot_created", (q) => q.eq("spotId", row._id))
       .collect();
     photoRows.sort((a, b) => a.createdAt - b.createdAt);
+    const brought = likesBroughtByPhoto(
+      await ctx.db
+        .query("likes")
+        .withIndex("by_spot", (q) => q.eq("spotId", row._id))
+        .collect(),
+    );
     const photos: SpotPagePhoto[] = [];
     for (const photo of photoRows) {
       const url = await ctx.storage.getUrl(photo.storageId);
@@ -207,6 +213,7 @@ export const spotPage = query({
         uploadedBy: photo.uploadedBy,
         uploaderSlug: await passportOf(photo.uploadedBy),
         createdAt: photo.createdAt,
+        likesBrought: brought.get(photo._id) ?? 0,
       });
     }
     const spot = parseSpot(row);

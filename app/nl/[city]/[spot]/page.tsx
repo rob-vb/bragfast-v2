@@ -226,7 +226,13 @@ export default async function SpotPage({
       >
         <div className="grid gap-16 lg:grid-cols-12 lg:gap-x-12">
           <div className="lg:col-span-7">
-            <SpotPhotos locale={locale} name={page.name} photos={page.photos} />
+            <SpotPhotos
+              locale={locale}
+              name={page.name}
+              spotId={page.id}
+              likeCount={page.likeCount}
+              photos={page.photos}
+            />
           </div>
           <section
             aria-labelledby="where-heading"

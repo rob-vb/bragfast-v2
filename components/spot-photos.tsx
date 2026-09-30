@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import {
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+} from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
@@ -8,11 +15,23 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { Camera, ChevronLeft, ChevronRight, Trash2, X } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { photoPosition, shortDate, t, type Locale } from "@/domain/messages";
+import {
+  othersLabel,
+  photoLikesLabel,
+  photoPosition,
+  shortDate,
+  t,
+  type Locale,
+} from "@/domain/messages";
+import { photoCredits } from "@/domain/photo";
 import type { SpotPagePhoto } from "@/domain/viewModels";
+import { LikeButton } from "@/components/like-button";
 import { notify } from "@/components/ui/toast";
 import { photoSrc } from "@/lib/photo-src";
 import { cn } from "@/lib/utils";
+
+/** Names a credit line spells out before it counts the rest. */
+const CREDITS_NAMED = 5;
 
 /**
  * The spot's photos as prints on milk slabs. A print opens the lightbox; the
@@ -21,18 +40,29 @@ import { cn } from "@/lib/utils";
 export function SpotPhotos({
   locale,
   name,
+  spotId,
+  likeCount,
   photos,
 }: {
   locale: Locale;
   name: string;
+  spotId: Id<"spots">;
+  likeCount: number;
   photos: SpotPagePhoto[];
 }) {
   const viewerId = useQuery(api.photos.viewerId);
+  const brought = useQuery(api.likes.likesBrought, { spotId });
   const remove = useMutation(api.photos.deleteOwn);
   const router = useRouter();
   const [gone, setGone] = useState<ReadonlySet<string>>(() => new Set());
   const [open, setOpen] = useState<number | null>(null);
-  const shown = photos.filter((photo) => !gone.has(photo.id));
+  // Live counts once the query lands; the server render's until then
+  const counts = brought && new Map(brought.map((row) => [row.photoId, row.count]));
+  const shown = photos
+    .filter((photo) => !gone.has(photo.id))
+    .map((photo) =>
+      counts ? { ...photo, likesBrought: counts.get(photo.id) ?? 0 } : photo,
+    );
 
   async function onDelete(photo: SpotPagePhoto) {
     setGone((prev) => new Set(prev).add(photo.id));
@@ -63,6 +93,7 @@ export function SpotPhotos({
           </span>
         ) : null}
       </h2>
+      <PhotoCredits locale={locale} slugs={photoCredits(shown)} />
       <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
         {shown.map((photo, index) => {
           const own =
@@ -113,11 +144,48 @@ export function SpotPhotos({
       <Lightbox
         locale={locale}
         name={name}
+        spotId={spotId}
+        likeCount={likeCount}
         photos={shown}
         index={open}
         onIndex={setOpen}
       />
     </section>
+  );
+}
+
+/** "In beeld dankzij @anna, @bram en 3 anderen": who the gallery is thanks to. */
+function PhotoCredits({ locale, slugs }: { locale: Locale; slugs: string[] }) {
+  if (slugs.length === 0) {
+    return null;
+  }
+  // Never "and 1 other": a sixth name fits where that would
+  const named =
+    slugs.length > CREDITS_NAMED + 1 ? slugs.slice(0, CREDITS_NAMED) : slugs;
+  const rest = slugs.length - named.length;
+  const parts = [
+    ...named.map((slug) => (
+      <Link
+        key={slug}
+        href={`/u/${slug}`}
+        className="font-bold text-berry transition-colors duration-press ease-out-strong pointer-fine:hover:text-blush"
+      >
+        <span className="text-blush">@</span>
+        {slug}
+      </Link>
+    )),
+    ...(rest > 0 ? [<span key="rest">{othersLabel(locale, rest)}</span>] : []),
+  ];
+  return (
+    <p className="mt-2 text-base font-semibold text-berry/70">
+      {t(locale, "photoCreditsLead")}{" "}
+      {parts.map((part, i) => (
+        <Fragment key={i}>
+          {i === 0 ? null : i === parts.length - 1 ? ` ${t(locale, "and")} ` : ", "}
+          {part}
+        </Fragment>
+      ))}
+    </p>
   );
 }
 
@@ -161,12 +229,16 @@ function DeletePhoto({
 function Lightbox({
   locale,
   name,
+  spotId,
+  likeCount,
   photos,
   index,
   onIndex,
 }: {
   locale: Locale;
   name: string;
+  spotId: Id<"spots">;
+  likeCount: number;
   photos: SpotPagePhoto[];
   index: number | null;
   onIndex: (index: number | null) => void;
@@ -262,7 +334,7 @@ function Lightbox({
                   alt={`${name}, ${photoPosition(locale, shown.at + 1, total)}`}
                   draggable={false}
                   style={{ "--from": step } as CSSProperties}
-                  className="lightbox-photo max-h-[calc(100svh-10rem)] max-w-full rounded-[1.25rem] object-contain select-none"
+                  className="lightbox-photo max-h-[calc(100svh-14rem)] max-w-full rounded-[1.25rem] object-contain select-none"
                 />
                 {total > 1 ? (
                   <>
@@ -296,28 +368,44 @@ function Lightbox({
                     <ChevronLeft aria-hidden className="size-6" strokeWidth={2.5} />
                   </button>
                 ) : null}
-                <p className="min-w-0 text-center text-sm font-semibold text-milk">
-                  {shown.photo.uploaderSlug ? (
-                    <>
-                      <Link
-                        href={`/u/${shown.photo.uploaderSlug}`}
-                        className="font-display text-lg tracking-wide text-white transition-colors duration-press ease-out-strong pointer-fine:hover:text-yolk"
-                      >
-                        <span className="text-candy">@</span>
-                        {shown.photo.uploaderSlug}
-                      </Link>
-                      <span aria-hidden className="mx-2 text-milk/50">
-                        ·
-                      </span>
-                    </>
-                  ) : null}
-                  <time
-                    dateTime={new Date(shown.photo.createdAt).toISOString()}
-                    className="tabular-nums"
-                  >
-                    {shortDate(locale, shown.photo.createdAt)}
-                  </time>
-                </p>
+                <div className="flex min-w-0 flex-col items-center gap-3">
+                  <p className="min-w-0 text-center text-sm font-semibold text-milk">
+                    {shown.photo.uploaderSlug ? (
+                      <>
+                        <Link
+                          href={`/u/${shown.photo.uploaderSlug}`}
+                          className="font-display text-lg tracking-wide text-white transition-colors duration-press ease-out-strong pointer-fine:hover:text-yolk"
+                        >
+                          <span className="text-candy">@</span>
+                          {shown.photo.uploaderSlug}
+                        </Link>
+                        <span aria-hidden className="mx-2 text-milk/50">
+                          ·
+                        </span>
+                      </>
+                    ) : null}
+                    <time
+                      dateTime={new Date(shown.photo.createdAt).toISOString()}
+                      className="tabular-nums"
+                    >
+                      {shortDate(locale, shown.photo.createdAt)}
+                    </time>
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+                    <LikeButton
+                      locale={locale}
+                      spotId={spotId}
+                      photoId={shown.photo.id}
+                      likeCount={likeCount}
+                      size="lg"
+                    />
+                    {shown.photo.likesBrought > 0 ? (
+                      <p className="text-sm font-bold text-milk tabular-nums">
+                        {photoLikesLabel(locale, shown.photo.likesBrought)}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
                 {total > 1 ? (
                   <button
                     type="button"

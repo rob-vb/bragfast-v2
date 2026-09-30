@@ -75,6 +75,14 @@ export async function deleteOwnPhoto(
       await ctx.db.patch(spot._id, { photoId: undefined });
     }
   }
+  // The likes stay on the spot; only the photo's credit goes
+  const credited = await ctx.db
+    .query("likes")
+    .withIndex("by_photo", (q) => q.eq("viaPhotoId", row._id))
+    .collect();
+  for (const like of credited) {
+    await ctx.db.patch(like._id, { viaPhotoId: undefined });
+  }
   await ctx.db.delete(row._id);
   const stillUsed =
     remaining.some((photo) => photo.storageId === row.storageId) ||
