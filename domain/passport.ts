@@ -59,10 +59,29 @@ export function planMintPassport(input: {
   return { action: "mint", slug: input.slug, since: input.now };
 }
 
-export function listAddedSpots<T extends { addedAt: number }>(
-  spots: readonly T[],
+/** The passport's prints: every photo the account posted, newest first. */
+export function listPassportPhotos<T extends { createdAt: number }>(
+  photos: readonly T[],
 ): T[] {
-  return [...spots].sort((a, b) => b.addedAt - a.addedAt);
+  return [...photos].sort((a, b) => b.createdAt - a.createdAt);
+}
+
+/**
+ * One row per spot the account photographed, dated by its first photo there,
+ * newest first. The map pins and the stamps count spots, not prints.
+ */
+export function photographedSpots<
+  S extends { citySlug: string; slug: string },
+>(photos: readonly { createdAt: number; spot: S }[]): (S & { at: number })[] {
+  const bySpot = new Map<string, S & { at: number }>();
+  for (const photo of photos) {
+    const key = `${photo.spot.citySlug}/${photo.spot.slug}`;
+    const seen = bySpot.get(key);
+    if (!seen || photo.createdAt < seen.at) {
+      bySpot.set(key, { ...photo.spot, at: photo.createdAt });
+    }
+  }
+  return [...bySpot.values()].sort((a, b) => b.at - a.at);
 }
 
 export type PassportStamp<C extends string = string> = {
@@ -72,11 +91,11 @@ export type PassportStamp<C extends string = string> = {
 };
 
 /**
- * One stamp per woonplaats the adder bragged in, in the order they first
- * did: a passport fills up front to back.
+ * One stamp per woonplaats the account posted a photo in, in the order they
+ * first did: a passport fills up front to back.
  */
 export function passportStamps<C extends string>(
-  spots: readonly { citySlug: C; addedAt: number }[],
+  spots: readonly { citySlug: C; at: number }[],
 ): PassportStamp<C>[] {
   const byCity = new Map<C, PassportStamp<C>>();
   for (const spot of spots) {
@@ -85,12 +104,12 @@ export function passportStamps<C extends string>(
       byCity.set(spot.citySlug, {
         citySlug: spot.citySlug,
         count: 1,
-        firstAt: spot.addedAt,
+        firstAt: spot.at,
       });
       continue;
     }
     stamp.count += 1;
-    stamp.firstAt = Math.min(stamp.firstAt, spot.addedAt);
+    stamp.firstAt = Math.min(stamp.firstAt, spot.at);
   }
   return [...byCity.values()].sort((a, b) => a.firstAt - b.firstAt);
 }

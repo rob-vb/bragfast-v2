@@ -97,6 +97,7 @@ export function SpotLinkCard({
   featured,
   eager,
   muted,
+  badge,
   heading: Heading = "h3",
 }: {
   href: string;
@@ -111,6 +112,8 @@ export function SpotLinkCard({
   eager?: boolean;
   /** A closed spot's print fades toward grey, as on its own page. */
   muted?: boolean;
+  /** A sticker pressed onto the print's corner. */
+  badge?: ReactNode;
   heading?: "h2" | "h3";
 }) {
   return (
@@ -138,6 +141,9 @@ export function SpotLinkCard({
           )}
         />
         <span className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-berry/10 ring-inset" />
+        {badge ? (
+          <div className="pointer-events-none absolute top-3 left-3">{badge}</div>
+        ) : null}
       </div>
       <div
         className={cn(

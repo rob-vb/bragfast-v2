@@ -346,7 +346,7 @@ export function AuthControl({
         ? [
             {
               kind: "link" as const,
-              href: `/nl/u/${passportSlug}`,
+              href: `/u/${passportSlug}`,
               labelKey: "viewPassport" as const,
             },
           ]

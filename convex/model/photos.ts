@@ -1,6 +1,7 @@
 import type { Id } from "../_generated/dataModel";
 import type { MutationCtx } from "../_generated/server";
 import {
+  pickDiscoveryPhoto,
   planHeroAfterDelete,
   planPhotoDelete,
 } from "../../domain/photo";
@@ -12,6 +13,7 @@ export async function insertSpotPhoto(
     storageId: Id<"_storage">;
     uploadedBy: Id<"users">;
     createdAt?: number;
+    discovery?: boolean;
   },
 ): Promise<Id<"photos">> {
   return await ctx.db.insert("photos", {
@@ -19,6 +21,7 @@ export async function insertSpotPhoto(
     storageId: input.storageId,
     uploadedBy: input.uploadedBy,
     createdAt: input.createdAt ?? Date.now(),
+    ...(input.discovery ? { discovery: true } : {}),
   });
 }
 
@@ -98,8 +101,32 @@ export async function backfillHeroPhotos(ctx: MutationCtx): Promise<number> {
       storageId: spot.photoId,
       uploadedBy: spot.addedBy,
       createdAt: spot._creationTime,
+      discovery: true,
     });
     inserted += 1;
   }
   return inserted;
+}
+
+/** Marks the discovery photo on spots created before photos carried it. */
+export async function backfillDiscoveryPhotos(
+  ctx: MutationCtx,
+): Promise<number> {
+  const spots = await ctx.db.query("spots").collect();
+  let marked = 0;
+  for (const spot of spots) {
+    const photos = await photosOnSpot(ctx, spot._id);
+    if (photos.some((photo) => photo.discovery === true)) {
+      continue;
+    }
+    const first = pickDiscoveryPhoto(
+      { addedBy: spot.addedBy ?? null, createdAt: spot._creationTime },
+      photos,
+    );
+    if (first) {
+      await ctx.db.patch(first._id, { discovery: true });
+      marked += 1;
+    }
+  }
+  return marked;
 }

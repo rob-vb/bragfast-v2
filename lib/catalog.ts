@@ -18,7 +18,6 @@ import type {
   LiveSpotRef,
   PassportData,
   PassportPageData,
-  PassportSpotLike,
   SitemapEntry,
   SpotPageData,
 } from "@/domain/viewModels";
@@ -171,7 +170,7 @@ export async function loadLeaderboard(): Promise<LeaderboardData> {
 
 export async function loadPassport(slug: string): Promise<PassportData | null> {
   try {
-    return await fetchQuery(api.identity.passportBySlug, { slug });
+    return await fetchQuery(api.identity.passportPhotos, { slug });
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;
@@ -180,11 +179,7 @@ export async function loadPassport(slug: string): Promise<PassportData | null> {
   }
 }
 
-/**
- * The passport with the adder's standing and a like pill per spot. The
- * passport query carries no likes, so they come from the boards the spots
- * are listed on; a closed spot is on no board and gets no pill.
- */
+/** The passport with the account's standing on the leaderboard. */
 export async function loadPassportPage(
   slug: string,
 ): Promise<PassportPageData | null> {
@@ -195,26 +190,5 @@ export async function loadPassportPage(
   if (!passport) {
     return null;
   }
-  const citySlugs = [...new Set(passport.spots.map((spot) => spot.citySlug))];
-  const boards = await Promise.all(citySlugs.map((city) => loadCityPage(city)));
-  const likes = new Map<string, PassportSpotLike>();
-  for (const board of boards) {
-    if (board?.kind !== "listed") {
-      continue;
-    }
-    for (const spot of board.spots) {
-      likes.set(`${spot.citySlug}/${spot.slug}`, {
-        spotId: spot.id,
-        likeCount: spot.likeCount,
-      });
-    }
-  }
-  return {
-    ...passport,
-    spots: passport.spots.map((spot) => ({
-      ...spot,
-      like: likes.get(`${spot.citySlug}/${spot.slug}`) ?? null,
-    })),
-    standing: standingOf(adders, passport.slug),
-  };
+  return { ...passport, standing: standingOf(adders, passport.slug) };
 }

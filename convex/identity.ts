@@ -1,18 +1,23 @@
 import { v } from "convex/values";
-import { query } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
+import { query, type QueryCtx } from "./_generated/server";
 import {
   DomainParseError,
   parseCitySlug,
   parseSpotSlug,
   parseUserSlug,
 } from "../domain/ids";
-import { listAddedSpots } from "../domain/passport";
-import type { PassportData, PassportSpotCard } from "../domain/viewModels";
+import { listPassportPhotos } from "../domain/passport";
+import type {
+  PassportData,
+  PassportPhoto,
+  PassportPhotoSpot,
+} from "../domain/viewModels";
 import { isOwnerEmail } from "../domain/moderation";
 import { ownerEmail } from "./model/owner";
 import { authComponent } from "./auth";
 
-export const passportBySlug = query({
+export const passportPhotos = query({
   args: { slug: v.string() },
   handler: async (ctx, args): Promise<PassportData | null> => {
     let slug;
@@ -33,8 +38,111 @@ export const passportBySlug = query({
       return null;
     }
 
+    const rows = await ctx.db
+      .query("photos")
+      .withIndex("by_user", (q) => q.eq("uploadedBy", user._id))
+      .collect();
+    const spots = new Map<Id<"spots">, PassportPhotoSpot | null>();
+    const photos: PassportPhoto[] = [];
+    for (const row of rows) {
+      if (!spots.has(row.spotId)) {
+        spots.set(row.spotId, await photoSpot(ctx, row.spotId));
+      }
+      const spot = spots.get(row.spotId);
+      const url = await ctx.storage.getUrl(row.storageId);
+      if (!spot || url === null) {
+        continue;
+      }
+      photos.push({
+        id: row._id,
+        url,
+        createdAt: row.createdAt,
+        discovery: row.discovery === true,
+        spot,
+      });
+    }
+
+    let discoveredCount = 0;
+    for (const spot of await ctx.db.query("spots").collect()) {
+      if (spot.addedBy === user._id) {
+        discoveredCount += 1;
+      }
+    }
+
+    return {
+      slug,
+      discoveredCount,
+      photos: listPassportPhotos(photos),
+    };
+  },
+});
+
+async function photoSpot(
+  ctx: QueryCtx,
+  spotId: Id<"spots">,
+): Promise<PassportPhotoSpot | null> {
+  const row = await ctx.db.get(spotId);
+  if (!row) {
+    return null;
+  }
+  try {
+    return {
+      slug: parseSpotSlug(row.slug),
+      citySlug: parseCitySlug(row.citySlug),
+      name: row.name,
+      geo: row.geo,
+      closed: row.listingStatus === "gravestone",
+      likeCount: row.likeCount ?? 0,
+    };
+  } catch (error) {
+    if (error instanceof DomainParseError) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * The spots-added passport the site served under /nl/u before /u. It keeps
+ * the running site up while Convex is ahead of it; delete after deploy.
+ */
+type LegacyPassport = {
+  slug: string;
+  uniqueSpotCount: number;
+  spots: {
+    slug: string;
+    citySlug: string;
+    name: string;
+    addedAt: number;
+    geo: { lat: number; lng: number };
+    closed: boolean;
+    photoUrl: string | null;
+  }[];
+};
+
+export const passportBySlug = query({
+  args: { slug: v.string() },
+  handler: async (ctx, args): Promise<LegacyPassport | null> => {
+    let slug;
+    try {
+      slug = parseUserSlug(args.slug);
+    } catch (error) {
+      if (error instanceof DomainParseError) {
+        return null;
+      }
+      throw error;
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_passport_slug", (q) => q.eq("passport.slug", slug))
+      .unique();
+    if (!user || user.passport === null) {
+      return null;
+    }
+
     const rows = await ctx.db.query("spots").collect();
-    const added: PassportSpotCard[] = [];
+    const added: LegacyPassport["spots"] = [];
     for (const row of rows) {
       if (row.addedBy !== user._id) {
         continue;
@@ -60,7 +168,7 @@ export const passportBySlug = query({
         throw error;
       }
     }
-    const spots = listAddedSpots(added);
+    const spots = added.sort((a, b) => b.addedAt - a.addedAt);
 
     return {
       slug,

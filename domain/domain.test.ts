@@ -27,6 +27,7 @@ import { classifyPlaceTypes, planPlaceAdd, slugFromPlaceName } from "./placeAdd"
 import {
   planHeroAfterDelete,
   planPhotoDelete,
+  pickDiscoveryPhoto,
   planPhotoPublish,
   planPlacePreview,
   photoPublishWritesNewSpot,
@@ -38,7 +39,8 @@ import {
   planMintPassport,
   planPassport,
   slugifyPassportName,
-  listAddedSpots,
+  listPassportPhotos,
+  photographedSpots,
   passportStamps,
 } from "./passport";
 import { addressLines, openNow, planSpotUpsert, splitDutchPlace } from "./spot";
@@ -289,29 +291,57 @@ test("planMintPassport keeps one passport, rejects a taken slug, and mints a fre
   );
 });
 
-test("passport lists added spots newest first", () => {
-  const spots = [
-    { slug: "older", addedAt: 10 },
-    { slug: "newer", addedAt: 40 },
+test("passport lists every photo newest first", () => {
+  const photos = [
+    { id: "older", createdAt: 10 },
+    { id: "newer", createdAt: 40 },
   ];
   assert.deepEqual(
-    listAddedSpots(spots).map((spot) => spot.slug),
+    listPassportPhotos(photos).map((photo) => photo.id),
     ["newer", "older"],
   );
-  assert.deepEqual(listAddedSpots([]), []);
+  assert.deepEqual(listPassportPhotos([]), []);
+});
+
+test("passport photographed spots collapse prints to one row per spot", () => {
+  const cafe = { citySlug: "oldenzaal", slug: "cafe" };
+  const bakker = { citySlug: "enschede", slug: "bakker" };
+  assert.deepEqual(
+    photographedSpots([
+      { createdAt: 30, spot: cafe },
+      { createdAt: 10, spot: cafe },
+      { createdAt: 20, spot: bakker },
+    ]),
+    [
+      { ...bakker, at: 20 },
+      { ...cafe, at: 10 },
+    ],
+  );
+  assert.deepEqual(photographedSpots([]), []);
 });
 
 test("passport stamps one woonplaats each, in the order it was first bragged", () => {
   const stamps = passportStamps([
-    { citySlug: "enschede", addedAt: 40 },
-    { citySlug: "oldenzaal", addedAt: 30 },
-    { citySlug: "oldenzaal", addedAt: 10 },
+    { citySlug: "enschede", at: 40 },
+    { citySlug: "oldenzaal", at: 30 },
+    { citySlug: "oldenzaal", at: 10 },
   ]);
   assert.deepEqual(stamps, [
     { citySlug: "oldenzaal", count: 2, firstAt: 10 },
     { citySlug: "enschede", count: 1, firstAt: 40 },
   ]);
   assert.deepEqual(passportStamps([]), []);
+});
+
+test("the discovery photo is the adder's photo stored with the spot", () => {
+  const spot = { addedBy: "ada", createdAt: 1_000_000 };
+  const create = { id: "create", uploadedBy: "ada", createdAt: 1_000_000 };
+  const later = { id: "later", uploadedBy: "ada", createdAt: 2_000_000 };
+  const visitor = { id: "visitor", uploadedBy: "bob", createdAt: 1_000_001 };
+  assert.equal(pickDiscoveryPhoto(spot, [later, visitor, create])?.id, "create");
+  // A deleted first photo leaves no discovery; the adder's later one never inherits it
+  assert.equal(pickDiscoveryPhoto(spot, [later, visitor]), null);
+  assert.equal(pickDiscoveryPhoto({ addedBy: null, createdAt: 1_000_000 }, [create]), null);
 });
 
 test("haversine puts Haarlem closer than Rotterdam from Amsterdam", () => {

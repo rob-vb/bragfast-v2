@@ -299,7 +299,7 @@ function Lightbox({
                   {shown.photo.uploaderSlug ? (
                     <>
                       <Link
-                        href={`/nl/u/${shown.photo.uploaderSlug}`}
+                        href={`/u/${shown.photo.uploaderSlug}`}
                         className="font-display text-lg tracking-wide text-white transition-colors duration-press ease-out-strong pointer-fine:hover:text-yolk"
                       >
                         <span className="text-candy">@</span>

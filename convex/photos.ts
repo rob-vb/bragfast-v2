@@ -2,7 +2,11 @@ import { ConvexError, v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import { authComponent } from "./auth";
-import { backfillHeroPhotos, deleteOwnPhoto } from "./model/photos";
+import {
+  backfillDiscoveryPhotos,
+  backfillHeroPhotos,
+  deleteOwnPhoto,
+} from "./model/photos";
 import { ensureAppUser } from "./model/users";
 
 export const generateUploadUrl = mutation({
@@ -53,5 +57,13 @@ export const backfillHeroes = internalMutation({
   handler: async (ctx) => {
     const inserted = await backfillHeroPhotos(ctx);
     return { inserted };
+  },
+});
+
+export const backfillDiscovery = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const marked = await backfillDiscoveryPhotos(ctx);
+    return { marked };
   },
 });

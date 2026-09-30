@@ -78,6 +78,8 @@ export default defineSchema({
     storageId: v.id("_storage"),
     uploadedBy: v.id("users"),
     createdAt: v.number(),
+    /** The photo whose publish created the spot. */
+    discovery: v.optional(v.boolean()),
   })
     .index("by_spot", ["spotId"])
     .index("by_spot_created", ["spotId", "createdAt"])
