@@ -1,8 +1,7 @@
 export const nlMessages = {
   hero: "Ontbijt- en brunchplekken, per stad.",
   intro:
-    "Zoek je woonplaats en zie waar je goed ontbijt of bruncht. Bezoekers zetten plekken erop met een foto in de app, likes bepalen de volgorde.",
-  heroTownIndex: "Woonplaatsen met plekken",
+    "Zoek een plaats en zie waar je goed ontbijt of bruncht. Bezoekers zetten plekken erop met een foto in de app, likes bepalen de volgorde.",
   searchLabel: "Zoek een plaats",
   searchPlaceholder: "Haarlem, Den Haag, Giethoorn",
   searchSubmit: "Zoek",
@@ -178,7 +177,6 @@ export const enMessages = {
   hero: "Breakfast and brunch spots, by city.",
   intro:
     "Search a city and see where to eat a good breakfast or brunch. Visitors add spots with a photo in the app, and likes set the order.",
-  heroTownIndex: "Towns with spots",
   searchLabel: "Search a city",
   searchPlaceholder: "Haarlem, Den Haag, Giethoorn",
   searchSubmit: "Search",

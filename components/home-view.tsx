@@ -122,30 +122,9 @@ function HomeHero({ locale }: { locale: Locale }) {
             {t(locale, "intro")}
           </p>
           <SearchBox locale={locale} className="mt-7 sm:mt-8" />
-          <nav className="mt-3 flex flex-wrap gap-x-7">
-            <HeroLink href="/how-it-works">{t(locale, "howItWorks")}</HeroLink>
-            <HeroLink href="/nl/woonplaatsen">{t(locale, "heroTownIndex")}</HeroLink>
-          </nav>
         </div>
       </div>
     </section>
-  );
-}
-
-/** Crawlable ways in beside the search, which only works with script. */
-function HeroLink({ href, children }: { href: string; children: string }) {
-  return (
-    <Link
-      href={href}
-      className="group/hero-link text-shadow-photo-copy inline-flex min-h-11 items-center gap-1.5 rounded-full text-sm font-bold text-white transition-[color,transform] duration-press ease-out-strong active:scale-[0.97] pointer-fine:hover:text-yolk sm:text-base"
-    >
-      {children}
-      <ArrowRight
-        aria-hidden
-        className="size-4 transition-transform duration-press ease-out-strong pointer-fine:group-hover/hero-link:translate-x-0.5"
-        strokeWidth={2.75}
-      />
-    </Link>
   );
 }
 
