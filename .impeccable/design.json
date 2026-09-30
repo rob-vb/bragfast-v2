@@ -164,7 +164,7 @@
       {
         "name": "photo-copy",
         "value": "0 1px 1px rgb(74 21 52 / 0.55), 0 2px 10px rgb(74 21 52 / 0.55), 0 8px 28px rgb(74 21 52 / 0.4)",
-        "purpose": "Nunito copy over the home still: the home lede and hero links. Tighter and denser than photo because Nunito's strokes are thinner. Never a full-bleed overlay."
+        "purpose": "Nunito copy over the home still: the home lede. Tighter and denser than photo because Nunito's strokes are thinner. Never a full-bleed overlay."
       }
     ],
     "shadows": [

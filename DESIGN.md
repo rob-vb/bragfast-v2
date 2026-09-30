@@ -383,7 +383,7 @@ Four shadow tokens, all tinted — no grey or black drop shadows anywhere.
   (`inset 0 0.06em 0 white/45`).
 - **Photo text shadows** (`text-shadow-photo`, `text-shadow-photo-copy`): type on the home
   still. The copy shadow is tighter and denser because Nunito's strokes are thinner than
-  Bagel's; it carries the home lede and hero links. There is no shade, scrim or overlay on the
+  Bagel's; it carries the home lede. There is no shade, scrim or overlay on the
   hero.
 - **Card lift**: a spot print rises 4px and takes `shadow-lift` on fine-pointer hover.
 - **Print cast** (`.brag-print`: `0 1px 0 berry/6, 0 3px 0 deep-berry/12, 0 24px 48px -12px
@@ -659,12 +659,6 @@ anchored bottom-left (`object-position: 50% 100%`, origin `0% 100%`; origin 12% 
 landscape screen, `object-position: 0% 100%` in a short portrait one), so the café signage
 rides up under the header and away from the title. The base rule holds the start scale, so
 reduced motion keeps the framing and loses only the drift. Used full-bleed on the home hero.
-
-### Home hero links
-
-Under the search pill, two Nunito 700 links in white with `text-shadow-photo-copy`, each ending
-in a Lucide arrow: **Hoe het werkt** and **Woonplaatsen met plekken**. Each is a 44px-tall hit
-area. Hover (fine pointer) turns them yolk and nudges the arrow 2px right. They are how a crawler leaves home; the search only works with script.
 
 ### Home steps (`Steps` in `components/home-view.tsx`)
 
