@@ -99,9 +99,12 @@ export default defineSchema({
   likes: defineTable({
     userId: v.id("users"),
     spotId: v.id("spots"),
+    /** The photo this like came through. Absent on likes from before 30 September 2026. */
+    viaPhotoId: v.optional(v.id("photos")),
   })
     .index("by_user_spot", ["userId", "spotId"])
-    .index("by_spot", ["spotId"]),
+    .index("by_spot", ["spotId"])
+    .index("by_photo", ["viaPhotoId"]),
 
   reports: defineTable({
     target: v.union(

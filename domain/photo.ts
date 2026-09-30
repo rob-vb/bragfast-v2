@@ -141,6 +141,33 @@ export function planHeroAfterDelete(input: {
   return { kind: "promote", storageId: oldest.storageId };
 }
 
+/**
+ * Who the spot's gallery is thanks to: each uploader with a passport once,
+ * most likes brought first, then whoever posted first.
+ */
+export function photoCredits<S extends string>(
+  photos: readonly {
+    uploaderSlug: S | null;
+    likesBrought: number;
+    createdAt: number;
+  }[],
+): S[] {
+  const people = new Map<S, { likes: number; first: number }>();
+  for (const photo of photos) {
+    if (photo.uploaderSlug === null) {
+      continue;
+    }
+    const seen = people.get(photo.uploaderSlug);
+    people.set(photo.uploaderSlug, {
+      likes: (seen?.likes ?? 0) + photo.likesBrought,
+      first: Math.min(seen?.first ?? Infinity, photo.createdAt),
+    });
+  }
+  return [...people.entries()]
+    .sort(([, a], [, b]) => b.likes - a.likes || a.first - b.first)
+    .map(([slug]) => slug);
+}
+
 /** The create write stores the spot and its first photo in one mutation. */
 const DISCOVERY_WINDOW_MS = 5_000;
 

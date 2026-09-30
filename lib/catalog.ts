@@ -114,6 +114,7 @@ export async function loadSpotPage(
       photos: (page.photos ?? []).map((photo) => ({
         ...photo,
         uploaderSlug: photo.uploaderSlug ?? null,
+        likesBrought: photo.likesBrought ?? 0,
       })),
       adderSlug: page.adderSlug ?? null,
       addedAt: page.addedAt ?? 0,
@@ -169,7 +170,9 @@ export async function loadLeaderboard(): Promise<LeaderboardData> {
 
 export async function loadPassport(slug: string): Promise<PassportData | null> {
   try {
-    return await fetchQuery(api.identity.passportPhotos, { slug });
+    const passport = await fetchQuery(api.identity.passportPhotos, { slug });
+    // Tolerate a Convex deployment that predates like credit
+    return passport && { ...passport, likesBrought: passport.likesBrought ?? 0 };
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;

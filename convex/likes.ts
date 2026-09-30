@@ -1,9 +1,16 @@
 import { ConvexError, v } from "convex/values";
-import type { Id } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { mutation, query } from "./_generated/server";
 import { authComponent } from "./auth";
-import { applyLikeCommand, planLikeToggle, type LikeRow } from "../domain/like";
+import {
+  applyLikeCommand,
+  likesBroughtByPhoto,
+  pickLikeCredit,
+  planLikeToggle,
+  type LikeRow,
+} from "../domain/like";
+import { photosOnSpot } from "./model/photos";
 import { ensureAppUser } from "./model/users";
 
 async function likesOnSpot(ctx: QueryCtx | MutationCtx, spotId: Id<"spots">) {
@@ -76,9 +83,52 @@ export const viewerLike = query({
   },
 });
 
-export const toggle = mutation({
+/** The photo a new like credits; see `pickLikeCredit`. */
+async function likeCredit(
+  ctx: MutationCtx,
+  input: {
+    likerId: Id<"users">;
+    spot: Doc<"spots">;
+    photoId: Id<"photos"> | undefined;
+  },
+): Promise<Id<"photos"> | null> {
+  const inView = input.photoId ? await ctx.db.get(input.photoId) : null;
+  const hero =
+    inView !== null || input.spot.photoId === undefined
+      ? null
+      : ((await photosOnSpot(ctx, input.spot._id)).find(
+          (photo) => photo.storageId === input.spot.photoId,
+        ) ?? null);
+  const asCredit = (photo: Doc<"photos"> | null) =>
+    photo && { id: photo._id, spotId: photo.spotId, uploadedBy: photo.uploadedBy };
+  const credited = pickLikeCredit({
+    likerId: input.likerId,
+    spotId: input.spot._id,
+    inView: asCredit(inView),
+    hero: asCredit(hero),
+  });
+  return credited as Id<"photos"> | null;
+}
+
+/** Likes each photo on the spot brought it, for the gallery. */
+export const likesBrought = query({
   args: { spotId: v.id("spots") },
   handler: async (ctx, { spotId }) => {
+    const counts = likesBroughtByPhoto(await likesOnSpot(ctx, spotId));
+    return [...counts].map(([photoId, count]) => ({
+      photoId: photoId as Id<"photos">,
+      count,
+    }));
+  },
+});
+
+export const toggle = mutation({
+  args: {
+    spotId: v.id("spots"),
+    /** The gallery photo in view when the visitor tapped like. */
+    photoId: v.optional(v.id("photos")),
+  },
+  handler: async (ctx, { spotId, photoId }) => {
     const spot = await ctx.db.get(spotId);
     if (!spot || spot.listingStatus !== "listed") {
       throw new ConvexError("spot-missing");
@@ -103,7 +153,16 @@ export const toggle = mutation({
         await ctx.db.delete(row._id);
       }
     } else if (mine.length === 0) {
-      await ctx.db.insert("likes", { userId: user._id, spotId });
+      const viaPhotoId = await likeCredit(ctx, {
+        likerId: user._id,
+        spot,
+        photoId,
+      });
+      await ctx.db.insert("likes", {
+        userId: user._id,
+        spotId,
+        ...(viaPhotoId ? { viaPhotoId } : {}),
+      });
     } else {
       for (const extra of mine.slice(1)) {
         await ctx.db.delete(extra._id);

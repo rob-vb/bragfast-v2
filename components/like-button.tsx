@@ -13,11 +13,14 @@ import { cn } from "@/lib/utils";
 export function LikeButton({
   locale,
   spotId,
+  photoId,
   likeCount,
   size = "sm",
 }: {
   locale: Locale;
   spotId: Id<"spots">;
+  /** The gallery photo in view; a new like credits it instead of the hero. */
+  photoId?: Id<"photos">;
   likeCount: number;
   /** `lg` is the spot hero's pill: the verb, then the count on a chip. */
   size?: "sm" | "lg";
@@ -25,12 +28,12 @@ export function LikeButton({
   const user = useQuery(api.auth.getCurrentUser);
   const live = useQuery(api.likes.viewerLike, { spotId });
   const toggle = useMutation(api.likes.toggle).withOptimisticUpdate(
-    (store, args) => {
-      const current = store.getQuery(api.likes.viewerLike, args);
+    (store, { spotId }) => {
+      const current = store.getQuery(api.likes.viewerLike, { spotId });
       if (current === undefined) {
         return;
       }
-      store.setQuery(api.likes.viewerLike, args, {
+      store.setQuery(api.likes.viewerLike, { spotId }, {
         liked: !current.liked,
         likeCount: Math.max(0, current.likeCount + (current.liked ? -1 : 1)),
       });
@@ -52,7 +55,7 @@ export function LikeButton({
     if (!liked) {
       setPops((n) => n + 1);
     }
-    await toggle({ spotId });
+    await toggle(photoId ? { spotId, photoId } : { spotId });
   }
 
   const heart = (

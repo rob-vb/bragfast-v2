@@ -25,6 +25,7 @@ import {
 import { bragLiveEmail } from "./notify";
 import { classifyPlaceTypes, planPlaceAdd, slugFromPlaceName } from "./placeAdd";
 import {
+  photoCredits,
   planHeroAfterDelete,
   planPhotoDelete,
   pickDiscoveryPhoto,
@@ -48,7 +49,9 @@ import {
   applyCityBoardSort,
   applyLikeCommand,
   likeCountFor,
+  likesBroughtByPhoto,
   parseCityBoardSort,
+  pickLikeCredit,
   planLikeToggle,
   sortCityBoard,
 } from "./like";
@@ -790,6 +793,52 @@ test("toggle twice from a liked row returns unlike then like", () => {
   assert.deepEqual(secondPlan, { action: "like" });
   assert.deepEqual(afterUnlike, []);
   assert.deepEqual(afterLike, [liked]);
+});
+
+test("a like credits the photo in view, else the hero, never the liker's own", () => {
+  const hero = { id: "photo-hero", spotId: "spot-1", uploadedBy: "adder" };
+  const extra = { id: "photo-extra", spotId: "spot-1", uploadedBy: "bram" };
+  const credit = (likerId: string, inView: typeof hero | null) =>
+    pickLikeCredit({ likerId, spotId: "spot-1", inView, hero });
+  assert.equal(credit("cor", extra), "photo-extra");
+  assert.equal(credit("cor", null), "photo-hero");
+  assert.equal(credit("bram", extra), null);
+  assert.equal(credit("adder", null), null);
+  assert.equal(
+    credit("cor", { id: "photo-elsewhere", spotId: "spot-2", uploadedBy: "bram" }),
+    null,
+  );
+  assert.equal(
+    pickLikeCredit({ likerId: "cor", spotId: "spot-1", inView: null, hero: null }),
+    null,
+  );
+});
+
+test("likes brought count credited likes per photo and skip uncredited ones", () => {
+  const counts = likesBroughtByPhoto([
+    { viaPhotoId: "a" },
+    { viaPhotoId: "b" },
+    { viaPhotoId: "a" },
+    {},
+  ]);
+  assert.deepEqual([...counts], [
+    ["a", 2],
+    ["b", 1],
+  ]);
+});
+
+test("photo credits list each uploader once, most likes brought first", () => {
+  assert.deepEqual(
+    photoCredits([
+      { uploaderSlug: "anna", likesBrought: 2, createdAt: 1 },
+      { uploaderSlug: "bram", likesBrought: 3, createdAt: 5 },
+      { uploaderSlug: "anna", likesBrought: 2, createdAt: 9 },
+      { uploaderSlug: null, likesBrought: 9, createdAt: 2 },
+      { uploaderSlug: "cor", likesBrought: 0, createdAt: 3 },
+      { uploaderSlug: "dirk", likesBrought: 0, createdAt: 4 },
+    ]),
+    ["anna", "bram", "cor", "dirk"],
+  );
 });
 
 test("city board orders by likeCount then recency of the last like", () => {

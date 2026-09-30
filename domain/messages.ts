@@ -113,6 +113,8 @@ export const nlMessages = {
   shareFailed: "Delen lukte niet",
   like: "Leuk",
   photosHeading: "Foto's",
+  photoCreditsLead: "In beeld dankzij",
+  and: "en",
   deletePhoto: "Wissen",
   confirmDeletePhoto: "Echt wissen?",
   deletePhotoFailed: "Wissen lukte niet",
@@ -285,6 +287,8 @@ export const enMessages = {
   shareFailed: "Could not share",
   like: "Like",
   photosHeading: "Photos",
+  photoCreditsLead: "Photos by",
+  and: "and",
   deletePhoto: "Delete",
   confirmDeletePhoto: "Really delete?",
   deletePhotoFailed: "Could not delete",
@@ -490,6 +494,25 @@ export function likeCountLabel(locale: Locale, count: number): string {
   return `${count} likes`;
 }
 
+/** "12 likes via deze foto": likes on the spot that came through one photo */
+export function photoLikesLabel(locale: Locale, count: number): string {
+  const likes = likeCountLabel(locale, count);
+  return locale === "en" ? `${likes} via this photo` : `${likes} via deze foto`;
+}
+
+/** "12 likes via foto's": likes that came through an account's photos */
+export function likesBroughtLabel(locale: Locale, count: number): string {
+  const likes = likeCountLabel(locale, count);
+  return locale === "en" ? `${likes} via photos` : `${likes} via foto's`;
+}
+
+/** "3 anderen": the people a credit line leaves unnamed */
+export function othersLabel(locale: Locale, count: number): string {
+  if (locale === "en") {
+    return count === 1 ? "1 other" : `${count} others`;
+  }
+  return count === 1 ? "1 ander" : `${count} anderen`;
+}
 
 /** The word under a count set on its own: "plekken" in "3 plekken". */
 export function spotNoun(locale: Locale, count: number): string {

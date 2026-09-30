@@ -37,6 +37,8 @@ export type SpotPagePhoto = {
   /** The uploader's passport, when they have one. */
   uploaderSlug: UserSlug | null;
   createdAt: number;
+  /** Likes on the spot that came through this photo. */
+  likesBrought: number;
 };
 
 export type SpotPageData = {
@@ -159,6 +161,8 @@ export type PassportData = {
   slug: UserSlug;
   /** Spots this account put on brag.fast with a first photo. */
   discoveredCount: number;
+  /** Likes that came through this account's photos, on any spot. */
+  likesBrought: number;
   photos: PassportPhoto[];
 };
 
