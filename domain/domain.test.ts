@@ -75,15 +75,15 @@ import { localFavoritesHeading, seeAllInCity } from "./messages";
 test("chrome links are marketing pages and legal stays out of the header", () => {
   assert.deepEqual(
     chromeLinks("header").map((link) => link.href),
-    ["/how-it-works", "/nl/leaderboard"],
+    ["/how-it-works", "/nl/steden", "/nl/leaderboard"],
   );
   assert.deepEqual(
     chromeLinks("footer").map((link) => link.href),
-    ["/how-it-works", "/nl/woonplaatsen", "/nl/leaderboard"],
+    ["/how-it-works", "/nl/steden", "/nl/leaderboard"],
   );
   assert.deepEqual(
     chromeLinks("menu").map((link) => link.href),
-    ["/how-it-works", "/nl/woonplaatsen", "/nl/leaderboard"],
+    ["/how-it-works", "/nl/steden", "/nl/leaderboard"],
   );
   assert.deepEqual(
     LEGAL_LINKS.map((link) => link.href),
@@ -1212,7 +1212,7 @@ test("planSitemap lists chrome pages, boards with spots and their spots only", (
     [
       "/",
       "/how-it-works",
-      "/nl/woonplaatsen",
+      "/nl/steden",
       "/nl/leaderboard",
       "/nl/enschede",
       "/nl/oldenzaal",
@@ -1223,7 +1223,7 @@ test("planSitemap lists chrome pages, boards with spots and their spots only", (
   );
   assert.deepEqual(
     planSitemap([]).map((entry) => entry.path),
-    ["/", "/how-it-works", "/nl/woonplaatsen", "/nl/leaderboard"],
+    ["/", "/how-it-works", "/nl/steden", "/nl/leaderboard"],
   );
 });
 
@@ -1283,7 +1283,7 @@ test("planSitemap dates catalog pages by their last add or like", () => {
   const at = (path: string) => entries.find((entry) => entry.path === path)?.lastModified;
   assert.equal(at("/"), undefined);
   assert.equal(at("/how-it-works"), undefined);
-  assert.equal(at("/nl/woonplaatsen"), 500);
+  assert.equal(at("/nl/steden"), 500);
   assert.equal(at("/nl/leaderboard"), 500);
   assert.equal(at("/nl/oldenzaal"), 500);
   assert.equal(at("/nl/enschede"), 200);
@@ -1304,7 +1304,7 @@ test("llmsTxt lists every live spot per board in board order", () => {
   ]);
   assert.ok(text.startsWith("# brag.fast\n\n> "));
   assert.ok(text.includes("Catalog as of 2026-09-01."));
-  assert.ok(text.includes("- [Woonplaatsen](https://brag.fast/nl/woonplaatsen)"));
+  assert.ok(text.includes("- [Steden](https://brag.fast/nl/steden)"));
   // A to Z by the Dutch name, English name alongside when it differs
   const den = text.indexOf("## Den Haag (The Hague)");
   const olden = text.indexOf("## Oldenzaal\n");

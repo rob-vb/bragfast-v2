@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ...pageMetadata(locale, {
       title: t(locale, "townIndexMetaTitle"),
       description: t(locale, "townIndexMetaDescription"),
-      path: "/nl/woonplaatsen",
+      path: "/nl/steden",
     }),
     ...(boards.length === 0 ? { robots: { index: false, follow: true } } : {}),
   };
@@ -37,7 +37,7 @@ export default async function TownIndexPage() {
   const boards = await loadBoardIndex();
   const groups = townIndexGroups(boards, locale);
   const origin = publicSiteUrl();
-  const indexUrl = `${origin}/nl/woonplaatsen`;
+  const indexUrl = `${origin}/nl/steden`;
   const jsonLd =
     groups.length === 0
       ? null

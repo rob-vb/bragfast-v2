@@ -441,7 +441,7 @@ never moves when the milk does.
 - **`#bragfast`** from `xl`: a candy sticker (Bagel Fat One berry, 2px white die-cut, enamel
   lip, deep-berry cast, -4deg) pressed onto the band. It peels off (scale 0.5, -22deg, fading)
   when the band lifts and is pressed back on at the top.
-- **Page links** (`HeaderNav`, from `lg`): **Hoe het werkt**, **Woonplaatsen** and
+- **Page links** (`HeaderNav`, from `lg`): **Hoe het werkt**, **Steden** and
   **Leaderboard** from `chromeLinks("header")`, as Nunito 700 `h-10` pills in `berry/70`, the current
   page in full berry. One white pill (`.nav-pill`) rests on the current page and glides to
   whichever link the mouse is over (420ms `ease-out-strong`, width and position), fading out
@@ -702,7 +702,7 @@ that verb's poster on how it works; hover or focus straightens the sticker and s
 as on the how-it-works hero. Mobile sets the sticker beside its sentence; `sm` and up stack
 them in two, then four, columns. The band ends in the white `h-12` pill link to how it works.
 
-### Woonplaats index (`app/nl/woonplaatsen/page.tsx`)
+### Woonplaats index (`app/nl/steden/page.tsx`)
 
 A `board` berry `PageHero`: Display title, the yolk count `.sticker` ("2 plaatsen"), a milk
 lede and the search pill. Below, on white, one row per letter between `berry/12` hairlines:
