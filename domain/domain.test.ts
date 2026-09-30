@@ -82,6 +82,10 @@ test("chrome links are marketing pages and legal stays out of the header", () =>
     ["/how-it-works", "/nl/woonplaatsen", "/nl/leaderboard"],
   );
   assert.deepEqual(
+    chromeLinks("menu").map((link) => link.href),
+    ["/how-it-works", "/nl/woonplaatsen", "/nl/leaderboard"],
+  );
+  assert.deepEqual(
     LEGAL_LINKS.map((link) => link.href),
     ["/privacy", "/privacy/data-deletion"],
   );

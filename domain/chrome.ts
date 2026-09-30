@@ -1,6 +1,7 @@
 import type { Locale, MessageKey } from "./messages";
 
-export type ChromePlacement = "header" | "footer";
+/** "menu" is the phone header's sheet, which has room for every page. */
+export type ChromePlacement = "header" | "menu" | "footer";
 
 export type ChromeLink = {
   href: "/how-it-works" | "/nl/woonplaatsen" | "/nl/leaderboard";
@@ -12,17 +13,17 @@ export const CHROME_LINKS: readonly ChromeLink[] = [
   {
     href: "/how-it-works",
     label: "howItWorks",
-    placements: ["header", "footer"],
+    placements: ["header", "menu", "footer"],
   },
   {
     href: "/nl/woonplaatsen",
     label: "townIndex",
-    placements: ["footer"],
+    placements: ["menu", "footer"],
   },
   {
     href: "/nl/leaderboard",
     label: "leaderboard",
-    placements: ["header", "footer"],
+    placements: ["header", "menu", "footer"],
   },
 ];
 

@@ -15,12 +15,10 @@ export function ChromeNavLink({
   href,
   children,
   className,
-  hiddenOnMobile,
 }: {
   href: string;
   children: ReactNode;
   className?: string;
-  hiddenOnMobile?: boolean;
 }) {
   const pathname = usePathname();
   const active = pathname === href;
@@ -29,11 +27,7 @@ export function ChromeNavLink({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={cn(
-        chromeLinkClass,
-        hiddenOnMobile && "hidden sm:inline-flex",
-        className,
-      )}
+      className={cn(chromeLinkClass, className)}
     >
       {children}
     </Link>

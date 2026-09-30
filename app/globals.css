@@ -626,7 +626,14 @@ a.stamp:focus-visible {
   animation-duration: 140ms;
 }
 
+/* The phone menu's egg drops onto the sheet as it rises, like the egg onto
+   the podium */
+.menu-egg {
+  animation: podium-egg 700ms var(--ease-out-strong) 180ms both;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .menu-egg,
   .hero-word,
   .hero-tag,
   .poster-letter,
@@ -655,9 +662,15 @@ a.stamp:focus-visible {
   [data-slot="select-content"],
   [data-slot="combobox-content"],
   [data-slot="menu-popup"],
+  [data-slot="drawer-popup"],
   [data-slot="toast"] {
     transition-property: opacity;
     transform: none !important;
+  }
+
+  [data-slot="drawer-popup"][data-starting-style],
+  [data-slot="drawer-popup"][data-ending-style] {
+    opacity: 0;
   }
 }
 

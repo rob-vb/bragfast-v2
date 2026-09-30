@@ -421,8 +421,24 @@ repeat-`round` mask so the row always ends on a whole scallop). Only the city he
 ### Header
 
 `bg-milk/85` with `backdrop-blur-md`, `h-16` / `sm:h-[4.5rem]`, `z-20`. Left: the `<Logo>`
-lockup linked to `/` with `aria-label="brag.fast"`, then `#bragfast` in Bagel Fat One blush
-(hidden on mobile). Right: chrome links, language switch, auth control.
+lockup linked to `/` with `aria-label="brag.fast"`, which never shrinks, then `#bragfast` in
+Bagel Fat One blush from `lg`. Right, from `md`: the header chrome links, language switch and
+auth control.
+
+Below `md` the right side is one **Menu** pill (`components/mobile-menu.tsx`): white, `h-10`,
+`berry/12` hairline, a Lucide menu glyph and the word, its hit area grown 4px. It raises a
+bottom sheet (Base UI Drawer, swipe down to dismiss) shaped like the phone sign-in dialog: a
+white slab floating 12px from the edges over a `berry/45` blurred backdrop, rising over
+`duration-modal` on `ease-drawer`. Inside: a `berry/15` handle; the egg (44px, -8deg,
+`drop-shadow-sticker`) dropping in beside **Menu** in Bagel Fat One with a ghost close key;
+every page from `chromeLinks("menu")` (plus **Beheer** for the owner) as a `h-16` milk pill,
+the name in Bagel Fat One `text-2xl` and a 48px white disc with a blush arrow 8px inside its
+end, candy/45 on hover and yolk for the current page; then a shell well holding the account
+(signed out: a full-width blush **Inloggen**; signed in: `@username` with a blush `@`, an
+outline **Paspoort** pill and a ghost **Uitloggen**) above the language switch. The header's
+AuthControl stays mounted but hidden below `md` and still owns the sign-in dialog; the sheet's
+**Inloggen** closes the sheet and asks for sign-in once it is gone. Following a link closes the
+sheet, and so does any route change.
 
 ### Footer
 
@@ -741,7 +757,7 @@ stands in its final state. Nothing jumps back to replay. Pieces that react rathe
 Press feedback is uniform: `active:scale-[0.97]`. Hover effects are gated behind the
 `pointer-fine` variant so a touch device never sticks in a hover state. Under
 `prefers-reduced-motion` the ken-burns, scroll drift, home title focus and tag press, poster letters, print landing, glow fade, lightbox
-slide, like pop, sort glide, stamp press, podium rise, egg drop and like-bar fill stop — and on how it works the
+slide, like pop, sort glide, stamp press, podium rise, egg drop (the menu egg included) and like-bar fill stop — and on how it works the
 staged print, map bands, pin ring, pin glide and pin tour, town label, +1 float, demo
 podium rise, demo egg drop and demo stamp press stop, and the like demo re-sorts without a
 view transition — and
