@@ -137,3 +137,28 @@ export function planHeroAfterDelete(input: {
   }
   return { kind: "promote", storageId: oldest.storageId };
 }
+
+/** The create write stores the spot and its first photo in one mutation. */
+const DISCOVERY_WINDOW_MS = 5_000;
+
+/**
+ * Which photo put the spot on brag.fast, for rows written before photos
+ * carried the mark: the adder's photo stored with the spot itself. A spot
+ * whose first photo was deleted has none, and a later photo never inherits it.
+ */
+export function pickDiscoveryPhoto<P extends { uploadedBy: string; createdAt: number }>(
+  spot: { addedBy: string | null; createdAt: number },
+  photos: readonly P[],
+): P | null {
+  if (spot.addedBy === null) {
+    return null;
+  }
+  const first = photos
+    .filter(
+      (photo) =>
+        photo.uploadedBy === spot.addedBy &&
+        Math.abs(photo.createdAt - spot.createdAt) <= DISCOVERY_WINDOW_MS,
+    )
+    .sort((a, b) => a.createdAt - b.createdAt)[0];
+  return first ?? null;
+}

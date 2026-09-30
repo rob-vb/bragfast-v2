@@ -120,6 +120,7 @@ export async function applyPlaceAdd(
     spotId,
     storageId: photoId,
     uploadedBy: input.addedBy,
+    discovery: true,
   });
   return { ...plan, spotSlug: slug };
 }

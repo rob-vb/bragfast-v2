@@ -55,7 +55,7 @@ export function Podium({
                     />
                   ) : null}
                   <Link
-                    href={`/nl/u/${adder.username}`}
+                    href={`/u/${adder.username}`}
                     style={
                       {
                         "--fit-word": displayFit(`@${adder.username}`, 0.025).word,

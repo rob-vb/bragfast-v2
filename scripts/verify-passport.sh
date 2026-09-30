@@ -14,11 +14,11 @@ def fetch(path: str) -> tuple[int, str]:
         return error.code, error.read().decode()
 
 
-status, missing = fetch("/nl/u/no-such-bragger")
+status, missing = fetch("/u/no-such-bragger")
 if status != 404:
-    raise SystemExit(f"/nl/u/no-such-bragger status {status}, expected 404")
+    raise SystemExit(f"/u/no-such-bragger status {status}, expected 404")
 
-status, maker_a = fetch("/nl/u/maker-a")
+status, maker_a = fetch("/u/maker-a")
 if status == 200:
     if "Anne&amp;Max" in maker_a or "Anne&Max" in maker_a:
         raise SystemExit("maker-a still lists a catalog tent")

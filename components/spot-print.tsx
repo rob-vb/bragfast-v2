@@ -37,7 +37,7 @@ export function SpotPrint({
               {t(locale, "discoveredBy")}
             </span>
             <Link
-              href={`/nl/u/${adderSlug}`}
+              href={`/u/${adderSlug}`}
               className="block truncate rounded-full font-display text-xl leading-tight tracking-wide text-berry transition-colors duration-press ease-out-strong pointer-fine:hover:text-blush sm:text-2xl"
             >
               <span className="text-blush">@</span>

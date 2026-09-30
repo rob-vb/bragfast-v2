@@ -137,30 +137,33 @@ export type BoardIndexEntry = {
   spotCount: number;
 };
 
-export type PassportSpotCard = {
+/** The spot a passport photo was taken at. */
+export type PassportPhotoSpot = {
   slug: SpotSlug;
   citySlug: CitySlug;
   name: string;
-  addedAt: number;
   geo: { lat: number; lng: number };
   closed: boolean;
-  photoUrl: string | null;
+  likeCount: number;
+};
+
+/** One photo the account posted. `discovery` marks the photo that created the spot. */
+export type PassportPhoto = {
+  id: string;
+  url: string;
+  createdAt: number;
+  discovery: boolean;
+  spot: PassportPhotoSpot;
 };
 
 export type PassportData = {
   slug: UserSlug;
-  uniqueSpotCount: number;
-  spots: PassportSpotCard[];
+  /** Spots this account put on brag.fast with a first photo. */
+  discoveredCount: number;
+  photos: PassportPhoto[];
 };
 
-/** A listed spot's like pill; a closed spot has none. */
-export type PassportSpotLike = {
-  spotId: GenericId<"spots">;
-  likeCount: number;
-};
-
-export type PassportPageData = Omit<PassportData, "spots"> & {
-  spots: (PassportSpotCard & { like: PassportSpotLike | null })[];
+export type PassportPageData = PassportData & {
   standing: LeaderboardStanding | null;
 };
 

@@ -56,7 +56,7 @@ export default async function LeaderboardPage() {
             {rest.map((adder, index) => (
               <li key={adder.username}>
                 <Link
-                  href={`/nl/u/${adder.username}`}
+                  href={`/u/${adder.username}`}
                   className="group/row grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 rounded-slab bg-milk py-3 pr-5 pl-3 text-berry transition-[background-color,scale] duration-press ease-out-strong active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,16rem)_6.5rem] sm:gap-6 pointer-fine:hover:bg-shell"
                 >
                   <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-yolk font-display text-xl tracking-wide tabular-nums">

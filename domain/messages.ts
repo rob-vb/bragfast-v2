@@ -78,7 +78,9 @@ export const nlMessages = {
   viewList: "Lijst",
   viewMap: "Kaart",
   viewMode: "Weergave",
-  passportEmpty: "Nog geen plekken op dit paspoort.",
+  passportEmpty: "Nog geen foto's op dit paspoort.",
+  discoveryBadge: "Ontdekt",
+  discoveryHint: "Met deze foto kwam de plek op brag.fast",
   viewPassport: "Paspoort",
   leaderboard: "Leaderboard",
   leaderboardIntro: "Gerangschikt op likes op de plekken die ze toevoegden.",
@@ -147,7 +149,7 @@ export const nlMessages = {
   hiwClimbBody:
     "Elke like op een plek die jij toevoegde telt voor jou. Zo klim je op de leaderboard.",
   hiwClimbPassport:
-    "Je paspoort krijgt een stempel voor elke plaats waar je een plek toevoegde.",
+    "Je paspoort krijgt een stempel voor elke plaats waar je een foto plaatste.",
   hiwSeeLeaderboard: "Bekijk de leaderboard",
   hiwRulesTitle: "Huisregels",
   hiwRuleSpotTitle: "Ontbijt of brunch te koop",
@@ -247,7 +249,9 @@ export const enMessages = {
   viewList: "List",
   viewMap: "Map",
   viewMode: "View",
-  passportEmpty: "No spots on this passport yet.",
+  passportEmpty: "No photos on this passport yet.",
+  discoveryBadge: "Discovered",
+  discoveryHint: "This photo put the spot on brag.fast",
   viewPassport: "Passport",
   leaderboard: "Leaderboard",
   leaderboardIntro: "Ranked by likes on spots they added.",
@@ -315,7 +319,7 @@ export const enMessages = {
   hiwToday: "today",
   hiwClimbBody:
     "Every like on a spot you added counts for you. That's how you climb the leaderboard.",
-  hiwClimbPassport: "Your passport gets a stamp for every town where you added a spot.",
+  hiwClimbPassport: "Your passport gets a stamp for every town where you posted a photo.",
   hiwSeeLeaderboard: "See the leaderboard",
   hiwRulesTitle: "House rules",
   hiwRuleSpotTitle: "Breakfast or brunch for sale",
@@ -406,11 +410,43 @@ export function spotMetaDescription(
     : `Ontbijt en brunch bij ${spot.name}, ${spot.address}. ${likes} van bezoekers op brag.fast.`;
 }
 
-export function passportMetaDescription(locale: Locale, slug: string, count: number): string {
-  const spots = uniqueSpotsLabel(locale, count);
-  return locale === "en"
-    ? `@${slug}'s passport on brag.fast: ${spots} added.`
-    : `Het paspoort van @${slug} op brag.fast: ${spots.toLowerCase()} toegevoegd.`;
+export function photoCountLabel(locale: Locale, count: number): string {
+  if (locale === "en") {
+    if (count <= 0) {
+      return "No photos yet";
+    }
+    return count === 1 ? "1 photo" : `${count} photos`;
+  }
+  if (count <= 0) {
+    return "Nog geen foto's";
+  }
+  return count === 1 ? "1 foto" : `${count} foto's`;
+}
+
+/** "2 ontdekt": spots the account put on brag.fast */
+export function discoveredCountLabel(locale: Locale, count: number): string {
+  return locale === "en" ? `${count} discovered` : `${count} ontdekt`;
+}
+
+export function passportMetaDescription(
+  locale: Locale,
+  slug: string,
+  photoCount: number,
+  discoveredCount: number,
+): string {
+  const photos = photoCountLabel(locale, photoCount);
+  if (locale === "en") {
+    const found =
+      discoveredCount > 0
+        ? `, ${discoveredCount} ${spotNoun(locale, discoveredCount)} discovered`
+        : "";
+    return `@${slug}'s passport on brag.fast: ${photos.toLowerCase()} of breakfast and brunch${found}.`;
+  }
+  const found =
+    discoveredCount > 0
+      ? `, ${discoveredCount} ${spotNoun(locale, discoveredCount)} ontdekt`
+      : "";
+  return `Het paspoort van @${slug} op brag.fast: ${photos.toLowerCase()} van ontbijt en brunch${found}.`;
 }
 
 export function localFavoritesHeading(locale: Locale, city: string): string {
