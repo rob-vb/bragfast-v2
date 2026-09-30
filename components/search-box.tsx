@@ -85,22 +85,25 @@ export function SearchBox({
       >
         <ComboboxInputGroup
           ref={pillRef}
-          className="flex h-16 items-center gap-2 rounded-full border border-white/40 bg-white/92 pl-5 pr-2 shadow-lift focus-within:ring-2 focus-within:ring-yolk"
+          className="flex h-16 items-center gap-2 rounded-full border border-white/40 bg-white/92 pl-6 pr-2 shadow-lift focus-within:ring-2 focus-within:ring-yolk sm:pl-5"
         >
-          <Search className="size-5 shrink-0 text-blush" aria-hidden />
+          <Search className="hidden size-5 shrink-0 text-blush sm:block" aria-hidden />
           <ComboboxInput
             id="catalog-search"
+            className="text-ellipsis"
             type="search"
             autoComplete="off"
             placeholder={t(locale, "searchPlaceholder")}
           />
+          {/* 8px inside the pill on every side. On a phone the key is the
+              glyph alone, so the placeholder keeps its whole line. */}
           <Button
             type="button"
-            size="sm"
-            className="shrink-0 sm:h-10 sm:px-5 sm:text-sm"
+            className="h-12 w-12 px-0 text-base sm:w-auto sm:px-6"
             onClick={() => go(highlighted.current)}
           >
-            {t(locale, "searchSubmit")}
+            <Search className="size-5 sm:hidden" strokeWidth={2.5} aria-hidden />
+            <span className="max-sm:sr-only">{t(locale, "searchSubmit")}</span>
           </Button>
         </ComboboxInputGroup>
         <ComboboxContent

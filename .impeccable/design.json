@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-29T14:19:10.000Z",
+  "generatedAt": "2026-09-30T00:00:00.000Z",
   "title": "Design System: brag.fast",
   "extensions": {
     "colorMeta": {
@@ -159,7 +159,12 @@
       {
         "name": "photo",
         "value": "0 1px 1px rgb(74 21 52 / 0.4), 0 10px 28px rgb(74 21 52 / 0.32)",
-        "purpose": "White type over the home still. Never a full-bleed overlay."
+        "purpose": "Bagel Fat One white type over the home still: the home title's painted lead. Never a full-bleed overlay."
+      },
+      {
+        "name": "photo-copy",
+        "value": "0 1px 1px rgb(74 21 52 / 0.55), 0 2px 10px rgb(74 21 52 / 0.55), 0 8px 28px rgb(74 21 52 / 0.4)",
+        "purpose": "Nunito copy over the home still: the home lede and hero links. Tighter and denser than photo because Nunito's strokes are thinner. Never a full-bleed overlay."
       }
     ],
     "shadows": [
@@ -192,6 +197,11 @@
         "name": "step-enamel",
         "value": "inset 0 3px 0 rgb(255 255 255 / 0.45)",
         "purpose": "Top lip of a filled podium step; no cast because the step stands on the floor."
+      },
+      {
+        "name": "sticker-ring-display",
+        "value": "inset 0 0.06em 0 rgb(255 255 255 / 0.45), 0 0 0 max(3px, 0.05em) #fff, 0 0.16em 0.3em rgb(22 4 14 / 0.35)",
+        "purpose": "The .sticker at display size (the home title's yolk tag): die-cut and cast scale with the type, plus the step-enamel lip."
       }
     ],
     "motion": [
@@ -285,9 +295,9 @@
       "name": "Search Pill",
       "kind": "input",
       "refersTo": "search-pill",
-      "description": "The hero's one control: a 64px white pill with a berry foot, blush glyph and a blush submit. Focus rings the whole group in yolk.",
-      "html": "<label class=\"ds-search\"><span class=\"ds-search__icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg></span><input class=\"ds-search__input\" type=\"search\" placeholder=\"Haarlem, Den Haag, Giethoorn\" aria-label=\"Zoek een plaats\"><button class=\"ds-search__go\" type=\"button\">Zoek</button></label>",
-      "css": ".ds-search { display: flex; align-items: center; gap: 8px; height: 64px; max-width: 36rem; padding: 0 8px 0 20px; border: 1px solid rgb(255 255 255 / 0.4); border-radius: 9999px; background: rgb(255 255 255 / 0.92); box-shadow: 0 8px 0 rgb(74 21 52 / 0.12), 0 12px 24px rgb(74 21 52 / 0.14); } .ds-search:focus-within { box-shadow: 0 0 0 2px var(--color-yolk, #feb62a), 0 8px 0 rgb(74 21 52 / 0.12), 0 12px 24px rgb(74 21 52 / 0.14); } .ds-search__icon { display: flex; color: var(--color-blush, #fa715a); } .ds-search__input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; color: var(--color-berry, #4a1534); caret-color: var(--color-blush, #fa715a); font: 400 1rem/1.5 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-search__input::placeholder { color: rgb(74 21 52 / 0.45); } .ds-search__go { height: 40px; padding: 0 20px; border: 0; border-radius: 9999px; background: var(--color-blush, #fa715a); color: #fff; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; } .ds-search__go:hover { filter: brightness(1.1); } .ds-search__go:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; }"
+      "description": "The hero's one control: a 64px white pill with a berry foot, blush glyph and a 48px blush key 8px inside the pill. On phones the key is a blush circle with the search glyph. Focus rings the whole group in yolk.",
+      "html": "<label class=\"ds-search\"><span class=\"ds-search__icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg></span><input class=\"ds-search__input\" type=\"search\" placeholder=\"Haarlem, Den Haag, Giethoorn\" aria-label=\"Zoek een plaats\"><button class=\"ds-search__go\" type=\"button\"><svg class=\"ds-search__go-icon\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><span class=\"ds-search__go-label\">Zoek</span></button></label>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 8px; height: 64px; max-width: 36rem; padding: 0 8px 0 20px; border: 1px solid rgb(255 255 255 / 0.4); border-radius: 9999px; background: rgb(255 255 255 / 0.92); box-shadow: 0 8px 0 rgb(74 21 52 / 0.12), 0 12px 24px rgb(74 21 52 / 0.14); } .ds-search:focus-within { box-shadow: 0 0 0 2px var(--color-yolk, #feb62a), 0 8px 0 rgb(74 21 52 / 0.12), 0 12px 24px rgb(74 21 52 / 0.14); } .ds-search__icon { display: flex; color: var(--color-blush, #fa715a); } .ds-search__input { flex: 1; text-overflow: ellipsis; min-width: 0; border: 0; background: transparent; outline: none; color: var(--color-berry, #4a1534); caret-color: var(--color-blush, #fa715a); font: 400 1rem/1.5 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-search__input::placeholder { color: rgb(74 21 52 / 0.45); } .ds-search__go { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; height: 48px; padding: 0 24px; border: 0; border-radius: 9999px; background: var(--color-blush, #fa715a); color: #fff; font: 700 1rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; } .ds-search__go:hover { filter: brightness(1.1); } .ds-search__go:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; } .ds-search__go-icon { display: none; } @media (max-width: 639px) { .ds-search { padding-left: 24px; } .ds-search__icon { display: none; } .ds-search__go { width: 48px; padding: 0; } .ds-search__go-icon { display: block; } .ds-search__go-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }"
     },
     {
       "name": "Like Pill",
@@ -397,7 +407,7 @@
       },
       {
         "name": "The Photo-Copy Rule",
-        "body": "Legibility on a bright still comes from `text-shadow-photo` (`0 1px 1px berry/40, 0 10px 28px berry/32`), never from a full-bleed overlay. No title sits on a photo outside home: the spot name sits on flat berry beside its print.",
+        "body": "Legibility on a bright still comes from `text-shadow-photo` (`0 1px 1px berry/40, 0 10px 28px berry/32`) on Bagel titles and `text-shadow-photo-copy` (`0 1px 1px berry/55, 0 2px 10px berry/55, 0 8px 28px berry/40`) on Nunito copy, never from a full-bleed overlay. No title sits on a photo outside home: the spot name sits on flat berry beside its print.",
         "section": "typography"
       },
       {
@@ -417,7 +427,7 @@
       }
     ],
     "dos": [
-      "**Do** open home with a full-bleed still under the milk header, copy bottom-left in white with `text-shadow-photo`.",
+      "**Do** open home with a full-bleed still under the milk header, copy bottom-left in white: the title with `text-shadow-photo`, the lede and links with `text-shadow-photo-copy`.",
       "**Do** give city, spot, passport, leaderboard and how it works a berry `PageHero` slab — with a photo print on spot.",
       "**Do** use `<Logo>` (`/brag_fast_logo.svg`) in the header and hero, and `<Egg>` in the footer and favicon.",
       "**Do** use flat blush for primary buttons and the pressed segment.",
@@ -433,7 +443,7 @@
       "**Don't** recreate the lockup or the egg with CSS gradient text.",
       "**Don't** put a CSS gradient on a button, chip, tray or type face.",
       "**Don't** use `#000` for text or a grey/black drop shadow; ink is berry and shadows are tinted.",
-      "**Don't** wash a hero with a full-bleed overlay — use `text-shadow-photo`.",
+      "**Don't** wash a hero with a full-bleed overlay — use `text-shadow-photo` and `text-shadow-photo-copy`.",
       "**Don't** put white type on a spot card still; names sit on the milk caption.",
       "**Don't** draw board rank as a burst, and don't put rank or the egg on a spot card.",
       "**Don't** add type chips (Café / Bakker / Hotel / Overig) — they were removed on purpose.",

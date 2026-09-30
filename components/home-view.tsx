@@ -6,12 +6,13 @@ import {
   type Locale,
   type MessageKey,
 } from "@/domain/messages";
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import type { HomepageData, LocalFavorites } from "@/domain/viewModels";
 import { AppRow } from "@/components/app-row";
 import { VERBS } from "@/components/how-it-works";
 import { SearchBox } from "@/components/search-box";
 import { PhotoFrame, SpotLinkCard } from "@/components/visual";
+import { displayFit } from "@/lib/display-fit";
 import { HERO_SCENE } from "@/lib/scenes";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
@@ -26,22 +27,7 @@ export function HomeView({
 }) {
   return (
     <main>
-      <section className="relative -mt-16 min-h-[92svh] sm:-mt-[4.5rem]">
-        <PhotoFrame scene={HERO_SCENE} ken className="absolute inset-0" />
-        <div className="relative mx-auto flex min-h-[92svh] max-w-6xl flex-col justify-end px-5 pb-16 pt-28 sm:px-8 md:pb-20">
-          <h1 className="text-shadow-photo max-w-xl font-display text-[clamp(1.875rem,6vw,3.25rem)] leading-[1.05] tracking-wide text-white">
-            {t(locale, "hero")}
-          </h1>
-          <p className="text-shadow-photo mt-4 max-w-lg text-base font-semibold leading-7 text-white sm:text-lg">
-            {t(locale, "intro")}
-          </p>
-          <SearchBox locale={locale} />
-          <nav className="mt-5 flex flex-wrap gap-x-6 gap-y-1">
-            <HeroLink href="/how-it-works">{t(locale, "howItWorks")}</HeroLink>
-            <HeroLink href="/nl/woonplaatsen">{t(locale, "heroTownIndex")}</HeroLink>
-          </nav>
-        </div>
-      </section>
+      <HomeHero locale={locale} />
 
       <LocalFavoritesSection
         locale={locale}
@@ -68,15 +54,97 @@ export function HomeView({
   );
 }
 
+const HERO_TRACKING = 0.012;
+
+/**
+ * The promise and its sticker: "Ontbijt- en brunchplekken," is painted on
+ * the still and "per stad." is pressed onto it. Copy without a comma is all
+ * paint and no sticker.
+ */
+function heroLockup(title: string): { lead: string; tag: string | null } {
+  const cut = title.lastIndexOf(", ");
+  return cut === -1
+    ? { lead: title, tag: null }
+    : { lead: title.slice(0, cut + 1), tag: title.slice(cut + 2) };
+}
+
+/**
+ * Home opens inside the still. The title comes into focus word by word, the
+ * way a camera finds the table, and then its last words land as a yolk
+ * sticker: home's one authored moment. The search is usable from the first
+ * frame; nothing it depends on waits for the moment.
+ */
+function HomeHero({ locale }: { locale: Locale }) {
+  const title = t(locale, "hero");
+  const { lead, tag } = heroLockup(title);
+  const words = lead.split(" ");
+  const fit = displayFit(lead, HERO_TRACKING);
+  return (
+    <section className="home-hero relative -mt-16 min-h-[92svh] overflow-clip sm:-mt-[4.5rem]">
+      {/* The still paints up to 1.46x wide under its zoom (globals.css
+          .hero-ken), and wider still when the frame is height-bound */}
+      <PhotoFrame
+        scene={HERO_SCENE}
+        ken
+        sizes="(max-height: 50rem) 180vw, 140vw"
+        className="absolute inset-0"
+      />
+      <div className="@container relative mx-auto flex min-h-[92svh] max-w-6xl flex-col justify-end px-5 pb-12 pt-28 sm:px-8 md:pb-20">
+        <div>
+          <h1
+            aria-label={title}
+            className="hero-title font-display text-white"
+            style={
+              {
+                "--fit-word": fit.word,
+                "--words": words.length,
+                letterSpacing: `${HERO_TRACKING}em`,
+              } as CSSProperties
+            }
+          >
+            <span className="hero-lead text-shadow-photo">
+              {words.map((word, i) => (
+                <Fragment key={i}>
+                  {i === 0 ? null : " "}
+                  <span className="hero-word" style={{ "--i": i } as CSSProperties}>
+                    {word}
+                  </span>
+                </Fragment>
+              ))}
+            </span>
+            {tag ? (
+              <span className="block">
+                <span className="hero-tag sticker">{tag}</span>
+              </span>
+            ) : null}
+          </h1>
+          <p className="text-shadow-photo-copy mt-6 max-w-xl text-[clamp(1.0625rem,0.95rem+0.4vw,1.25rem)] leading-[1.5] font-semibold text-pretty text-white sm:mt-7">
+            {t(locale, "intro")}
+          </p>
+          <SearchBox locale={locale} className="mt-7 sm:mt-8" />
+          <nav className="mt-3 flex flex-wrap gap-x-7">
+            <HeroLink href="/how-it-works">{t(locale, "howItWorks")}</HeroLink>
+            <HeroLink href="/nl/woonplaatsen">{t(locale, "heroTownIndex")}</HeroLink>
+          </nav>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /** Crawlable ways in beside the search, which only works with script. */
 function HeroLink({ href, children }: { href: string; children: string }) {
   return (
     <Link
       href={href}
-      className="text-shadow-photo inline-flex items-center gap-1.5 rounded-full py-1 text-sm font-bold text-white transition-[color,transform] duration-press ease-out-strong active:scale-[0.97] pointer-fine:hover:text-yolk sm:text-base"
+      className="group/hero-link text-shadow-photo-copy inline-flex min-h-11 items-center gap-1.5 rounded-full text-sm font-bold text-white transition-[color,transform] duration-press ease-out-strong active:scale-[0.97] pointer-fine:hover:text-yolk sm:text-base"
     >
       {children}
-      <ArrowRight aria-hidden className="size-4" strokeWidth={2.75} />
+      <ArrowRight
+        aria-hidden
+        className="size-4 transition-transform duration-press ease-out-strong pointer-fine:group-hover/hero-link:translate-x-0.5"
+        strokeWidth={2.75}
+      />
     </Link>
   );
 }

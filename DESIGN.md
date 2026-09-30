@@ -307,8 +307,18 @@ voices, no third.
   white): `PageHeroTitle size="lg"`.
 - **Headline** (Bagel Fat One, `clamp(2.4rem, 8vw, 5.5rem)`, white): hero titles that are
   neither a name nor a poster. The leaderboard title is Display (`PageHeroTitle size="lg"`).
-- **Home hero** (Bagel Fat One, `clamp(1.875rem, 6vw, 3.25rem)`, line-height 1.05, white with
-  `text-shadow-photo`): deliberately smaller than a city name — the still is the loud thing.
+- **Home hero** (Bagel Fat One, fitted, line-height 1, tracking 0.012em): fitted like a poster
+  but capped below a city name — the still is the loud thing. `.hero-title` is
+  `min(96cqi / --fit-word, clamp(2.5rem, 1.6rem + 4.4vw, 5.25rem))`, where `--fit-word` is the
+  lead's widest word from `lib/display-fit.ts`, so no word breaks the column. Line-height is 1,
+  looser than a city name, because this title has descenders. The copy splits at its last
+  `, `: the lead is painted in white with `text-shadow-photo` (`max-width: 11em`, balanced
+  wrap), and the tag after the comma is a yolk `.sticker` pill in berry ink at 0.86em, tilted
+  -3deg. Copy without a comma is all paint and no sticker. The heading keeps the whole line
+  as its `aria-label`.
+- **Home lede** (Nunito 600, `clamp(1.0625rem, 0.95rem + 0.4vw, 1.25rem)`, line-height 1.5,
+  white with `text-shadow-photo-copy`, `max-w-xl`, pretty wrap): the intro under the home
+  title.
 - **Section** (Bagel Fat One, `text-3xl`→`text-4xl`, berry): section heads such as local
   favorites.
 - **Card title** (Bagel Fat One, `text-2xl`, berry on the milk caption; the featured print
@@ -328,7 +338,9 @@ white; over a photo it also takes `text-shadow-photo`. Card names sit on the mil
 berry — never white on the still.
 
 **The Photo-Copy Rule.** Legibility on a bright still comes from `text-shadow-photo`
-(`0 1px 1px berry/40, 0 10px 28px berry/32`), never from a full-bleed overlay. No title sits
+(`0 1px 1px berry/40, 0 10px 28px berry/32`) on Bagel titles and `text-shadow-photo-copy`
+(`0 1px 1px berry/55, 0 2px 10px berry/55, 0 8px 28px berry/40`) on Nunito copy, never from a
+full-bleed overlay. No title sits
 on a photo outside home: the spot name sits on flat berry beside its print.
 
 ## Layout
@@ -340,8 +352,9 @@ legal pages) narrow to `max-w-3xl`, and the search pill to `max-w-xl`.
 
 Heroes pull up under the fixed-height header with `-mt-16` / `sm:-mt-[4.5rem]` and pad back
 down with `pt-28`, so the header floats on the hero. Hero heights come from `PageHero`:
-`board` 42svh, `poster` 46svh (city), `spot` 58svh; home is its own `92svh` section. The
-hero's inner column is a size container, which is what the poster title measures.
+`board` 42svh, `poster` 46svh (city), `spot` 58svh; home is its own `92svh` section, clipped,
+with its copy column bottom-aligned (`pb-12` / `md:pb-20`). The hero's inner column is a size
+container, which is what the poster title and the home title measure.
 
 The spot page runs a 7/5 split on `lg`: name, address and actions left; the print right,
 hanging 152px (lg) / 96px (mobile) below the slab. Under the slab the same split holds the
@@ -364,7 +377,14 @@ Four shadow tokens, all tinted — no grey or black drop shadows anywhere.
 - **`drop-shadow-sticker`** (a white 2px outline on four sides plus `0 6px 16px berry/22`): the
   hero lockup and the empty-board egg, so the SVG survives any ground behind it.
 - **`.sticker`** (a 3px white die-cut ring plus a deep berry cast): the yolk count chip on the
-  city poster, tilted -3deg, so it reads as a sticker pressed onto the slab.
+  city poster, tilted -3deg, so it reads as a sticker pressed onto the slab. The home title's
+  tag is the same sticker at display size: its die-cut scales as `max(3px, 0.05em)`, its cast
+  as `0 0.16em 0.3em` deep-berry/35, and it carries the step-enamel lip in ems
+  (`inset 0 0.06em 0 white/45`).
+- **Photo text shadows** (`text-shadow-photo`, `text-shadow-photo-copy`): type on the home
+  still. The copy shadow is tighter and denser because Nunito's strokes are thinner than
+  Bagel's; it carries the home lede and hero links. There is no shade, scrim or overlay on the
+  hero.
 - **Card lift**: a spot print rises 4px and takes `shadow-lift` on fine-pointer hover.
 - **Print cast** (`.brag-print`: `0 1px 0 berry/6, 0 3px 0 deep-berry/12, 0 24px 48px -12px
   deep-berry/55`, where deep berry is `rgb(22 4 14)`, the `.sticker` cast): the spot hero print,
@@ -424,7 +444,11 @@ h-12, `icon` size-10.
 ### Search pill
 
 The hero's one control. `h-16`, `rounded-full`, white at 92% with a `white/40` hairline and
-`shadow-lift`; blush search glyph, then the input, then a `sm` blush button. Focus is a
+`shadow-lift`; blush search glyph, then the input, then a blush `h-12` key (`px-6`,
+`text-base`), which sits 8px inside the pill on every side so the radii stay concentric. On
+phones (under `sm`) the leading glyph hides, the pill pads 24px left, and the key is a 48px
+blush circle holding a Lucide search glyph with its label screen-reader-only, so the
+placeholder keeps its line; the input ellipsizes a placeholder that still overflows. Focus is a
 `ring-2 ring-yolk` on the whole group, not the bare input. The suggestion popup is anchored to
 the pill with collision avoidance off, so it never flips above the fold.
 
@@ -612,14 +636,19 @@ print and the podium, a plain candy chip under the example board).
 `PhotoFrame` is absolute-inset `object-cover` over a `Scene` (`lib/scenes.ts`): a `<picture>`
 with AVIF and WebP landscape widths for `srcset`, and a centred 3:4 crop for portrait screens,
 all cut from one PNG by `scripts/hero-scene.mjs`. The image is `fetchpriority="high"`: it is
-home's largest paint. With `ken`, it runs `hero-ken` — a 22s scale 1.04 → 1.14 alternating
-drift, disabled under `prefers-reduced-motion`. Used full-bleed on the home hero.
+home's largest paint. `sizes` defaults to `100vw`; a zoomed still paints wider than its frame,
+so home passes `(max-height: 50rem) 180vw, 140vw`. With `ken`, it runs `hero-ken` — a 22s
+alternating drift from scale 1.22 to 1.32 (1.36 to 1.46 when the screen is under 50rem tall),
+anchored bottom-left (`object-position: 50% 100%`, origin `0% 100%`; origin 12% in a short
+landscape screen, `object-position: 0% 100%` in a short portrait one), so the café signage
+rides up under the header and away from the title. The base rule holds the start scale, so
+reduced motion keeps the framing and loses only the drift. Used full-bleed on the home hero.
 
 ### Home hero links
 
-Under the search pill, two Nunito 700 links in white with `text-shadow-photo`, each ending in a
-Lucide arrow: **Hoe het werkt** and **Woonplaatsen met plekken**. Hover (fine pointer) turns
-them yolk. They are how a crawler leaves home; the search only works with script.
+Under the search pill, two Nunito 700 links in white with `text-shadow-photo-copy`, each ending
+in a Lucide arrow: **Hoe het werkt** and **Woonplaatsen met plekken**. Each is a 44px-tall hit
+area. Hover (fine pointer) turns them yolk and nudges the arrow 2px right. They are how a crawler leaves home; the search only works with script.
 
 ### Home steps (`Steps` in `components/home-view.tsx`)
 
@@ -661,6 +690,16 @@ Three durations and three easings, all tokens:
   sticker moments: the poster letters landing and the like heart popping. Nothing else
   springs.
 
+**Home's one authored moment** is the title arriving. The lead's words come into focus one
+after another (`hero-focus`: from 0.45 opacity, a 0.09em blur and a 0.08em drop; 1100ms
+`ease-out-strong`, 130ms apart), then the tag is pressed on (`hero-tag-press`: from scale
+1.45, -11deg and no opacity, overshooting to 0.95 before it settles at -3deg; 640ms
+`ease-out-strong`) while its cast tightens. The search is static and usable from the first
+frame; nothing waits for the moment. Ambient: the ken-burns drift, and, where the browser has
+scroll timelines (`@supports (animation-timeline: view())`) and motion is not reduced, the
+still falls behind the page as the hero exits (`hero-drift`, translating 22% over the hero's
+exit view-timeline).
+
 **The spot page's one authored moment** is the print landing: it drops from 2.5rem above,
 tilted 2.5 times its resting angle and scaled 1.07, at 20% opacity, and settles over 1000ms
 `ease-out-strong` while its cast tightens from a wide soft shadow to the print cast. The glow
@@ -701,7 +740,7 @@ stands in its final state. Nothing jumps back to replay. Pieces that react rathe
 
 Press feedback is uniform: `active:scale-[0.97]`. Hover effects are gated behind the
 `pointer-fine` variant so a touch device never sticks in a hover state. Under
-`prefers-reduced-motion` the ken-burns, poster letters, print landing, glow fade, lightbox
+`prefers-reduced-motion` the ken-burns, scroll drift, home title focus and tag press, poster letters, print landing, glow fade, lightbox
 slide, like pop, sort glide, stamp press, podium rise, egg drop and like-bar fill stop — and on how it works the
 staged print, map bands, pin ring, pin glide and pin tour, town label, +1 float, demo
 podium rise, demo egg drop and demo stamp press stop, and the like demo re-sorts without a
@@ -712,8 +751,8 @@ every popup transition falls back to opacity with transforms removed.
 
 ### Do
 
-- **Do** open home with a full-bleed still under the milk header, copy bottom-left in white
-  with `text-shadow-photo`.
+- **Do** open home with a full-bleed still under the milk header, copy bottom-left in white:
+  the title with `text-shadow-photo`, the lede and links with `text-shadow-photo-copy`.
 - **Do** give city, spot, passport, leaderboard and how it works a berry `PageHero` slab —
   with a photo print on spot.
 - **Do** use `<Logo>` (`/brag_fast_logo.svg`) in the header and hero, and `<Egg>` in the footer
@@ -736,7 +775,8 @@ every popup transition falls back to opacity with transforms removed.
 - **Don't** put a CSS gradient on a button, chip, tray or type face.
 - **Don't** use `#000` for text or a grey/black drop shadow; ink is berry and shadows are
   tinted.
-- **Don't** wash a hero with a full-bleed overlay — use `text-shadow-photo`.
+- **Don't** wash a hero with a full-bleed overlay — use `text-shadow-photo` and
+  `text-shadow-photo-copy`.
 - **Don't** put white type on a spot card still; names sit on the milk caption.
 - **Don't** draw board rank as a burst, and don't put rank or the egg on a spot card.
 - **Don't** add type chips (Café / Bakker / Hotel / Overig) — they were removed on purpose.
