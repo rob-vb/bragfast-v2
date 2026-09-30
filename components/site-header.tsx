@@ -40,26 +40,26 @@ export function SiteHeader({
         >
           <HeaderLockup />
         </Link>
-        <span className="header-tag hidden h-7 items-center rounded-full bg-candy px-2.5 font-display text-[0.9375rem] leading-none tracking-wide text-berry lg:inline-flex">
+        <span className="header-tag hidden h-7 items-center rounded-full bg-candy px-2.5 font-display text-[0.9375rem] leading-none tracking-wide text-berry xl:inline-flex">
           #bragfast
         </span>
         <div className="ml-auto flex items-center gap-2">
-          {/* Below md the row does not fit beside the lockup; it moves into
+          {/* Below lg the row does not fit beside the lockup; it moves into
               the Menu sheet. AuthControl stays mounted: it owns sign-in. */}
           <HeaderNav
             label={t(locale, "menu")}
             links={links}
-            className="hidden md:block"
+            className="hidden lg:block"
           />
           <span aria-hidden className="mx-1 hidden h-5 w-px bg-berry/15 lg:block" />
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <LanguageSwitch
               locale={locale}
               label={t(locale, "language")}
               variant="bar"
             />
           </div>
-          <div className="hidden md:contents">
+          <div className="hidden lg:contents">
             <AuthControl
               locale={locale}
               preloadedUser={preloadedUser}
@@ -71,7 +71,7 @@ export function SiteHeader({
             preloadedUser={preloadedUser}
             passportSlug={passportSlug}
             isOwner={isOwner}
-            className="md:hidden"
+            className="lg:hidden"
           />
         </div>
       </div>

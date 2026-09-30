@@ -364,8 +364,7 @@ export function AuthControl({
     return (
       <Menu.Root modal={false}>
         <Menu.Trigger
-          aria-label={t(locale, "myProfile")}
-          className="group/me inline-flex h-10 items-center gap-2 rounded-full border border-berry/12 bg-white pr-2.5 pl-[3px] text-sm font-bold text-berry transition-[border-color,scale] duration-press ease-out-strong active:scale-[0.97] pointer-fine:hover:border-berry/25 data-popup-open:border-berry/25"
+          className="group/me inline-flex h-10 items-center gap-2 rounded-full whitespace-nowrap border border-berry/12 bg-white pr-2.5 pl-[3px] text-sm font-bold text-berry transition-[border-color,scale] duration-press ease-out-strong active:scale-[0.97] pointer-fine:hover:border-berry/25 data-popup-open:border-berry/25"
         >
           <span
             aria-hidden
@@ -373,7 +372,7 @@ export function AuthControl({
           >
             {username.slice(0, 1)}
           </span>
-          <span className="hidden lg:inline">{t(locale, "myProfile")}</span>
+          {t(locale, "myProfile")}
           <ChevronDown
             className="size-4 text-berry/60 transition-transform duration-popover ease-out-strong group-data-popup-open/me:rotate-180"
             aria-hidden="true"

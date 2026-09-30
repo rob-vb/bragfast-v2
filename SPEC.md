@@ -34,7 +34,7 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 **Ship in v1**
 
 - Crawlable site, NL woonplaats boards, spot + profile + leaderboard pages
-- Homepage: woonplaats autocomplete over the BAG gazetteer, with plain links to how it works and the woonplaats index under it; IP local-favorites when that woonplaats board has at least 3 listed spots with a photo; the four-step band; two app rows with per-store Coming soon. No featured woonplaatsen. No GPS. No spot search on `/`. No national feed.
+- Homepage: woonplaats autocomplete over the BAG gazetteer; IP local-favorites when that woonplaats board has at least 3 listed spots with a photo; the four-step band; two app rows with per-store Coming soon. No featured woonplaatsen. No GPS. No spot search on `/`. No national feed.
 - Woonplaats page: list of spots added in the app, empty state when none, list default, map toggle when spots exist
 - Empty woonplaats: `noSpotsYet` and `emptyBoardAppHint`. No add control. No sort or map on empty. `noindex, follow` and out of the sitemap until the first spot.
 - Woonplaats index `/nl/woonplaatsen`: every board with at least one live spot, A to Z.
@@ -131,7 +131,7 @@ Permanently closed (`business_status` CLOSED): strip from woonplaats lists and s
 
 ### Homepage
 
-**Hero.** One sentence of what it is (breakfast and brunch spots per woonplaats), then an intro that says what the site and app do: search a place, visitors add spots with a photo in the app, likes set the order. One search box: woonplaats autocomplete over the BAG gazetteer (`searchWoonplaatsHits` / `NL_CITIES`). English intro starts "Search a city." Dutch intro keeps woonplaats. Exact pick navigates to `/nl/{city}`. Under the search, two plain links: **Hoe het werkt** (`/how-it-works`) and **Woonplaatsen met plekken** (`/nl/woonplaatsen`). The search needs script; these links are how a crawler leaves `/`. There is no `/?q=` results list, no GPS or near-me control, no spot search on `/`, and no nationwide ticker or live social feed.
+**Hero.** One sentence of what it is (breakfast and brunch spots per woonplaats), then an intro that says what the site and app do: search a place, visitors add spots with a photo in the app, likes set the order. One search box: woonplaats autocomplete over the BAG gazetteer (`searchWoonplaatsHits` / `NL_CITIES`). English intro starts "Search a city." Dutch intro keeps woonplaats. Exact pick navigates to `/nl/{city}`. Nothing sits under the search. The search needs script; the header and footer links to **Hoe het werkt** (`/how-it-works`) and **Woonplaatsen** (`/nl/woonplaatsen`) are how a crawler leaves `/`. There is no `/?q=` results list, no GPS or near-me control, no spot search on `/`, and no nationwide ticker or live social feed.
 
 **Local favorites.** Optional block under the search. Infer a point from the request IP (GeoIP/MaxMind-style). No browser geolocation prompt. Map that point through BAG point-in-polygon to one woonplaats (same assignment as add).
 
@@ -186,7 +186,7 @@ List of adders. Readable signed-out. Header and footer link here. Empty copy whe
 
 ### Woonplaats index `/nl/woonplaatsen`
 
-Every woonplaats board with at least one live spot, A to Z by the name the visitor reads (`'s-Hertogenbosch` under H), grouped by letter, each with its spot count. A board joins with its first spot. The order is the alphabet; this is an index, not featured woonplaatsen, and it never ranks boards. Berry header with the search box, so a place that is not listed is one search away. With no boards yet: an empty state and `noindex`. Footer and the homepage hero link here.
+Every woonplaats board with at least one live spot, A to Z by the name the visitor reads (`'s-Hertogenbosch` under H), grouped by letter, each with its spot count. A board joins with its first spot. The order is the alphabet; this is an index, not featured woonplaatsen, and it never ranks boards. Berry header with the search box, so a place that is not listed is one search away. With no boards yet: an empty state and `noindex`. Header and footer link here.
 
 ### How it works `/how-it-works`
 
@@ -281,6 +281,7 @@ Board empty: **Nog geen plekken in deze stad.** (`noSpotsYet`) plus `emptyBoardA
 Closed: **Gesloten**.  
 Leaderboard chrome (NL and EN): **Leaderboard**.  
 How it works chrome: **Hoe het werkt**. English UI: **How it works**.  
+Woonplaats index chrome: **Woonplaatsen**. English UI: **Towns**.  
 Signed-in header control: **Mijn profiel** dropdown to the passport and sign out. English UI: **My profile**. No email or display name in the header.  
 Claim entry (v2): **Jouw zaak?**  
 Claimed mark (v2): **Geclaimd**.
