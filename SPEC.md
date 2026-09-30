@@ -274,7 +274,7 @@ Geclaimd means "this page has a paying owner," not "we checked KvK" and not "thi
 ## Copy (Dutch default)
 
 Homepage one-liner: **Ontbijt- en brunchplekken, per stad.**  
-Ontbijt and brunch: say the pair where copy states what the site is (hero, meta titles and descriptions, board title and lead, SEO, llms.txt). Elsewhere talk about the **plek** or the **bord**, or use both verbs (*ontbijt of brunch je*, *ontbeten of gebruncht*). Never **ontbijt** or **breakfast** alone, except the brand line **Brag je ontbijt.** / **Brag your breakfast.**  
+Ontbijt and brunch: say the pair where copy states what the site is (hero, meta titles and descriptions, board title and lead, SEO, llms.txt). Elsewhere talk about the **plek** or the **bord**, or use both verbs (*ontbijt of brunch je*, *ontbeten of gebruncht*). Never **ontbijt** or **breakfast** alone. The slogan is **Eerst de foto, dan de hap.** / **Photo first, then the bite.** (footer and App Store subtitle).  
 Hashtag in UI: `#bragfast`.  
 Homepage app-row and local-favorites headings: not frozen; owner rewrites later. Do not use **adder** in Dutch UI sentences. Disabled store buttons: **Coming soon**.  
 Board empty: **Nog geen plekken in deze stad.** (`noSpotsYet`) plus `emptyBoardAppHint`.  
