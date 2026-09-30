@@ -138,7 +138,7 @@ export default async function SpotPage({
     }),
     breadcrumbJsonLd([
       { name: SITE_NAME, url: `${origin}/` },
-      { name: t(locale, "townIndex"), url: `${origin}/nl/steden` },
+      { name: t(locale, "townIndex"), url: `${origin}/nl` },
       { name, url: `${origin}/nl/${page.city.slug}` },
       { name: page.name, url: `${origin}${page.canonicalPath}` },
     ]),

@@ -4,7 +4,7 @@ import type { Locale, MessageKey } from "./messages";
 export type ChromePlacement = "header" | "menu" | "footer";
 
 export type ChromeLink = {
-  href: "/how-it-works" | "/nl/steden" | "/nl/leaderboard";
+  href: "/how-it-works" | "/nl" | "/nl/leaderboard";
   label: Extract<MessageKey, "howItWorks" | "townIndex" | "leaderboard">;
   placements: readonly ChromePlacement[];
 };
@@ -16,7 +16,7 @@ export const CHROME_LINKS: readonly ChromeLink[] = [
     placements: ["header", "menu", "footer"],
   },
   {
-    href: "/nl/steden",
+    href: "/nl",
     label: "townIndex",
     placements: ["header", "menu", "footer"],
   },

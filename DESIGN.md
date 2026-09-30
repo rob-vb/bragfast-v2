@@ -702,7 +702,7 @@ that verb's poster on how it works; hover or focus straightens the sticker and s
 as on the how-it-works hero. Mobile sets the sticker beside its sentence; `sm` and up stack
 them in two, then four, columns. The band ends in the white `h-12` pill link to how it works.
 
-### Woonplaats index (`app/nl/steden/page.tsx`)
+### Woonplaats index (`app/nl/page.tsx`)
 
 A `board` berry `PageHero`: Display title, the yolk count `.sticker` ("2 plaatsen"), a milk
 lede and the search pill. Below, on white, one row per letter between `berry/12` hairlines:
