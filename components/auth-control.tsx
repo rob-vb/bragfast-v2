@@ -83,6 +83,13 @@ function readUsername(user: AuthUser | null | undefined): string | null {
   return username.length === 0 ? null : username;
 }
 
+/** The signed-in username; null while signed out or before one is picked. */
+export function useUsername(
+  preloadedUser: Preloaded<typeof api.auth.getCurrentUser>,
+): string | null {
+  return readUsername(usePreloadedAuthQuery(preloadedUser) as AuthUser | null);
+}
+
 function looksLikeEmail(value: string): boolean {
   return value.includes("@");
 }

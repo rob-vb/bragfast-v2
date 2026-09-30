@@ -51,12 +51,15 @@ export function PhotoFrame({
   alt = "",
   className,
   ken,
+  sizes = "100vw",
   children,
 }: {
   scene: Scene;
   alt?: string;
   className?: string;
   ken?: boolean;
+  /** How wide the still paints; a zoomed still paints wider than the frame. */
+  sizes?: string;
   children?: ReactNode;
 }) {
   const srcSet = (ext: string) =>
@@ -66,11 +69,11 @@ export function PhotoFrame({
       <picture>
         <source media="(orientation: portrait)" type="image/avif" srcSet={`${scene.portrait}.avif`} />
         <source media="(orientation: portrait)" type="image/webp" srcSet={`${scene.portrait}.webp`} />
-        <source type="image/avif" srcSet={srcSet("avif")} sizes="100vw" />
+        <source type="image/avif" srcSet={srcSet("avif")} sizes={sizes} />
         <img
           src={`${scene.base}-${scene.widths[0]}.webp`}
           srcSet={srcSet("webp")}
-          sizes="100vw"
+          sizes={sizes}
           alt={alt}
           fetchPriority="high"
           className={cn(
