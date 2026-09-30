@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as account from "../account.js";
 import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as catalog from "../catalog.js";
@@ -17,6 +18,7 @@ import type * as identity from "../identity.js";
 import type * as leaderboard from "../leaderboard.js";
 import type * as likes from "../likes.js";
 import type * as mail from "../mail.js";
+import type * as model_account from "../model/account.js";
 import type * as model_owner from "../model/owner.js";
 import type * as model_photos from "../model/photos.js";
 import type * as model_placeAdd from "../model/placeAdd.js";
@@ -35,6 +37,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  account: typeof account;
   admin: typeof admin;
   auth: typeof auth;
   catalog: typeof catalog;
@@ -44,6 +47,7 @@ declare const fullApi: ApiFromModules<{
   leaderboard: typeof leaderboard;
   likes: typeof likes;
   mail: typeof mail;
+  "model/account": typeof model_account;
   "model/owner": typeof model_owner;
   "model/photos": typeof model_photos;
   "model/placeAdd": typeof model_placeAdd;
