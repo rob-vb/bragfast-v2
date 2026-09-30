@@ -32,7 +32,7 @@ export function AppRow({
           <p className="mt-4 max-w-md text-base font-semibold leading-7 text-berry/80">
             {t(locale, bodyKey)}
           </p>
-          <StoreButtons locale={locale} ios={stores.ios} android={stores.android} />
+          <StoreButtons locale={locale} ios={stores.ios} />
         </div>
         <PhoneShell />
       </div>

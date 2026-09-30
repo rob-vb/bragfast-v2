@@ -47,12 +47,6 @@ export function planStoreButton(href: string | undefined): StoreButton {
   return { kind: "comingSoon" };
 }
 
-export function planAppStores(env: {
-  ios?: string;
-  android?: string;
-}): AppStores {
-  return {
-    ios: planStoreButton(env.ios),
-    android: planStoreButton(env.android),
-  };
+export function planAppStores(env: { ios?: string }): AppStores {
+  return { ios: planStoreButton(env.ios) };
 }

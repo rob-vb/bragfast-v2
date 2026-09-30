@@ -14,6 +14,7 @@ import { ensureUserByAuthId } from "./model/users";
 import {
   planPlacePreview,
   type PhotoPublishChannel,
+  type PhotoSource,
 } from "../domain/photo";
 import type { PlaceAddRejectReason } from "../domain/placeAdd";
 import { parsePlaceId } from "../domain/ids";
@@ -272,7 +273,7 @@ export const preview = action({
 
 async function publishPlace(
   ctx: ActionCtx,
-  args: { placeId: string; storageId: Id<"_storage"> },
+  args: { placeId: string; storageId: Id<"_storage">; source?: PhotoSource },
   channel: PhotoPublishChannel,
 ): Promise<{
   action: "live" | "redirect" | "attach";
@@ -300,6 +301,7 @@ async function publishPlace(
     displayName,
     avatarUrl: typeof authUser.image === "string" ? authUser.image : null,
     channel,
+    source: args.source,
   });
   if (result.action === "reject") {
     throw new ConvexError(result.reason);
@@ -312,7 +314,11 @@ async function publishPlace(
 }
 
 export const publish = action({
-  args: { placeId: v.string(), storageId: v.id("_storage") },
+  args: {
+    placeId: v.string(),
+    storageId: v.id("_storage"),
+    source: v.union(v.literal("ios"), v.literal("web")),
+  },
   handler: async (
     ctx,
     args,
@@ -339,6 +345,7 @@ export const apply = internalMutation({
     channel: v.optional(
       v.union(v.literal("web"), v.literal("app")),
     ),
+    source: v.optional(v.union(v.literal("ios"), v.literal("web"))),
   },
   handler: async (ctx, args): Promise<PlaceAddCommit> => {
     const user = await ensureUserByAuthId(ctx, {
@@ -355,6 +362,7 @@ export const apply = internalMutation({
       photoId: args.storageId,
       addedBy: user._id,
       channel: args.channel ?? "web",
+      source: args.source,
     });
   },
 });

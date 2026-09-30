@@ -5,6 +5,7 @@ import {
   planPhotoPublish,
   unusedPublishBlob,
   type PhotoPublishChannel,
+  type PhotoSource,
 } from "../../domain/photo";
 import { slugFromPlaceName, type PlaceAddPlan } from "../../domain/placeAdd";
 import { insertSpotPhoto } from "./photos";
@@ -53,6 +54,7 @@ export async function applyPlaceAdd(
     photoId: Id<"_storage"> | null;
     addedBy: Id<"users">;
     channel?: PhotoPublishChannel;
+    source?: PhotoSource;
   },
 ): Promise<PlaceAddCommit> {
   const placeId = parsePlaceId(input.placeId);
@@ -83,6 +85,7 @@ export async function applyPlaceAdd(
       spotId: byPlaceId._id,
       storageId: photoId,
       uploadedBy: input.addedBy,
+      source: input.source,
     });
     if (byPlaceId.photoId === undefined) {
       await ctx.db.patch(byPlaceId._id, { photoId });
@@ -121,6 +124,7 @@ export async function applyPlaceAdd(
     storageId: photoId,
     uploadedBy: input.addedBy,
     discovery: true,
+    source: input.source,
   });
   return { ...plan, spotSlug: slug };
 }

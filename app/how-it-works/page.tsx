@@ -90,7 +90,6 @@ export default async function HowItWorksPage() {
           <StoreButtons
             locale={locale}
             ios={stores.ios}
-            android={stores.android}
             className="-mt-4 lg:col-span-6 lg:col-start-1 lg:row-start-2 lg:mt-0 lg:pl-4"
           />
         </Stage>
@@ -147,7 +146,7 @@ export default async function HowItWorksPage() {
               <Search aria-hidden className="size-4" strokeWidth={2.5} />
               {t(locale, "hiwSearchAPlace")}
             </Link>
-            <StoreButtons locale={locale} ios={stores.ios} android={stores.android} className="mt-0" />
+            <StoreButtons locale={locale} ios={stores.ios} className="mt-0" />
           </div>
         </div>
       </section>

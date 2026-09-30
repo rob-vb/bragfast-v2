@@ -80,6 +80,8 @@ export default defineSchema({
     createdAt: v.number(),
     /** The photo whose publish created the spot. */
     discovery: v.optional(v.boolean()),
+    /** Client that published it. Absent on photos from before 30 September 2026. */
+    source: v.optional(v.union(v.literal("ios"), v.literal("web"))),
   })
     .index("by_spot", ["spotId"])
     .index("by_spot_created", ["spotId", "createdAt"])

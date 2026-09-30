@@ -1093,7 +1093,6 @@ test("planStoreButton is live only for an http URL", () => {
     planAppStores({ ios: "https://apps.apple.com/app/x" }),
     {
       ios: { kind: "live", href: "https://apps.apple.com/app/x" },
-      android: { kind: "comingSoon" },
     },
   );
 });

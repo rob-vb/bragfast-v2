@@ -8,6 +8,9 @@ import {
 
 export type PhotoPublishChannel = "web" | "app";
 
+/** Which client uploaded an app photo: the iOS app or the web app at /app. */
+export type PhotoSource = "ios" | "web";
+
 export type PhotoPublishPlan =
   | Extract<PlaceAddPlan, { action: "live" | "reject" | "redirect" }>
   | { action: "attach" };

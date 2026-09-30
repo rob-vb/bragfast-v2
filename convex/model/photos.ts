@@ -4,6 +4,7 @@ import {
   pickDiscoveryPhoto,
   planHeroAfterDelete,
   planPhotoDelete,
+  type PhotoSource,
 } from "../../domain/photo";
 
 export async function insertSpotPhoto(
@@ -14,6 +15,7 @@ export async function insertSpotPhoto(
     uploadedBy: Id<"users">;
     createdAt?: number;
     discovery?: boolean;
+    source?: PhotoSource;
   },
 ): Promise<Id<"photos">> {
   return await ctx.db.insert("photos", {
@@ -22,6 +24,7 @@ export async function insertSpotPhoto(
     uploadedBy: input.uploadedBy,
     createdAt: input.createdAt ?? Date.now(),
     ...(input.discovery ? { discovery: true } : {}),
+    ...(input.source ? { source: input.source } : {}),
   });
 }
 

@@ -28,8 +28,6 @@ export default async function LeaderboardPage() {
   const locale = await getLocale();
   const { adders } = await loadLeaderboard();
   const stores = loadAppStores();
-  // Two "Coming soon" keys say nothing the copy does not; show the stores once one is live
-  const storeLive = stores.ios.kind === "live" || stores.android.kind === "live";
   const rest = adders.slice(PODIUM);
   // The leader's likes are the full bar; nobody below has more
   const lead = adders[0]?.likeSum ?? 0;
@@ -115,14 +113,7 @@ export default async function LeaderboardPage() {
               {t(locale, "climbBody")}
             </p>
           </div>
-          {storeLive ? (
-            <StoreButtons
-              locale={locale}
-              ios={stores.ios}
-              android={stores.android}
-              className="mt-0 shrink-0"
-            />
-          ) : null}
+          <StoreButtons locale={locale} ios={stores.ios} className="mt-0 shrink-0" />
         </section>
       </div>
     </main>

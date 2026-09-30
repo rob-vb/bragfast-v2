@@ -71,7 +71,6 @@ export type StoreButton =
 
 export type AppStores = {
   ios: StoreButton;
-  android: StoreButton;
 };
 
 export type LocalFavoriteCard = {
