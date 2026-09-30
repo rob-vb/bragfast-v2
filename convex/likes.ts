@@ -44,7 +44,7 @@ async function appUserId(ctx: QueryCtx): Promise<Id<"users"> | null> {
   return user?._id ?? null;
 }
 
-async function syncSpotLikes(ctx: MutationCtx, spotId: Id<"spots">) {
+export async function syncSpotLikes(ctx: MutationCtx, spotId: Id<"spots">) {
   const remaining = await likesOnSpot(ctx, spotId);
   const likeCount = remaining.length;
   const lastLikedAt =
