@@ -192,7 +192,7 @@ sits over. The spot slab carries the adder's photo as a tilted print instead of 
 and the print's own light pools softly around it, so the berry still reads as the ground. Chrome around either is strawberry milk, berry ink, blush and yolk
 stickers. Cocoa brown lives on the egg SVG and nowhere else.
 
-The header is pink milk at 85% with a backdrop blur. Content sits on white. Ink is berry —
+The header is an opaque strawberry-milk band that lifts into a milk pill once the page scrolls. Content sits on white. Ink is berry —
 never black, never cocoa, never indigo. Buttons and pressed segments are flat blush; nothing
 in this system carries a CSS gradient. Density is generous and rounded: pills for anything
 pressable, 28px slabs for anything that holds content.
@@ -229,7 +229,7 @@ supplies the warmth.
   spot, passport, leaderboard and how it works, and selection background. At alpha it does the quiet work —
   `berry/70` for secondary text, `berry/12`–`berry/15` for hairlines, `berry/45` for a photo
   scrim.
-- **Milk** (`{colors.milk}`, `#ffe5f0`): the header (at 85%, blurred), spot-card and
+- **Milk** (`{colors.milk}`, `#ffe5f0`): the header band and its lifted pill (always opaque), spot-card and
   leaderboard-row surfaces, ghost-button hover, and the selection foreground on berry.
 
 ### Secondary
@@ -350,8 +350,11 @@ The shell is `flex min-h-dvh flex-col`: header, page, footer, toaster.
 Content columns are `max-w-6xl` with `px-5` / `sm:px-8` gutters; reading columns (spot body,
 legal pages) narrow to `max-w-3xl`, and the search pill to `max-w-xl`.
 
-Heroes pull up under the fixed-height header with `-mt-16` / `sm:-mt-[4.5rem]` and pad back
-down with `pt-28`, so the header floats on the hero. Hero heights come from `PageHero`:
+Heroes pull up under the sticky header with `-mt-16` / `sm:-mt-[4.5rem]` and pad back
+down with `pt-28`, so the header floats on the hero. `html` carries `scroll-padding-top: 5rem`
+so focus and anchors land clear of the header; the how-it-works verb posters cancel it
+(`-scroll-mt-20`) because their own top padding already clears it, and the house-rules column
+sticks at `lg:top-28`. Hero heights come from `PageHero`:
 `board` 42svh, `poster` 46svh (city), `spot` 58svh; home is its own `92svh` section, clipped,
 with its copy column bottom-aligned (`pb-12` / `md:pb-20`). The hero's inner column is a size
 container, which is what the poster title and the home title measure.
@@ -420,10 +423,35 @@ repeat-`round` mask so the row always ends on a whole scallop). Only the city he
 
 ### Header
 
-`bg-milk/85` with `backdrop-blur-md`, `h-16` / `sm:h-[4.5rem]`, `z-20`. Left: the `<Logo>`
-lockup linked to `/` with `aria-label="brag.fast"`, which never shrinks, then `#bragfast` in
-Bagel Fat One blush from `lg`. Right, from `md`: the header chrome links, language switch and
-auth control.
+`HeaderShell` (`components/header-shell.tsx`): `sticky top-0 z-30`, `h-16` / `sm:h-[4.5rem]`.
+Every control in the row is 40px tall. The milk is its own layer (`.header-milk`), so the row
+never moves when the milk does.
+
+- **At the top** the milk is an opaque full-bleed band of `#ffe5f0`. It is never see-through:
+  milk at any alpha over a berry slab turns mauve.
+- **Once the page has scrolled 40px** (an `IntersectionObserver` on a sentinel, no scroll
+  listener) the band lifts off into a pill on the content column: 4px (phone) / 8px (`sm`)
+  from the top, its ends 8px outside the row so the lockup's egg and the last pill nest in its
+  curves, radius 2rem, a white inset lip, a `berry/6` hairline, a short `berry/7` foot and a
+  soft `berry/34` cast. The geometry glides over 560ms `ease-out-strong` and reverses at the
+  top. The page shows around the pill.
+- **Lockup.** `<HeaderLockup>` (`components/visual.tsx`) shows `/brag_fast_logo.svg` twice,
+  one copy clipped to the wordmark and one to the egg, so the egg rocks -11deg on its base on
+  fine-pointer hover. One file, one fetch; the lockup is never redrawn.
+- **`#bragfast`** from `lg`: a candy sticker (Bagel Fat One berry, 2px white die-cut, enamel
+  lip, deep-berry cast, -4deg) pressed onto the band. It peels off (scale 0.5, -22deg, fading)
+  when the band lifts and is pressed back on at the top.
+- **Page links** (`HeaderNav`, from `md`): Nunito 700 `h-10` pills in `berry/70`, the current
+  page in full berry. One white pill (`.nav-pill`) rests on the current page and glides to
+  whichever link the mouse is over (420ms `ease-out-strong`, width and position), fading out
+  in place when nothing is current or hovered. Arriving from nowhere it appears in place
+  rather than sliding in. The owner's **Beheer** joins the row.
+- A `berry/15` hairline, 20px tall, separates the links from the utilities from `lg`.
+- **Language switch** in its `bar` variant (see below), then the auth control: signed out a
+  default blush **Inloggen**; signed in a white `h-10` pill with a berry/12 hairline holding a
+  yolk initial disc (Bagel Fat One, `shadow-stamp`), **Mijn profiel** from `lg`, and a chevron
+  that turns over while the menu is open. The account menu is a white slab padded 6px with
+  `h-10` pill rows that turn milk when highlighted.
 
 Below `md` the right side is one **Menu** pill (`components/mobile-menu.tsx`): white, `h-10`,
 `berry/12` hairline, a Lucide menu glyph and the word, its hit area grown 4px. It raises a
@@ -490,7 +518,11 @@ heart once (`.like-pop`). Signed out, it opens sign-in and writes nothing.
 
 A white tray, `rounded-full`, `p-0.5`, `border-berry/12`. Keys are pills using the `candy-key`
 utility; the active one is blush with white ink via `aria-current` (segments) or
-`aria-pressed` (language). The language switch carries flag marks and `role="group"`.
+`aria-pressed` (language). The language switch carries flag marks and `role="group"`. The
+Menu sheet uses the default `tray` variant (rectangular flags). The header uses `bar`: a 40px
+tray (`p-[3px]`) whose flags are cut to 20px coins; the pressed coin takes a 2px white
+die-cut on the blush key, so it reads as a sticker on a key rather than a rectangle on a disc.
+Its keys use the global yolk focus outline.
 
 ### Selects
 
@@ -747,6 +779,12 @@ stage already on screen at wake, a reduced-motion visitor, or a page without scr
 `data-stage`, and the staged classes only animate under `[data-stage]`, so the piece simply
 stands in its final state. Nothing jumps back to replay. Pieces that react rather than play
 (the pin tour, the like nudge) use `useSeen`, which fires once at a threshold.
+
+**The header's motion is chrome, not a moment.** It has no entrance. It answers the visitor:
+the band lifts into the pill on scroll, the `#bragfast` sticker peels and is pressed back, the
+nav pill glides, the lockup's egg rocks on hover. None of it springs. Under reduced motion the
+band changes shape without gliding (its shadow still fades), the nav pill moves without
+sliding, the sticker only fades, and the egg stays still.
 
 Press feedback is uniform: `active:scale-[0.97]`. Hover effects are gated behind the
 `pointer-fine` variant so a touch device never sticks in a hover state. Under

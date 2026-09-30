@@ -27,6 +27,28 @@ export function Logo({
   );
 }
 
+/**
+ * The header lockup: the same SVG twice, one copy clipped to the wordmark and
+ * one to the egg, so the egg can tip on its own when the link is hovered. One
+ * file, one fetch; the lockup is never redrawn.
+ */
+export function HeaderLockup() {
+  return (
+    <span className="relative block">
+      <img
+        src="/brag_fast_logo.svg"
+        alt="brag.fast"
+        className="header-lockup-word block h-9 w-auto sm:h-10"
+      />
+      <img
+        src="/brag_fast_logo.svg"
+        alt=""
+        className="header-lockup-egg absolute inset-0 h-full w-auto"
+      />
+    </span>
+  );
+}
+
 export function Egg({
   size,
   className,

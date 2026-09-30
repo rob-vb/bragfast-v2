@@ -68,6 +68,8 @@ html {
   accent-color: var(--color-blush);
   caret-color: var(--color-blush);
   scrollbar-color: rgb(74 21 52 / 0.32) transparent;
+  /* Focus and anchors land clear of the sticky header */
+  scroll-padding-top: 5rem;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -624,6 +626,136 @@ a.stamp:focus-visible {
 
 ::view-transition-old(*) {
   animation-duration: 140ms;
+}
+
+/* The header is a milk band across the top of the page. Once the page
+   scrolls, the milk lifts off into a pill on the content column: its ends sit
+   8px outside the row, so the lockup's egg and the last pill nest in its
+   curves. The row never moves; only the milk under it does. The milk stays
+   opaque: any see-through turns strawberry milk mauve over a berry slab. */
+.site-header {
+  --header-gutter: 1.25rem;
+  --header-column: max(0px, (100% - 72rem) / 2);
+  --header-lip: 0.25rem;
+}
+
+@media (width >= 40rem) {
+  .site-header {
+    --header-gutter: 2rem;
+    --header-lip: 0.5rem;
+  }
+}
+
+.header-milk {
+  position: absolute;
+  inset: 0;
+  background: var(--color-milk);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0),
+    0 0 0 1px rgb(74 21 52 / 0),
+    0 0 0 rgb(74 21 52 / 0),
+    0 0 0 rgb(74 21 52 / 0);
+  transition-property: top, right, bottom, left, border-radius, box-shadow;
+  transition-duration: 560ms;
+  transition-timing-function: var(--ease-out-strong);
+}
+
+.site-header[data-lifted] .header-milk {
+  top: var(--header-lip);
+  right: calc(var(--header-column) + var(--header-gutter) - 0.5rem);
+  bottom: var(--header-lip);
+  left: calc(var(--header-column) + var(--header-gutter) - 0.5rem);
+  border-radius: 2rem;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.8),
+    0 0 0 1px rgb(74 21 52 / 0.06),
+    0 4px 0 rgb(74 21 52 / 0.07),
+    0 18px 36px -12px rgb(74 21 52 / 0.34);
+}
+
+/* #bragfast is a candy sticker pressed onto the band. It peels off when the
+   band lifts and is pressed back on at the top. */
+.header-tag {
+  rotate: -4deg;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    0 0 0 2px #fff,
+    0 4px 10px rgb(22 4 14 / 0.2);
+  transition:
+    opacity 240ms var(--ease-out-strong),
+    scale 360ms var(--ease-out-strong),
+    rotate 360ms var(--ease-out-strong);
+}
+
+.site-header[data-lifted] .header-tag {
+  opacity: 0;
+  scale: 0.5;
+  rotate: -22deg;
+  pointer-events: none;
+}
+
+/* The lockup is one SVG shown twice: the wordmark copy hides the egg, the egg
+   copy hides the wordmark, and the egg rocks on its base on hover */
+.header-lockup-word {
+  clip-path: inset(0 0 0 27%);
+}
+
+.header-lockup-egg {
+  clip-path: inset(0 72% 0 0);
+  transform-origin: 12.15% 88%;
+  transition: rotate 420ms var(--ease-out-strong);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .header-lockup:hover .header-lockup-egg {
+    rotate: -11deg;
+  }
+}
+
+/* One white pill under the header links; see HeaderNav */
+.nav-pill {
+  opacity: 0;
+  box-shadow:
+    0 1px 1px rgb(74 21 52 / 0.08),
+    0 4px 10px -4px rgb(74 21 52 / 0.16);
+  transition-property: translate, width, opacity, scale;
+  transition-duration: 420ms, 420ms, 200ms, 160ms;
+  transition-timing-function: var(--ease-out-strong);
+}
+
+.nav-pill[data-shown] {
+  opacity: 1;
+}
+
+.nav-pill[data-snap] {
+  transition-property: opacity;
+}
+
+.header-nav:has(a:active) .nav-pill {
+  scale: 0.97;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-milk {
+    transition-property: box-shadow;
+  }
+
+  .nav-pill {
+    transition-property: opacity;
+  }
+
+  .header-tag {
+    transition: opacity 240ms var(--ease-out-strong);
+  }
+
+  .site-header[data-lifted] .header-tag {
+    scale: 1;
+    rotate: -4deg;
+  }
+
+  .header-lockup-egg {
+    transition: none;
+  }
 }
 
 /* The phone menu's egg drops onto the sheet as it rises, like the egg onto
