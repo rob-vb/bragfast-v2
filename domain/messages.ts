@@ -11,8 +11,8 @@ export const nlMessages = {
   appRowPhotosTitle: "Laat je bord zien",
   appRowPhotosBody:
     "Was je er ook? Voeg je eigen foto's toe aan de galerij van een plek, zodat iedereen ziet wat er op tafel komt.",
-  appTitleLead: "Je bord",
-  appTitleTag: "op het board.",
+  appTitleLead: "Klik. Brag.",
+  appTitleTag: "Klaar.",
   appLede: "Eén foto in de app, en je ontbijt staat op brag.fast.",
   appActBragBody:
     "Staat je plek er nog niet op? Jouw foto zet hem op de board, met jouw naam eronder.",
@@ -55,7 +55,7 @@ export const nlMessages = {
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   appStoreOn: "Download in de",
-  addBreakfast: "Zet je plek erop",
+  addBreakfast: "Maak direct een foto",
   noSearchResults: "Geen stad met die naam. Probeer Haarlem of Amsterdam.",
   footerLine: "Eerst de foto, dan de hap.",
   footerExplain: "Plekken voeg je toe in de app.",
@@ -161,7 +161,7 @@ export const nlMessages = {
   hiwDemo: "Voorbeeld",
   hiwDemoBoard: "Voorbeeldboard",
   hiwDemoHint: "Tik op een hartje. Deze likes tellen niet mee.",
-  hiwDemoHandle: "jij",
+  hiwDemoHandle: "jou",
   hiwToday: "vandaag",
   hiwClimbBody:
     "Elke like op een plek die jij toevoegde telt voor jou, net als elke like die via jouw foto binnenkomt. Zo klim je op de leaderboard.",
@@ -201,8 +201,8 @@ export const enMessages = {
   appRowPhotosTitle: "Show off your plate",
   appRowPhotosBody:
     "Been there too? Add your own photos to a spot's gallery, so everyone can see what comes to the table.",
-  appTitleLead: "Your plate,",
-  appTitleTag: "on the board.",
+  appTitleLead: "Snap. Brag.",
+  appTitleTag: "Done.",
   appLede: "One photo in the app, and your breakfast is on brag.fast.",
   appActBragBody:
     "Spot not on here yet? Your photo puts it on the board, with your name under it.",
@@ -243,7 +243,7 @@ export const enMessages = {
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   appStoreOn: "Download on the",
-  addBreakfast: "Add your spot",
+  addBreakfast: "Take a photo now",
   noSearchResults: "No city by that name. Try Haarlem or Amsterdam.",
   footerLine: "Photo first, then the bite.",
   footerExplain: "Add spots in the app.",

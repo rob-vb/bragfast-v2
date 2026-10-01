@@ -958,10 +958,11 @@ a.stamp:focus-visible {
   }
 }
 
-/* Home app band. The title is the plate on the board: "Je bord" painted,
-   "op het board." pressed on as a yolk sticker, fitted to the column by
-   --fit-line (lib/display-fit.ts, tag included) and capped a step under
-   the hero title, which stays the page's loudest line. */
+/* Home app band. The title counts the demo's three beats: "Klik. Brag."
+   painted, "Klaar." pressed on as a candy sticker (yolk and mint belong to
+   the acts below), fitted to the column by --fit-line (lib/display-fit.ts,
+   tag included) and capped a step under the hero title, which stays the
+   page's loudest line. */
 .cam-title {
   font-size: min(
     calc(100cqi / var(--fit-line)),
@@ -975,8 +976,8 @@ a.stamp:focus-visible {
   margin-top: 0.16em;
   padding: 0.07em 0.36em 0.11em;
   border-radius: 9999px;
-  background: var(--color-yolk);
-  font-size: 0.62em;
+  background: var(--color-candy);
+  font-size: 0.86em;
   line-height: 1;
   rotate: -3deg;
 }

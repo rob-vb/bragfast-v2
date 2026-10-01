@@ -145,7 +145,7 @@ Do not ship featured woonplaatsen or **Steden om te ontdekken**. Stock city scen
 
 **Steps.** One berry band under favorites (or under the hero when favorites is omitted), titled **Zo werkt brag.fast**: the four verbs of how it works (Zoek, Brag, Like, Klim) as stickers, one sentence each, each card linking to its poster on `/how-it-works`, and one link to the whole page. Always show it. It explains; it does not list woonplaatsen or spots.
 
-**App section.** One band under the steps band, titled **Je bord op het board.** Always show it. It covers both things the app does with one photo, as two acts:
+**App section.** One band under the steps band, titled **Klik. Brag. Klaar.** Always show it. It covers both things the app does with one photo, as two acts:
 
 1. **Brag als eerste**: the place is new, so the photo puts it on its woonplaats board with the photographer's name (create in the app).
 2. **Laat je bord zien**: the place is listed, so the photo joins its gallery (extra photos in the app).

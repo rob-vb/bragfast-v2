@@ -7,13 +7,13 @@ import { displayFit } from "@/lib/display-fit";
 
 const TITLE_TRACKING = 0.012;
 /** The tag is set at this share of the title, and its pill pads 0.36em a side. */
-const TAG_SCALE = 0.62;
+const TAG_SCALE = 0.86;
 const TAG_PAD = 0.72;
 
 /**
  * Home's app band: one photo in the app, and the two ways it lands on the
- * site. The title is the plate on the board: "Je bord" painted in berry, "op
- * het board." pressed on as a yolk sticker, both fitted to the column.
+ * site. The title counts the demo's beats: "Klik. Brag." painted in berry,
+ * "Klaar." pressed on as a candy sticker, both fitted to the column.
  */
 export function AppSection({ locale, stores }: { locale: Locale; stores: AppStores }) {
   const lead = t(locale, "appTitleLead");

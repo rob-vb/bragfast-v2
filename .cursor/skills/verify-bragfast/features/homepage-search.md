@@ -1,6 +1,6 @@
 # Homepage search
 
-Search is a woonplaats combobox on `/`. Typing two or more characters opens suggestions from the BAG gazetteer. A pick navigates to `/nl/{city}`. There is no featured-city grid, no GET `/?q=` results list, and no Near me control. The app section (**Je bord op het board.**) with Coming soon store controls sits under the steps band. Local favorites render only when GeoIP maps to a woonplaats with at least 3 photo spots.
+Search is a woonplaats combobox on `/`. Typing two or more characters opens suggestions from the BAG gazetteer. A pick navigates to `/nl/{city}`. There is no featured-city grid, no GET `/?q=` results list, and no Near me control. The app section (**Klik. Brag. Klaar.**) with Coming soon store controls sits under the steps band. Local favorites render only when GeoIP maps to a woonplaats with at least 3 photo spots.
 
 ## Sub-features
 

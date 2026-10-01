@@ -322,10 +322,11 @@ voices, no third.
   The heading keeps the whole line as its `aria-label`. The comma split is the hero's alone;
   no other title is cut at a comma.
 - **Home app title** (`.cam-title`, Bagel Fat One berry on milk, fitted, line-height 0.98,
-  tracking 0.012em): **Je bord** / **op het board.** The same lockup as the hero, built from
-  two message keys (`appTitleLead`, `appTitleTag`) rather than a comma split, so the English
-  lead ("Your plate,") keeps its own comma. The lead is painted in berry; the tag is a yolk
-  `.sticker` at 0.62em on its own line, tilted -3deg. `--fit-line` is the wider of the lead and
+  tracking 0.012em): **Klik. Brag.** / **Klaar.** The same lockup as the hero, built from
+  two message keys (`appTitleLead`, `appTitleTag`) rather than a comma split. The lead is
+  painted in berry; the tag is a candy `.sticker` at 0.86em on its own line, tilted -3deg.
+  Candy, not yolk: yolk and mint belong to the two acts beneath it, and the title never wears
+  an act's colour. `--fit-line` is the wider of the lead and
   the tag (with its pill) from `lib/display-fit.ts`, and the size is
   `min(100cqi / --fit-line, clamp(2.5rem, 1.4rem + 3.6vw, 4.5rem))`: one step under the hero
   title's cap, so the hero stays the page's loudest line. The heading's `aria-label` is lead
