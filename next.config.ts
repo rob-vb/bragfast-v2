@@ -20,7 +20,15 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     // Profiles left the country prefix: people post photos on holiday too
-    return [{ source: "/nl/u/:slug", destination: "/u/:slug", permanent: true }];
+    return [
+      { source: "/nl/u/:slug", destination: "/u/:slug", permanent: true },
+      // Data deletion joined the privacy statement; old store and app links land on it
+      {
+        source: "/privacy/data-deletion",
+        destination: "/privacy#delete-account",
+        permanent: true,
+      },
+    ];
   },
 };
 

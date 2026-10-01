@@ -49,9 +49,6 @@ export const nlMessages = {
     "Alle steden en dorpen in Nederland met ontbijt- en brunchplekken op brag.fast, van A tot Z, met het aantal plekken per plaats.",
   leaderboardMetaDescription:
     "Wie brengt de meeste likes binnen op brag.fast? De leaderboard rangschikt iedereen op de likes op plekken die ze toevoegden en via hun foto's.",
-  privacyMetaDescription: "Welke gegevens brag.fast bewaart, en waarom.",
-  dataDeletionMetaDescription:
-    "Zo wis je je eigen foto's of je hele brag.fast-account.",
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   appStoreOn: "Download in de",
@@ -121,7 +118,7 @@ export const nlMessages = {
   adminSpots: "Plekken",
   viewAdmin: "Beheer",
   privacy: "Privacy",
-  dataDeletion: "Gegevens wissen",
+  terms: "Voorwaarden",
   share: "Deel",
   linkCopied: "Link gekopieerd",
   shareFailed: "Delen lukte niet",
@@ -238,8 +235,6 @@ export const enMessages = {
     "Every city and village in the Netherlands with breakfast and brunch spots on brag.fast, A to Z, with the number of spots in each.",
   leaderboardMetaDescription:
     "Who brings in the most likes on brag.fast? The leaderboard ranks everyone by the likes on spots they added and through their photos.",
-  privacyMetaDescription: "What brag.fast stores, and why.",
-  dataDeletionMetaDescription: "How to delete your own photos or your whole brag.fast account.",
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   appStoreOn: "Download on the",
@@ -309,7 +304,7 @@ export const enMessages = {
   adminSpots: "Spots",
   viewAdmin: "Queue",
   privacy: "Privacy",
-  dataDeletion: "Delete my data",
+  terms: "Terms",
   share: "Share",
   linkCopied: "Link copied",
   shareFailed: "Could not share",

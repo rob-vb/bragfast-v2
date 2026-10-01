@@ -3,6 +3,7 @@ import test from "node:test";
 import type { GenericId } from "convex/values";
 import { parseCitySlug, parseSpotSlug, parseUserSlug } from "./ids";
 import { LEGAL_LINKS, LOCALE_FLAGS, chromeLinks } from "./chrome";
+import { DELETE_ACCOUNT_ID, LEGAL_DOCS, legalInline } from "./legal";
 import {
   exactCitySlugFromHits,
   moveWoonplaatsSuggest,
@@ -90,7 +91,7 @@ test("chrome links are marketing pages and legal stays out of the header", () =>
   );
   assert.deepEqual(
     LEGAL_LINKS.map((link) => link.href),
-    ["/privacy", "/privacy/data-deletion"],
+    ["/privacy", "/terms"],
   );
 });
 
@@ -1479,4 +1480,51 @@ test("board JSON-LD ranks spots and trails back to the home page", () => {
     { "@type": "ListItem", position: 1, name: "brag.fast", item: "https://brag.fast/" },
     { "@type": "ListItem", position: 2, name: "Oldenzaal", item: "https://brag.fast/nl/oldenzaal" },
   ]);
+});
+
+test("legal pages share section anchors across locales", () => {
+  for (const docs of Object.values(LEGAL_DOCS)) {
+    const nl = docs.nl.sections.map((section) => section.id);
+    const en = docs.en.sections.map((section) => section.id);
+    assert.deepEqual(nl, en);
+    assert.equal(new Set(nl).size, nl.length);
+  }
+  // The stores and the app link here for account deletion
+  for (const doc of Object.values(LEGAL_DOCS.privacy)) {
+    assert.ok(doc.sections.some((section) => section.id === DELETE_ACCOUNT_ID));
+  }
+});
+
+test("legal links stay inside the page or point at a real anchor", () => {
+  const privacyIds = new Set(LEGAL_DOCS.privacy.nl.sections.map((section) => section.id));
+  for (const docs of Object.values(LEGAL_DOCS)) {
+    for (const doc of Object.values(docs)) {
+      const strings = doc.sections.flatMap((section) =>
+        section.blocks.flatMap((block) =>
+          typeof block === "string"
+            ? [block]
+            : "list" in block
+              ? [...block.list]
+              : "defs" in block
+                ? block.defs.map(([, body]) => body)
+                : [],
+        ),
+      );
+      for (const part of strings.flatMap(legalInline)) {
+        if (!part.href) continue;
+        assert.match(part.href, /^(mailto:|https:\/\/|\/privacy|\/terms)/);
+        const anchor = part.href.match(/^\/privacy#(.+)$/);
+        if (anchor) assert.ok(privacyIds.has(anchor[1]), part.href);
+      }
+    }
+  }
+});
+
+test("legal inline splits markdown links", () => {
+  assert.deepEqual(legalInline("Mail [ons](mailto:a@b.c) nu."), [
+    { text: "Mail " },
+    { text: "ons", href: "mailto:a@b.c" },
+    { text: " nu." },
+  ]);
+  assert.deepEqual(legalInline("Geen link."), [{ text: "Geen link." }]);
 });
