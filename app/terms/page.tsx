@@ -6,15 +6,15 @@ import { LegalPage } from "@/components/legal-page";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  const doc = LEGAL_DOCS.privacy[locale];
+  const doc = LEGAL_DOCS.terms[locale];
   return pageMetadata(locale, {
     title: doc.title,
     description: doc.metaDescription,
-    path: "/privacy",
+    path: "/terms",
   });
 }
 
-export default async function PrivacyPage() {
+export default async function TermsPage() {
   const locale = await getLocale();
-  return <LegalPage doc={LEGAL_DOCS.privacy[locale]} />;
+  return <LegalPage doc={LEGAL_DOCS.terms[locale]} />;
 }

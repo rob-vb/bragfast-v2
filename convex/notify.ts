@@ -26,3 +26,16 @@ export const sendBragLive = internalAction({
     });
   },
 });
+
+/** Mail the owner so a report gets its 24-hour look. */
+export const sendModerationAlert = internalAction({
+  args: { subject: v.string(), html: v.string() },
+  handler: async (_ctx, args) => {
+    const to = process.env.OWNER_EMAIL;
+    if (!to) {
+      console.warn(`[brag.fast] No OWNER_EMAIL for: ${args.subject}`);
+      return;
+    }
+    await sendResendEmail({ to, subject: args.subject, html: args.html });
+  },
+});

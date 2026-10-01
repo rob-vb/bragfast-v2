@@ -82,8 +82,13 @@ export default defineSchema({
     discovery: v.optional(v.boolean()),
     /** Client that published it. Absent on photos from before 30 September 2026. */
     source: v.optional(v.union(v.literal("ios"), v.literal("web"))),
+    /** Set while a report waits for owner review; hidden photos show nowhere. */
+    hiddenAt: v.optional(v.number()),
+    /** When the owner's moderation scan looked at it. */
+    scannedAt: v.optional(v.number()),
   })
     .index("by_spot", ["spotId"])
+    .index("by_scanned", ["scannedAt"])
     .index("by_spot_created", ["spotId", "createdAt"])
     .index("by_user", ["uploadedBy"]),
 
@@ -110,8 +115,22 @@ export default defineSchema({
     target: v.union(
       v.object({ kind: v.literal("post"), postId: v.id("posts") }),
       v.object({ kind: v.literal("spot"), spotId: v.id("spots") }),
+      v.object({ kind: v.literal("photo"), photoId: v.id("photos") }),
     ),
     reason: v.string(),
     status: v.union(v.literal("open"), v.literal("resolved")),
-  }).index("by_status", ["status"]),
+    /** Who reported, while the report is open; cleared once it is handled. */
+    reporterId: v.optional(v.id("users")),
+  })
+    .index("by_status", ["status"])
+    .index("by_photo", ["target.photoId"])
+    .index("by_reporter", ["reporterId"]),
+
+  /** One viewer no longer sees another's photos in the app. */
+  blocks: defineTable({
+    userId: v.id("users"),
+    blockedId: v.id("users"),
+  })
+    .index("by_user_blocked", ["userId", "blockedId"])
+    .index("by_blocked", ["blockedId"]),
 });

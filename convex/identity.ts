@@ -45,6 +45,9 @@ export const passportPhotos = query({
     const spots = new Map<Id<"spots">, PassportPhotoSpot | null>();
     const photos: PassportPhoto[] = [];
     for (const row of rows) {
+      if (row.hiddenAt !== undefined) {
+        continue;
+      }
       if (!spots.has(row.spotId)) {
         spots.set(row.spotId, await photoSpot(ctx, row.spotId));
       }

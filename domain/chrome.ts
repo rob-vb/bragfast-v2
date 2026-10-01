@@ -29,7 +29,7 @@ export const CHROME_LINKS: readonly ChromeLink[] = [
 
 export const LEGAL_LINKS = [
   { href: "/privacy", label: "privacy" },
-  { href: "/privacy/data-deletion", label: "dataDeletion" },
+  { href: "/terms", label: "terms" },
 ] as const;
 
 export function chromeLinks(placement: ChromePlacement): readonly ChromeLink[] {

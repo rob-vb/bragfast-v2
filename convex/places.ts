@@ -18,6 +18,7 @@ import {
 } from "../domain/photo";
 import type { PlaceAddRejectReason } from "../domain/placeAdd";
 import { parsePlaceId } from "../domain/ids";
+import { pickViewerHero } from "../domain/moderation";
 
 type PlaceSuggestion = { placeId: string; name: string; address: string };
 
@@ -215,18 +216,21 @@ export type PlacePreview =
       placeName: string;
       spotSlug: string;
       heroUrl: string | null;
+      /** The photo behind `heroUrl`, for reporting it or blocking its maker. */
+      heroPhotoId: Id<"photos"> | null;
     }
   | { kind: "reject"; reason: PlaceAddRejectReason };
 
 export const spotForPlace = internalQuery({
-  args: { placeId: v.string() },
+  args: { placeId: v.string(), viewerAuthId: v.string() },
   handler: async (
     ctx,
-    { placeId },
+    { placeId, viewerAuthId },
   ): Promise<{
     spotSlug: string;
     placeSlug: string;
     heroUrl: string | null;
+    heroPhotoId: Id<"photos"> | null;
   } | null> => {
     const spot = await ctx.db
       .query("spots")
@@ -235,10 +239,33 @@ export const spotForPlace = internalQuery({
     if (!spot) {
       return null;
     }
+    const viewer = await ctx.db
+      .query("users")
+      .withIndex("by_authId", (q) => q.eq("authId", viewerAuthId))
+      .unique();
+    const blocked = viewer
+      ? await ctx.db
+          .query("blocks")
+          .withIndex("by_user_blocked", (q) => q.eq("userId", viewer._id))
+          .collect()
+      : [];
+    const photos = await ctx.db
+      .query("photos")
+      .withIndex("by_spot", (q) => q.eq("spotId", spot._id))
+      .collect();
+    const hero = pickViewerHero({
+      heroStorageId: spot.photoId ?? null,
+      photos: photos.map((photo) => ({
+        ...photo,
+        hidden: photo.hiddenAt !== undefined,
+      })),
+      blocked: new Set(blocked.map((block) => block.blockedId as string)),
+    });
     return {
       spotSlug: spot.slug,
       placeSlug: spot.citySlug,
-      heroUrl: spot.photoId ? await ctx.storage.getUrl(spot.photoId) : null,
+      heroUrl: hero ? await ctx.storage.getUrl(hero.storageId) : null,
+      heroPhotoId: hero?._id ?? null,
     };
   },
 });
@@ -246,7 +273,7 @@ export const spotForPlace = internalQuery({
 export const preview = action({
   args: { placeId: v.string() },
   handler: async (ctx, { placeId }): Promise<PlacePreview> => {
-    await authComponent.getAuthUser(ctx);
+    const authUser = await authComponent.getAuthUser(ctx);
     const key = placesKey();
     if (!key) {
       throw new ConvexError("Places is not configured");
@@ -254,6 +281,7 @@ export const preview = action({
     const details = await fetchDetails(placeId, key);
     const spot = await ctx.runQuery(internal.places.spotForPlace, {
       placeId: details.placeId,
+      viewerAuthId: authUser._id,
     });
     const plan = planPlacePreview({
       types: details.types,
@@ -267,7 +295,12 @@ export const preview = action({
     if (plan.kind === "new") {
       return { ...plan, ...place };
     }
-    return { ...plan, ...place, heroUrl: spot?.heroUrl ?? null };
+    return {
+      ...plan,
+      ...place,
+      heroUrl: spot?.heroUrl ?? null,
+      heroPhotoId: spot?.heroPhotoId ?? null,
+    };
   },
 });
 
@@ -353,7 +386,7 @@ export const apply = internalMutation({
       displayName: args.displayName,
       avatarUrl: args.avatarUrl,
     });
-    return await applyPlaceAdd(ctx, {
+    const result = await applyPlaceAdd(ctx, {
       placeId: args.placeId,
       name: args.name,
       address: args.address,
@@ -364,5 +397,21 @@ export const apply = internalMutation({
       channel: args.channel ?? "web",
       source: args.source,
     });
+    if (result.action !== "reject") {
+      // Live now; Gemini looks right after and hides it if it breaks the rules
+      const photo = (
+        await ctx.db
+          .query("photos")
+          .withIndex("by_user", (q) => q.eq("uploadedBy", user._id))
+          .collect()
+      ).find((row) => row.storageId === args.storageId);
+      if (photo) {
+        await ctx.scheduler.runAfter(0, internal.screen.screenNewPhoto, {
+          photoId: photo._id,
+          attempt: 1,
+        });
+      }
+    }
+    return result;
   },
 });
