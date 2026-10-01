@@ -8,7 +8,7 @@ import {
 } from "@/domain/messages";
 import { Fragment, type CSSProperties } from "react";
 import type { HomepageData, LocalFavorites } from "@/domain/viewModels";
-import { AppRow } from "@/components/app-row";
+import { AppSection } from "@/components/app-section";
 import { VERBS } from "@/components/how-it-works";
 import { SearchBox } from "@/components/search-box";
 import { PhotoFrame, SpotLinkCard } from "@/components/visual";
@@ -36,20 +36,7 @@ export function HomeView({
 
       <Steps locale={locale} />
 
-      <AppRow
-        locale={locale}
-        stores={homepage.stores}
-        titleKey="appRowBragTitle"
-        bodyKey="appRowBragBody"
-        phoneFirst={false}
-      />
-      <AppRow
-        locale={locale}
-        stores={homepage.stores}
-        titleKey="appRowPhotosTitle"
-        bodyKey="appRowPhotosBody"
-        phoneFirst
-      />
+      <AppSection locale={locale} stores={homepage.stores} />
     </main>
   );
 }

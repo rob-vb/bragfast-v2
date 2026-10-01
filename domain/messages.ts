@@ -11,6 +11,20 @@ export const nlMessages = {
   appRowPhotosTitle: "Laat je bord zien",
   appRowPhotosBody:
     "Was je er ook? Voeg je eigen foto's toe aan de galerij van een plek, zodat iedereen ziet wat er op tafel komt.",
+  appTitleLead: "Klik. Brag.",
+  appTitleTag: "Klaar.",
+  appLede: "Eén foto in de app, en je ontbijt staat op brag.fast.",
+  appActBragBody:
+    "Staat je plek er nog niet op? Jouw foto zet hem op de board, met jouw naam eronder.",
+  appActPlateBody:
+    "Staat hij er al? Je foto komt in de galerij, zodat iedereen ziet wat er op tafel komt.",
+  appStickerNew: "Nieuw op het board",
+  appStickerGallery: "In de galerij",
+  appDemoPause: "Pauzeer",
+  appDemoPlay: "Speel af",
+  appDemoReplay: "Nog een keer",
+  appDemoSummary:
+    "Voorbeeld van de app: je maakt een foto van je ontbijt, kiest de plek en publiceert. Een nieuwe plek komt op de board met jouw naam eronder. Staat de plek er al, dan komt je foto in de galerij.",
   stepsTitle: "Zo werkt brag.fast",
   stepSearchBody:
     "Elke stad en elk dorp in Nederland heeft een eigen board. Kijken kan zonder account.",
@@ -41,7 +55,7 @@ export const nlMessages = {
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   appStoreOn: "Download in de",
-  addBreakfast: "Zet je plek erop",
+  addBreakfast: "Maak direct een foto",
   noSearchResults: "Geen stad met die naam. Probeer Haarlem of Amsterdam.",
   footerLine: "Eerst de foto, dan de hap.",
   footerExplain: "Plekken voeg je toe in de app.",
@@ -147,7 +161,7 @@ export const nlMessages = {
   hiwDemo: "Voorbeeld",
   hiwDemoBoard: "Voorbeeldboard",
   hiwDemoHint: "Tik op een hartje. Deze likes tellen niet mee.",
-  hiwDemoHandle: "jij",
+  hiwDemoHandle: "jou",
   hiwToday: "vandaag",
   hiwClimbBody:
     "Elke like op een plek die jij toevoegde telt voor jou, net als elke like die via jouw foto binnenkomt. Zo klim je op de leaderboard.",
@@ -187,6 +201,20 @@ export const enMessages = {
   appRowPhotosTitle: "Show off your plate",
   appRowPhotosBody:
     "Been there too? Add your own photos to a spot's gallery, so everyone can see what comes to the table.",
+  appTitleLead: "Snap. Brag.",
+  appTitleTag: "Done.",
+  appLede: "One photo in the app, and your breakfast is on brag.fast.",
+  appActBragBody:
+    "Spot not on here yet? Your photo puts it on the board, with your name under it.",
+  appActPlateBody:
+    "Already on here? Your photo joins its gallery, so everyone sees what comes to the table.",
+  appStickerNew: "New on the board",
+  appStickerGallery: "In the gallery",
+  appDemoPause: "Pause",
+  appDemoPlay: "Play",
+  appDemoReplay: "Play again",
+  appDemoSummary:
+    "An example of the app: you take a photo of your breakfast, pick the place and publish. A new place lands on the board with your name under it. If the place is already on here, your photo joins its gallery.",
   stepsTitle: "How brag.fast works",
   stepSearchBody:
     "Every city and village in the Netherlands has its own board. No account needed to look.",
@@ -215,7 +243,7 @@ export const enMessages = {
   comingSoon: "Coming soon",
   downloadIos: "App Store",
   appStoreOn: "Download on the",
-  addBreakfast: "Add your spot",
+  addBreakfast: "Take a photo now",
   noSearchResults: "No city by that name. Try Haarlem or Amsterdam.",
   footerLine: "Photo first, then the bite.",
   footerExplain: "Add spots in the app.",
