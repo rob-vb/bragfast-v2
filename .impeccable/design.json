@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-30T00:00:00.000Z",
+  "generatedAt": "2026-10-01T00:00:00.000Z",
   "title": "Design System: brag.fast",
   "extensions": {
     "colorMeta": {
@@ -132,7 +132,7 @@
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Hero titles that are neither a name nor a poster."
+        "purpose": "Hero titles that are neither a name nor a poster. Home's fitted titles (the hero, split at its comma, and the app band's two-key lockup) are fitted Bagel Fat One, not this role."
       },
       "section": {
         "displayName": "Section",
@@ -176,7 +176,7 @@
       {
         "name": "stamp",
         "value": "inset 0 2px 0 rgb(255 255 255 / 0.55), 0 3px 0 rgb(250 113 90 / 0.22)",
-        "purpose": "Enamel sticker: the empty-state icon disc and the gallery camera disc."
+        "purpose": "Enamel sticker: the empty-state icon disc, the gallery camera disc and the camera disc in the home app band's slots."
       },
       {
         "name": "sticker-ring",
@@ -201,7 +201,7 @@
       {
         "name": "sticker-ring-display",
         "value": "inset 0 0.06em 0 rgb(255 255 255 / 0.45), 0 0 0 max(3px, 0.05em) #fff, 0 0.16em 0.3em rgb(22 4 14 / 0.35)",
-        "purpose": "The .sticker at display size (the home title's yolk tag): die-cut and cast scale with the type, plus the step-enamel lip."
+        "purpose": "The .sticker at display size (the home title's yolk tag): die-cut and cast scale with the type, plus the step-enamel lip. The home app title's tag uses it with a deep-berry/30 cast on milk."
       }
     ],
     "motion": [
@@ -343,9 +343,9 @@
       "name": "Nav Bar",
       "kind": "nav",
       "refersTo": "nav-bar",
-      "description": "Strawberry milk at 85% with a backdrop blur: lockup and #bragfast left, chrome links, language tray and a blush sign-in right.",
+      "description": "An opaque strawberry-milk band (never see-through): lockup and #bragfast left, chrome links, language tray and a blush sign-in right. Once scrolled it lifts into a milk pill.",
       "html": "<header class=\"ds-nav\"><span class=\"ds-nav__brand\">brag.fast</span><span class=\"ds-nav__tag\">#bragfast</span><nav class=\"ds-nav__links\"><a href=\"#\">Hoe het werkt</a><a href=\"#\">Leaderboard</a><button class=\"ds-nav__cta\" type=\"button\">Inloggen</button></nav></header>",
-      "css": ".ds-nav { display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 20px; background: rgb(255 229 240 / 0.85); backdrop-filter: blur(12px); color: var(--color-berry, #4a1534); } .ds-nav__brand { font: 400 1.5rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); } .ds-nav__tag { color: var(--color-blush, #fa715a); font: 400 0.875rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); } .ds-nav__links { display: flex; align-items: center; gap: 16px; margin-left: auto; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-nav__links a { color: var(--color-berry, #4a1534); text-decoration: none; transition: color 160ms cubic-bezier(0.23,1,0.32,1); } .ds-nav__links a:hover { color: var(--color-blush, #fa715a); } .ds-nav__links a:focus-visible, .ds-nav__cta:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; border-radius: 9999px; } .ds-nav__cta { height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: var(--color-blush, #fa715a); color: #fff; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; }"
+      "css": ".ds-nav { display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 20px; background: var(--color-milk, #ffe5f0); color: var(--color-berry, #4a1534); } .ds-nav__brand { font: 400 1.5rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); } .ds-nav__tag { color: var(--color-blush, #fa715a); font: 400 0.875rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); } .ds-nav__links { display: flex; align-items: center; gap: 16px; margin-left: auto; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); } .ds-nav__links a { color: var(--color-berry, #4a1534); text-decoration: none; transition: color 160ms cubic-bezier(0.23,1,0.32,1); } .ds-nav__links a:hover { color: var(--color-blush, #fa715a); } .ds-nav__links a:focus-visible, .ds-nav__cta:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; border-radius: 9999px; } .ds-nav__cta { height: 32px; padding: 0 12px; border: 0; border-radius: 9999px; background: var(--color-blush, #fa715a); color: #fff; font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; }"
     },
     {
       "name": "Step Card",
@@ -362,11 +362,19 @@
       "description": "A board on the woonplaats index: milk pill with the name in Bagel Fat One and a white count chip; hover tints it candy.",
       "html": "<a class=\"ds-town\" href=\"#\"><span class=\"ds-town__name\">Oldenzaal</span><span class=\"ds-town__count\">3 plekken</span></a>",
       "css": ".ds-town { display: inline-flex; align-items: center; gap: 12px; height: 48px; padding: 0 8px 0 20px; border-radius: 999px; background: var(--color-milk, #ffe5f0); color: var(--color-berry, #4a1534); text-decoration: none; transition: background-color 160ms cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-town:hover { background: rgb(255 158 190 / 0.45); } .ds-town:active { transform: scale(0.97); } .ds-town:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; } .ds-town__name { font: 400 1.25rem/1 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); letter-spacing: 0.025em; } .ds-town__count { padding: 4px 12px; border-radius: 999px; background: #fff; font: 700 0.875rem/1.25 var(--font-body, \"Nunito\", system-ui, sans-serif); color: rgb(74 21 52 / 0.75); font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Home App Band",
+      "kind": "custom",
+      "refersTo": "home-app-band",
+      "description": "The milk band that plays what one photo in the app does: the title lockup (Je bord painted in berry, op het board. as a yolk sticker at 0.62em) over two chapter stickers that fill with the app's badge colours, yolk for a new place and mint for a listed one, through a round-ended clip-path.",
+      "html": "<section class=\"ds-app\"><h2 class=\"ds-app__title\" aria-label=\"Je bord op het board.\"><span class=\"ds-app__lead\">Je bord</span><span class=\"ds-app__tagline\"><span class=\"ds-app__tag\">op het board.</span></span></h2><p class=\"ds-app__lede\">Eén foto in de app, en je ontbijt staat op brag.fast.</p><ol class=\"ds-app__acts\"><li><button class=\"ds-app__act\" type=\"button\" aria-pressed=\"true\" style=\"--tilt:-2deg\"><span class=\"ds-app__fill ds-app__fill--yolk\" style=\"--to:0%\"></span><span class=\"ds-app__label\">Brag als eerste</span></button></li><li><button class=\"ds-app__act\" type=\"button\" aria-pressed=\"false\" style=\"--tilt:2deg\"><span class=\"ds-app__fill ds-app__fill--mint\" style=\"--to:45%\"></span><span class=\"ds-app__label\">Laat je bord zien</span></button></li></ol><button class=\"ds-app__control\" type=\"button\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>Nog een keer</button></section>",
+      "css": ".ds-app { padding: 40px 28px; background: var(--color-milk, #ffe5f0); color: var(--color-berry, #4a1534); } .ds-app__title { margin: 0; font: 400 3.25rem/0.98 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); letter-spacing: 0.012em; } .ds-app__lead, .ds-app__tagline { display: block; } .ds-app__tag { display: inline-block; margin-top: 0.16em; padding: 0.07em 0.36em 0.11em; border-radius: 9999px; background: var(--color-yolk, #feb62a); font-size: 0.62em; line-height: 1; rotate: -3deg; box-shadow: inset 0 0.06em 0 rgb(255 255 255 / 0.45), 0 0 0 max(3px, 0.05em) #fff, 0 0.16em 0.3em rgb(22 4 14 / 0.3); } .ds-app__lede { max-width: 28rem; margin: 24px 0 0; font: 600 1.125rem/1.55 var(--font-body, \"Nunito\", system-ui, sans-serif); color: rgb(74 21 52 / 0.8); } .ds-app__acts { display: flex; flex-wrap: wrap; gap: 12px; margin: 32px 0 0; padding: 0; list-style: none; } .ds-app__act { position: relative; display: inline-flex; padding: 6px 20px; border: 0; border-radius: 9999px; background: #fff; color: var(--color-berry, #4a1534); font: 400 1.5rem/1.2 var(--font-display, \"Bagel Fat One\", \"Arial Rounded MT Bold\", sans-serif); letter-spacing: 0.025em; cursor: pointer; rotate: var(--tilt); box-shadow: 0 0 0 3px #fff, 0 10px 20px rgb(22 4 14 / 0.35); transition: rotate 360ms cubic-bezier(0.23, 1, 0.32, 1), scale 360ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-app__act:hover, .ds-app__act:focus-visible, .ds-app__act[aria-pressed=\"true\"] { rotate: 0deg; scale: 1.04; } .ds-app__act:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; } .ds-app__fill { position: absolute; inset: 0; border-radius: inherit; clip-path: inset(0 var(--to) 0 0 round 9999px); } .ds-app__fill--yolk { background: var(--color-yolk, #feb62a); } .ds-app__fill--mint { background: var(--color-mint, #bfead3); } .ds-app__label { position: relative; } .ds-app__control { display: inline-flex; align-items: center; gap: 8px; height: 40px; margin-top: 28px; padding: 0 16px 0 12px; border: 0; border-radius: 9999px; background: #fff; box-shadow: 0 0 0 1px rgb(74 21 52 / 0.12); color: var(--color-berry, #4a1534); font: 700 0.875rem/1 var(--font-body, \"Nunito\", system-ui, sans-serif); cursor: pointer; transition: color 160ms cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-app__control:hover { color: var(--color-blush, #fa715a); } .ds-app__control:active { transform: scale(0.97); } .ds-app__control:focus-visible { outline: 2px solid var(--color-yolk, #feb62a); outline-offset: 2px; }"
     }
   ],
   "narrative": {
     "northStar": "Kawaii egg on strawberry milk.",
-    "overview": "The home page opens inside a full-bleed breakfast still. Every other page — city, spot, passport, leaderboard, how it works — opens on a **berry slab** (`bg-berry`, `#4a1534`) that the milk header sits over. The spot slab carries the adder's photo as a tilted print instead of a backdrop, and the print's own light pools softly around it, so the berry still reads as the ground. Chrome around either is strawberry milk, berry ink, blush and yolk stickers. Cocoa brown lives on the egg SVG and nowhere else.\n\nThe header is pink milk at 85% with a backdrop blur. Content sits on white. Ink is berry — never black, never cocoa, never indigo. Buttons and pressed segments are flat blush; nothing in this system carries a CSS gradient. Density is generous and rounded: pills for anything pressable, 28px slabs for anything that holds content.\n\nDutch is the default UI language. The brand is English (`brag.fast`, `#bragfast`).",
+    "overview": "The home page opens inside a full-bleed breakfast still. Every other page — city, spot, passport, leaderboard, how it works — opens on a **berry slab** (`bg-berry`, `#4a1534`) that the milk header sits over. The spot slab carries the adder's photo as a tilted print instead of a backdrop, and the print's own light pools softly around it, so the berry still reads as the ground. Chrome around either is strawberry milk, berry ink, blush and yolk stickers. Cocoa brown lives on the egg SVG and nowhere else.\n\nThe header is an opaque strawberry-milk band that lifts into a milk pill once the page scrolls. Content sits on white. Ink is berry — never black, never cocoa, never indigo. Buttons and pressed segments are flat blush; nothing in this system carries a CSS gradient. Density is generous and rounded: pills for anything pressable, 28px slabs for anything that holds content.\n\nDutch is the default UI language. The brand is English (`brag.fast`, `#bragfast`).",
     "keyCharacteristics": [
       "Photo-first on home only. City, spot, passport and leaderboard heroes are berry slabs. The city slab is a poster: the woonplaats name set edge to edge, ending in a bakery-awning scallop. The spot slab holds the brag print, which hangs over the slab's bottom edge. The passport slab carries the adder's woonplaatsen as rubber stamps; the leaderboard slab is a stage whose podium stands on its floor. The how-it-works slab carries the four verbs as tilted stickers that jump to four verb posters below it, each poster alternating berry, milk and white grounds.",
       "The wordmark is the SVG lockup `/brag_fast_logo.svg`, rendered through `<Logo>`. The mascot is `/brag_fast_egg.svg`, rendered through `<Egg>` in the footer and as the favicon. Neither is ever recreated in CSS.",

@@ -1,16 +1,16 @@
 # Homepage search
 
-Search is a woonplaats combobox on `/`. Typing two or more characters opens suggestions from the BAG gazetteer. A pick navigates to `/nl/{city}`. There is no featured-city grid, no GET `/?q=` results list, and no Near me control. Two app rows with Coming soon store controls sit under the hero. Local favorites render only when GeoIP maps to a woonplaats with at least 3 photo spots.
+Search is a woonplaats combobox on `/`. Typing two or more characters opens suggestions from the BAG gazetteer. A pick navigates to `/nl/{city}`. There is no featured-city grid, no GET `/?q=` results list, and no Near me control. The app section (**Je bord op het board.**) with Coming soon store controls sits under the steps band. Local favorites render only when GeoIP maps to a woonplaats with at least 3 photo spots.
 
 ## Sub-features
 
-- `search-idle` shows the Dutch hero and the combobox on `/` with two app rows underneath.
+- `search-idle` shows the Dutch hero and the combobox on `/` with the app section further down.
 - `search-suggest` (browser) for `haar` opens a listbox of woonplaats names including Haarlem.
 - `search-pick` (browser) choosing Haarlem lands on `/nl/haarlem`.
 - `search-empty` (browser) for a nonsense needle shows the no-city copy in the popup.
 - `search-no-dichtbij` means the homepage HTML does not contain `Dichtbij` or `Near me`.
 - `search-no-featured` means the homepage HTML does not contain `Steden om te ontdekken` or `Cities to explore`.
-- `search-app-rows` shows `Brag als eerste`, `Laat je bord zien`, and `Coming soon`.
+- `search-app-rows` shows the app section: `Je bord`, its acts `Brag als eerste` and `Laat je bord zien`, and `Coming soon`.
 - `search-omit-favorites` on localhost does not show `Favorieten in`.
 
 ## How to get to it (user POV)
@@ -29,7 +29,7 @@ Preconditions:
 - **English intro.** POST locale `en`, GET `/`. Intro contains `Search a city` and does not contain `Search a woonplaats`. App rows `Be first to brag` and `Show off your plate`. No `Cities to explore`.
 - **Suggest Haarlem.** Browser only. Fill `#catalog-search` with `haar`. A listbox option named Haarlem is visible. Do not require a `/?q=` URL.
 - **Empty needle.** Browser only. Fill with `zzzxqqt`. Copy `Geen stad met die naam` is visible. No catalog tent names.
-- **Proof.** Keep `home.html` with app rows, Coming soon, and without Dichtbij or Steden om te ontdekken.
+- **Proof.** Keep `home.html` with the app section, Coming soon, and without Dichtbij or Steden om te ontdekken.
 
 ## Gotchas
 

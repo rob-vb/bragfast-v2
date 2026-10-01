@@ -958,6 +958,1284 @@ a.stamp:focus-visible {
   }
 }
 
+/* Home app band. The title is the plate on the board: "Je bord" painted,
+   "op het board." pressed on as a yolk sticker, fitted to the column by
+   --fit-line (lib/display-fit.ts, tag included) and capped a step under
+   the hero title, which stays the page's loudest line. */
+.cam-title {
+  font-size: min(
+    calc(100cqi / var(--fit-line)),
+    clamp(2.5rem, 1.4rem + 3.6vw, 4.5rem)
+  );
+  line-height: 0.98;
+}
+
+.cam-title-tag {
+  display: inline-block;
+  margin-top: 0.16em;
+  padding: 0.07em 0.36em 0.11em;
+  border-radius: 9999px;
+  background: var(--color-yolk);
+  font-size: 0.62em;
+  line-height: 1;
+  rotate: -3deg;
+}
+
+.sticker.cam-title-tag {
+  box-shadow:
+    inset 0 0.06em 0 rgb(255 255 255 / 0.45),
+    0 0 0 max(3px, 0.05em) #fff,
+    0 0.16em 0.3em rgb(22 4 14 / 0.3);
+}
+
+/* The two acts are stickers that fill with their badge colour (the app's
+   own: yolk for a new place, mint for a listed one) as the act plays */
+.cam-chapter__tag {
+  rotate: var(--tilt);
+  transition:
+    rotate 360ms var(--ease-out-strong),
+    scale 360ms var(--ease-out-strong);
+}
+
+.cam-chapter[aria-pressed="true"] .cam-chapter__tag,
+.cam-chapter:focus-visible .cam-chapter__tag {
+  rotate: 0deg;
+  scale: 1.04;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cam-chapter:hover .cam-chapter__tag {
+    rotate: 0deg;
+    scale: 1.04;
+  }
+}
+
+/* The fill keeps the pill's round end as it grows */
+.cam-chapter__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  clip-path: inset(0 100% 0 0 round 9999px);
+}
+
+.cam-chapter[data-status="done"] .cam-chapter__fill,
+.cam-chapter[data-status="playing"] .cam-chapter__fill {
+  clip-path: inset(0 0 0 0 round 9999px);
+}
+
+.cam[data-live] .cam-chapter[data-status="playing"] .cam-chapter__fill {
+  animation: cam-fill var(--fill-ms) cubic-bezier(0.3, 0, 0.5, 1) both;
+}
+
+@keyframes cam-fill {
+  from {
+    clip-path: inset(0 100% 0 0 round 9999px);
+  }
+}
+
+/* The scene is one picture: every length is in stage units (--u, 1/560 of
+   the stage's width), the phone's points (--pt, 1/414 of the phone) or a
+   print's units (--pu, 1/284 of that print), so it scales as a whole. A
+   wide stage lays the board beside the phone; a narrow one stacks it on
+   top. It all lies on a plate: the bord the board is named after. */
+@property --u {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
+}
+
+@property --pt {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
+}
+
+@property --pu {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
+}
+
+.cam-stage-wrap {
+  container-type: inline-size;
+}
+
+.cam-scene {
+  position: absolute;
+  inset: 0;
+}
+
+/* Play, pause and replay sit under the phone, whichever way the scene is laid */
+.cam-control {
+  position: absolute;
+  top: calc(100% + 1.25rem);
+  left: calc((var(--phone-x) + var(--phone-w) / 2) * var(--u));
+  translate: -50% 0;
+}
+
+.cam-stage {
+  --u: calc(100cqi / 560);
+  --stage-h: 660;
+  --phone-x: 36;
+  --phone-y: 132;
+  --phone-w: 244;
+  --phone-tilt: -3deg;
+  /* The board print, and where an outgoing print starts (behind the
+     phone) and clears it, both from the board print's own box */
+  --print-x: 262;
+  --print-y: 112;
+  --print-w: 284;
+  --print-tilt: 5deg;
+  --from-x: -246;
+  --from-y: 110;
+  --clear-x: 58;
+  --clear-y: -22;
+  /* The listed spot and its gallery: tiles are prints at --tile-k, placed
+     by their centres */
+  --korst-x: 266;
+  --korst-y: 28;
+  --korst-w: 284;
+  --korst-tilt: 3deg;
+  --tile-k: 0.44;
+  --tile-a-x: 356;
+  --tile-a-y: 428;
+  --tile-a-tilt: -4deg;
+  --tile-b-x: 488;
+  --tile-b-y: 414;
+  --tile-b-tilt: 5deg;
+  --plate-x: 300;
+  --plate-y: 386;
+  --plate-d: 548;
+  position: relative;
+  aspect-ratio: 560 / var(--stage-h);
+}
+
+@container (width < 30rem) {
+  .cam-stage {
+    --stage-h: 1150;
+    --phone-x: 110;
+    --phone-y: 420;
+    --phone-w: 340;
+    --phone-tilt: -2deg;
+    --print-x: 112;
+    --print-y: 40;
+    --print-w: 330;
+    --print-tilt: -4deg;
+    --from-x: 3;
+    --from-y: 375;
+    --clear-x: 10;
+    --clear-y: -12;
+    --korst-x: 155;
+    --korst-y: 6;
+    --korst-w: 250;
+    --korst-tilt: -3deg;
+    --tile-k: 0.38;
+    --tile-a-x: 214;
+    --tile-a-y: 334;
+    --tile-a-tilt: -4deg;
+    --tile-b-x: 348;
+    --tile-b-y: 330;
+    --tile-b-tilt: 4deg;
+    --plate-x: 280;
+    --plate-y: 330;
+    --plate-d: 580;
+  }
+}
+
+.cam-plate {
+  position: absolute;
+  left: calc((var(--plate-x) - var(--plate-d) / 2) * var(--u));
+  top: calc((var(--plate-y) - var(--plate-d) / 2) * var(--u));
+  width: calc(var(--plate-d) * var(--u));
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    inset 0 calc(-6 * var(--u)) 0 rgb(74 21 52 / 0.04),
+    0 calc(16 * var(--u)) calc(40 * var(--u)) calc(-12 * var(--u)) rgb(74 21 52 / 0.18);
+}
+
+/* The well, and the candy line round the rim */
+.cam-plate::before,
+.cam-plate::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+}
+
+.cam-plate::before {
+  inset: 16%;
+  background: var(--color-shell);
+  box-shadow: inset 0 calc(5 * var(--u)) calc(12 * var(--u)) rgb(74 21 52 / 0.07);
+}
+
+.cam-plate::after {
+  inset: 4.5%;
+  border: calc(3 * var(--u)) solid color-mix(in srgb, var(--color-candy) 45%, #fff);
+}
+
+/* The phone: a berry body with an enamel lip, keys on its sides, and the
+   app on a white screen */
+.cam-phone {
+  --pt: calc(var(--u) * var(--phone-w) / 414);
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--phone-x) * var(--u));
+  top: calc(var(--phone-y) * var(--u));
+  width: calc(var(--phone-w) * var(--u));
+  aspect-ratio: 414 / 868;
+  padding: calc(12 * var(--pt));
+  border-radius: calc(66 * var(--pt));
+  background: var(--color-berry);
+  rotate: var(--phone-tilt);
+  box-shadow:
+    inset 0 calc(2.5 * var(--pt)) 0 rgb(255 255 255 / 0.2),
+    inset 0 0 0 calc(2 * var(--pt)) rgb(255 255 255 / 0.06),
+    0 calc(4 * var(--pt)) 0 rgb(22 4 14 / 0.28),
+    0 calc(44 * var(--pt)) calc(80 * var(--pt)) calc(-24 * var(--pt)) rgb(22 4 14 / 0.55);
+}
+
+.cam-phone::before,
+.cam-phone::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: calc(6 * var(--pt));
+  border-radius: calc(3 * var(--pt));
+  background: var(--color-berry);
+}
+
+.cam-phone::before {
+  left: calc(-4 * var(--pt));
+  top: calc(196 * var(--pt));
+  height: calc(64 * var(--pt));
+  box-shadow: 0 calc(84 * var(--pt)) 0 var(--color-berry);
+}
+
+.cam-phone::after {
+  right: calc(-4 * var(--pt));
+  top: calc(250 * var(--pt));
+  height: calc(104 * var(--pt));
+}
+
+.cam-screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: calc(54 * var(--pt));
+  background: #fff;
+  color: var(--color-berry);
+  font-size: calc(16 * var(--pt));
+  line-height: 1.3;
+}
+
+.cam-status {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(54 * var(--pt));
+  padding: calc(4 * var(--pt)) calc(30 * var(--pt)) 0 calc(46 * var(--pt));
+  font-size: calc(17 * var(--pt));
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.cam-island {
+  position: absolute;
+  top: calc(12 * var(--pt));
+  left: 50%;
+  translate: -50% 0;
+  width: calc(124 * var(--pt));
+  height: calc(36 * var(--pt));
+  border-radius: 9999px;
+  background: var(--color-berry);
+}
+
+.cam-status__icons {
+  width: calc(66 * var(--pt));
+  height: calc(14 * var(--pt));
+}
+
+.cam-scr {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(60 * var(--pt)) calc(20 * var(--pt)) calc(30 * var(--pt));
+  background: #fff;
+  visibility: hidden;
+}
+
+.cam-scr[data-state] {
+  visibility: visible;
+}
+
+.cam-scr[data-state="in"] {
+  z-index: 2;
+}
+
+.cam-scr[data-state="out"] {
+  z-index: 1;
+}
+
+.cam[data-live] .cam-screen[data-move="fade"] .cam-scr[data-state="in"] {
+  animation: cam-fade 360ms var(--ease-out-strong) both;
+}
+
+/* Confirm slides in like the app's sheet, over the search it leaves */
+.cam[data-live] .cam-screen[data-move="push"] .cam-scr[data-state="in"] {
+  box-shadow: calc(-10 * var(--pt)) 0 calc(30 * var(--pt)) rgb(74 21 52 / 0.12);
+  animation: cam-push 440ms var(--ease-drawer) both;
+}
+
+.cam[data-live] .cam-screen[data-move="push"] .cam-scr[data-state="out"] {
+  animation: cam-pushed 440ms var(--ease-drawer) both;
+}
+
+@keyframes cam-fade {
+  from {
+    opacity: 0.3;
+    scale: 1.02;
+  }
+}
+
+@keyframes cam-push {
+  from {
+    translate: 100% 0;
+  }
+}
+
+@keyframes cam-pushed {
+  to {
+    translate: -30% 0;
+  }
+}
+
+.cam-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: calc(44 * var(--pt));
+  margin-bottom: calc(12 * var(--pt));
+}
+
+.cam-logo {
+  width: auto;
+  height: calc(30 * var(--pt));
+}
+
+.cam-pill {
+  padding: calc(8 * var(--pt)) calc(14 * var(--pt));
+  border-radius: 9999px;
+  background: var(--color-shell);
+  font-size: calc(15 * var(--pt));
+  font-weight: 700;
+}
+
+.cam-icon {
+  display: grid;
+  place-items: center;
+  width: calc(44 * var(--pt));
+  height: calc(44 * var(--pt));
+  border-radius: 9999px;
+  background: var(--color-shell);
+}
+
+.cam-icon svg {
+  width: 45%;
+  height: 45%;
+}
+
+.cam-lede {
+  font-size: calc(16 * var(--pt));
+  font-weight: 600;
+  line-height: 1.4;
+  color: rgb(74 21 52 / 0.8);
+}
+
+/* The camera the app opens, already on the plate: berry chrome round a
+   3:4 viewfinder, a yolk focus box, and a white shutter */
+.cam-camera {
+  padding: 0;
+  background: var(--color-berry);
+  color: #fff;
+}
+
+.cam-screen[data-dark] .cam-status {
+  color: #fff;
+}
+
+.cam-viewfinder {
+  position: absolute;
+  top: calc(96 * var(--pt));
+  right: 0;
+  left: 0;
+  height: calc(520 * var(--pt));
+  overflow: hidden;
+  background: var(--color-milk);
+}
+
+.cam-viewfinder img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cam-thirds::before,
+.cam-thirds::after {
+  content: "";
+  position: absolute;
+  border-color: rgb(255 255 255 / 0.35);
+  border-style: solid;
+}
+
+.cam-thirds::before {
+  inset: 0 33.333%;
+  border-width: 0 calc(1 * var(--pt));
+}
+
+.cam-thirds::after {
+  inset: 33.333% 0;
+  border-width: calc(1 * var(--pt)) 0;
+}
+
+.cam-focus {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  width: calc(84 * var(--pt));
+  height: calc(84 * var(--pt));
+  translate: -50% -50%;
+  border: calc(2 * var(--pt)) solid var(--color-yolk);
+  border-radius: calc(8 * var(--pt));
+  opacity: 0.9;
+}
+
+.cam-zoom {
+  position: absolute;
+  bottom: calc(14 * var(--pt));
+  left: 50%;
+  translate: -50% 0;
+  padding: calc(5 * var(--pt)) calc(10 * var(--pt));
+  border-radius: 9999px;
+  background: rgb(74 21 52 / 0.6);
+  font-size: calc(13 * var(--pt));
+  font-weight: 800;
+  color: var(--color-yolk);
+}
+
+/* The camera finds the plate the way the home title finds the table */
+.cam[data-live] .cam-scr[data-state="in"] .cam-viewfinder img {
+  animation: cam-focus 900ms var(--ease-out-strong) both;
+}
+
+.cam[data-live] .cam-scr[data-state="in"] .cam-focus {
+  animation: cam-focus-box 700ms var(--ease-out-strong) 150ms both;
+}
+
+@keyframes cam-focus {
+  from {
+    filter: blur(calc(4 * var(--pt)));
+    scale: 1.08;
+  }
+}
+
+@keyframes cam-focus-box {
+  from {
+    opacity: 0;
+    scale: 1.35;
+  }
+}
+
+.cam-camera__row {
+  position: absolute;
+  right: 0;
+  bottom: calc(52 * var(--pt));
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 calc(34 * var(--pt));
+}
+
+.cam-camera__last {
+  width: calc(50 * var(--pt));
+  height: calc(50 * var(--pt));
+  overflow: hidden;
+  border-radius: calc(12 * var(--pt));
+  box-shadow: 0 0 0 calc(2 * var(--pt)) rgb(255 255 255 / 0.5);
+}
+
+.cam-camera__last img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cam-camera__flip {
+  display: grid;
+  place-items: center;
+  width: calc(50 * var(--pt));
+  height: calc(50 * var(--pt));
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.14);
+}
+
+.cam-camera__flip svg {
+  width: 50%;
+  height: 50%;
+}
+
+.cam-shutter {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(84 * var(--pt));
+  height: calc(84 * var(--pt));
+  border: calc(4 * var(--pt)) solid #fff;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.cam-shutter__core {
+  width: calc(66 * var(--pt));
+  height: calc(66 * var(--pt));
+  border-radius: 9999px;
+  background: #fff;
+  transition: scale 160ms var(--ease-out-strong);
+}
+
+.cam-shutter[data-pressed] .cam-shutter__core,
+.cam-shutter:active .cam-shutter__core {
+  scale: 0.9;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cam-shutter:hover .cam-shutter__core {
+    scale: 0.94;
+  }
+}
+
+.cam-search-head {
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--pt));
+}
+
+.cam-thumb {
+  flex-shrink: 0;
+  width: calc(56 * var(--pt));
+  height: calc(56 * var(--pt));
+  border-radius: calc(14 * var(--pt));
+  object-fit: cover;
+  background: var(--color-milk);
+}
+
+.cam-question {
+  font-size: calc(20 * var(--pt));
+  font-weight: 700;
+  line-height: calc(25 * var(--pt));
+}
+
+.cam-input {
+  display: flex;
+  align-items: center;
+  min-height: calc(50 * var(--pt));
+  margin: calc(14 * var(--pt)) 0 calc(10 * var(--pt));
+  padding: 0 calc(14 * var(--pt));
+  border: calc(1.5 * var(--pt)) solid rgb(74 21 52 / 0.15);
+  border-radius: calc(16 * var(--pt));
+  font-size: calc(16 * var(--pt));
+  font-weight: 600;
+}
+
+.cam-input__placeholder {
+  color: rgb(74 21 52 / 0.45);
+}
+
+.cam-caret {
+  width: calc(2 * var(--pt));
+  height: calc(20 * var(--pt));
+  margin-left: calc(1 * var(--pt));
+  border-radius: 9999px;
+  background: var(--color-blush);
+}
+
+.cam[data-live] .cam-caret {
+  animation: cam-caret 1s steps(1) infinite;
+}
+
+@keyframes cam-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.cam-hint {
+  font-size: calc(14 * var(--pt));
+  font-weight: 600;
+  color: rgb(74 21 52 / 0.6);
+}
+
+.cam-hits {
+  margin-top: calc(6 * var(--pt));
+}
+
+.cam-hit,
+.cam-place {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--pt));
+}
+
+.cam-hit {
+  padding: calc(12 * var(--pt)) 0;
+  border-bottom: calc(1 * var(--pt)) solid rgb(74 21 52 / 0.1);
+}
+
+.cam[data-live] .cam-hit {
+  animation: cam-rise 360ms var(--ease-out-strong) both;
+  animation-delay: calc(var(--i) * 70ms);
+}
+
+@keyframes cam-rise {
+  from {
+    opacity: 0;
+    translate: 0 calc(8 * var(--pt));
+  }
+}
+
+.cam-mark {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: calc(44 * var(--pt));
+  height: calc(44 * var(--pt));
+  overflow: hidden;
+  border-radius: calc(12 * var(--pt));
+  background: var(--color-milk);
+}
+
+.cam-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cam-mark__dot {
+  width: calc(12 * var(--pt));
+  height: calc(12 * var(--pt));
+  border-radius: 9999px;
+  background: var(--color-blush);
+}
+
+.cam-hit__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cam-hit__name {
+  font-size: calc(16 * var(--pt));
+  font-weight: 700;
+}
+
+.cam-hit__address {
+  margin-top: calc(2 * var(--pt));
+  overflow: hidden;
+  font-size: calc(14 * var(--pt));
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: rgb(74 21 52 / 0.55);
+}
+
+.cam-hit__chevron {
+  flex-shrink: 0;
+  width: calc(20 * var(--pt));
+  height: calc(20 * var(--pt));
+  color: rgb(74 21 52 / 0.4);
+}
+
+.cam-hero {
+  position: relative;
+  flex-shrink: 0;
+  height: calc(360 * var(--pt));
+  overflow: hidden;
+  border-radius: calc(28 * var(--pt));
+  background: var(--color-milk);
+}
+
+.cam-hero--live {
+  height: auto;
+  aspect-ratio: 4 / 5;
+}
+
+.cam-hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cam-veil {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(74 21 52 / 0.45);
+  color: var(--color-milk);
+}
+
+.cam-badge {
+  position: absolute;
+  top: calc(14 * var(--pt));
+  left: calc(14 * var(--pt));
+  padding: calc(6 * var(--pt)) calc(12 * var(--pt));
+  border-radius: 9999px;
+  font-size: calc(13 * var(--pt));
+  font-weight: 700;
+  transform-origin: top left;
+}
+
+.cam[data-live] .cam-badge {
+  animation: cam-pop 460ms var(--ease-out-strong) both;
+}
+
+@keyframes cam-pop {
+  0% {
+    opacity: 0;
+    scale: 0.5;
+  }
+  60% {
+    opacity: 1;
+    scale: 1.08;
+  }
+}
+
+.cam-place {
+  margin-top: calc(14 * var(--pt));
+  padding: calc(14 * var(--pt));
+  border-radius: calc(20 * var(--pt));
+  background: var(--color-shell);
+}
+
+.cam-link {
+  font-size: calc(15 * var(--pt));
+  font-weight: 700;
+  color: var(--color-blush);
+}
+
+.cam-lede--confirm,
+.cam-inline {
+  margin-top: calc(14 * var(--pt));
+}
+
+.cam-inline {
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--pt));
+}
+
+.cam[data-live] .cam-lede--confirm {
+  animation: cam-rise 360ms var(--ease-out-strong) 80ms both;
+}
+
+.cam-foot {
+  display: flex;
+  flex-direction: column;
+  gap: calc(6 * var(--pt));
+  margin-top: auto;
+}
+
+.cam-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: calc(54 * var(--pt));
+  border-radius: 9999px;
+  background: var(--color-blush);
+  color: #fff;
+  font-size: calc(17 * var(--pt));
+  font-weight: 800;
+  transition:
+    scale 160ms var(--ease-out-strong),
+    opacity 200ms var(--ease-out-strong);
+}
+
+.cam-btn[data-disabled] {
+  opacity: 0.45;
+}
+
+.cam-btn[data-pressed] {
+  scale: 0.97;
+}
+
+.cam-btn--ghost {
+  height: calc(46 * var(--pt));
+  background: none;
+  color: var(--color-berry);
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cam-btn--ghost:hover {
+    color: var(--color-blush);
+  }
+}
+
+.cam-spin {
+  width: calc(22 * var(--pt));
+  height: calc(22 * var(--pt));
+  border: calc(3 * var(--pt)) solid currentColor;
+  border-right-color: transparent;
+  border-radius: 9999px;
+}
+
+.cam-spin--blush {
+  width: calc(18 * var(--pt));
+  height: calc(18 * var(--pt));
+  color: var(--color-blush);
+}
+
+.cam[data-live] .cam-spin {
+  animation: cam-spin 700ms linear infinite;
+}
+
+@keyframes cam-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+.cam-display {
+  margin-top: calc(18 * var(--pt));
+  font-family: var(--font-display);
+  font-size: calc(32 * var(--pt));
+  line-height: 1.1;
+  letter-spacing: 0.012em;
+  transform-origin: left center;
+}
+
+.cam[data-live] .cam-display {
+  animation: cam-pop 460ms var(--ease-out-strong) 90ms both;
+}
+
+.cam-lede--live {
+  margin-top: calc(6 * var(--pt));
+}
+
+.cam[data-live] .cam-lede--live {
+  animation: cam-rise 360ms var(--ease-out-strong) 160ms both;
+}
+
+.cam-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: #fff;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.cam[data-live] .cam-flash {
+  animation: cam-flash 600ms ease-out both;
+}
+
+@keyframes cam-flash {
+  12% {
+    opacity: 1;
+  }
+}
+
+/* The thumb that drives the demo, as a screen recording shows it */
+.cam-touch {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(46 * var(--pt));
+  height: calc(46 * var(--pt));
+  margin: calc(-23 * var(--pt)) 0 0 calc(-23 * var(--pt));
+  border-radius: 9999px;
+  background: rgb(74 21 52 / 0.22);
+  box-shadow: 0 0 0 calc(2 * var(--pt)) rgb(255 255 255 / 0.8);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.cam[data-live] .cam-touch {
+  animation: cam-touch 440ms var(--ease-out-strong) both;
+}
+
+@keyframes cam-touch {
+  0% {
+    opacity: 0;
+    scale: 1.5;
+  }
+  35% {
+    opacity: 1;
+    scale: 0.9;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.05;
+  }
+}
+
+.cam-mark-demo {
+  position: absolute;
+  top: calc(250 * var(--pt));
+  left: calc(-20 * var(--pt));
+  z-index: 4;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: var(--color-candy);
+  font-size: max(0.75rem, calc(15 * var(--pt)));
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--color-berry);
+  rotate: -8deg;
+}
+
+/* A print: the spot print's white slab and captioned lip, sized in its
+   own units so a gallery tile is the same print, smaller */
+.cam-print {
+  --pw: var(--print-w);
+  --pu: calc(var(--u) * var(--pw) / 284);
+  --print-cast: 0 1px 0 rgb(74 21 52 / 0.06),
+    0 calc(3 * var(--pu)) 0 rgb(22 4 14 / 0.1),
+    0 calc(24 * var(--pu)) calc(44 * var(--pu)) calc(-12 * var(--pu)) rgb(22 4 14 / 0.45);
+  position: absolute;
+  width: calc(var(--pw) * var(--u));
+  margin: 0;
+  padding: calc(10 * var(--pu)) calc(10 * var(--pu)) 0;
+  border-radius: calc(28 * var(--pu));
+  background: #fff;
+  box-shadow: var(--print-cast);
+}
+
+.cam-print__photo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: calc(18 * var(--pu));
+  background: color-mix(in srgb, var(--color-candy) 40%, #fff);
+}
+
+.cam-print__photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cam-print__photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(74 21 52 / 0.1);
+}
+
+/* 10 + 198 + 66: a print is 274 of its units tall, 0.9648 of its width */
+.cam-cap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: calc(8 * var(--pu));
+  height: calc(66 * var(--pu));
+  padding: 0 calc(6 * var(--pu)) calc(15 * var(--pu));
+}
+
+.cam-cap__label {
+  display: block;
+  font-size: calc(12 * var(--pu));
+  font-weight: 700;
+  line-height: 1.3;
+  color: rgb(74 21 52 / 0.7);
+}
+
+.cam-cap__handle {
+  display: block;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: calc(21 * var(--pu));
+  line-height: 1.15;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cam-cap__when {
+  flex-shrink: 0;
+  padding-bottom: calc(4 * var(--pu));
+  font-size: calc(12 * var(--pu));
+  font-weight: 700;
+  color: rgb(74 21 52 / 0.7);
+}
+
+/* Every made-up spot on the board says so, as on how it works */
+.cam-print__demo {
+  position: absolute;
+  top: calc(-12 * var(--pu));
+  left: calc(-14 * var(--pu));
+  z-index: 1;
+  padding: 0.25em 0.75em;
+  border-radius: 9999px;
+  background: var(--color-candy);
+  font-size: max(0.75rem, calc(14 * var(--pu)));
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--color-berry);
+  rotate: -7deg;
+}
+
+.cam-korst {
+  --pw: var(--korst-w);
+  top: calc(var(--korst-y) * var(--u));
+  left: calc(var(--korst-x) * var(--u));
+  rotate: var(--korst-tilt);
+}
+
+.cam-tile-a {
+  --pw: calc(var(--print-w) * var(--tile-k));
+  top: calc((var(--tile-a-y) - var(--print-w) * var(--tile-k) * 0.4824) * var(--u));
+  left: calc((var(--tile-a-x) - var(--print-w) * var(--tile-k) * 0.5) * var(--u));
+  rotate: var(--tile-a-tilt);
+}
+
+/* The print that comes out of the phone. It rests on the board, or, for a
+   listed place, shrinks into the gallery beside its print. */
+.cam-flying {
+  --print-lift: 0 calc(44 * var(--pu)) calc(64 * var(--pu)) calc(-16 * var(--pu)) rgb(22 4 14 / 0.38);
+  z-index: 3;
+  top: calc(var(--print-y) * var(--u));
+  left: calc(var(--print-x) * var(--u));
+  rotate: var(--print-tilt);
+}
+
+.cam-flying[data-to="tile"] {
+  translate:
+    calc((var(--tile-b-x) - var(--print-x) - var(--print-w) * 0.5) * var(--u))
+    calc((var(--tile-b-y) - var(--print-y) - var(--print-w) * 0.4824) * var(--u));
+  scale: var(--tile-k);
+  rotate: var(--tile-b-tilt);
+}
+
+.cam-flying[data-phase="wait"] {
+  visibility: hidden;
+}
+
+/* Out from behind the phone, clear of it, then pressed down: it passes in
+   front of the phone only once it no longer overlaps it */
+.cam[data-live] .cam-flying[data-phase="eject"][data-to="board"] {
+  animation: cam-eject-board 1500ms both;
+}
+
+.cam[data-live] .cam-flying[data-phase="eject"][data-to="tile"] {
+  animation: cam-eject-tile 1700ms both;
+}
+
+@keyframes cam-eject-board {
+  0% {
+    z-index: 1;
+    translate: calc(var(--from-x) * var(--u)) calc(var(--from-y) * var(--u));
+    scale: 0.82;
+    rotate: var(--phone-tilt);
+    box-shadow: 0 0 0 rgb(22 4 14 / 0);
+    animation-timing-function: cubic-bezier(0.25, 0.75, 0.3, 1);
+  }
+  44% {
+    z-index: 1;
+    translate: calc(var(--clear-x) * var(--u)) calc(var(--clear-y) * var(--u));
+    scale: 1.06;
+    rotate: calc(var(--print-tilt) * 1.8);
+    box-shadow: var(--print-lift);
+    animation-timing-function: var(--ease-out-strong);
+  }
+  45% {
+    z-index: 3;
+  }
+}
+
+@keyframes cam-eject-tile {
+  0% {
+    z-index: 1;
+    translate: calc(var(--from-x) * var(--u)) calc(var(--from-y) * var(--u));
+    scale: 0.82;
+    rotate: var(--phone-tilt);
+    box-shadow: 0 0 0 rgb(22 4 14 / 0);
+    animation-timing-function: cubic-bezier(0.25, 0.75, 0.3, 1);
+  }
+  40% {
+    z-index: 1;
+    translate: calc(var(--clear-x) * var(--u)) calc(var(--clear-y) * var(--u));
+    scale: 1.06;
+    rotate: calc(var(--print-tilt) * 1.8);
+    box-shadow: var(--print-lift);
+    animation-timing-function: var(--ease-out-strong);
+  }
+  41% {
+    z-index: 3;
+  }
+}
+
+/* It develops on the way out: strawberry-milk haze to colour */
+.cam[data-live] .cam-flying[data-phase="eject"] .cam-print__photo img {
+  animation: cam-develop 2300ms cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+
+@keyframes cam-develop {
+  0% {
+    opacity: 0;
+    filter: saturate(0.1) brightness(1.5) blur(4px);
+  }
+  35% {
+    opacity: 0.55;
+    filter: saturate(0.35) brightness(1.3) blur(2px);
+  }
+}
+
+.cam[data-live] .cam-flying[data-phase="eject"] .cam-cap > * {
+  animation: cam-ink 700ms var(--ease-out-strong) 900ms both;
+}
+
+@keyframes cam-ink {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The outcome, pressed on once the print lies still */
+.cam-sticker,
+.cam-gallery-sticker {
+  position: absolute;
+  z-index: 4;
+  padding: 0.3em 0.8em;
+  border-radius: 9999px;
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--color-berry);
+}
+
+.cam-sticker {
+  top: calc(-12 * var(--pu));
+  right: calc(-14 * var(--pu));
+  font-size: max(0.75rem, calc(15 * var(--pu)));
+  rotate: 7deg;
+  transform-origin: 80% 20%;
+}
+
+.cam-gallery-sticker {
+  top: calc((var(--tile-b-y) - var(--print-w) * var(--tile-k) * 0.4824) * var(--u));
+  left: calc((var(--tile-b-x) + var(--print-w) * var(--tile-k) * 0.5) * var(--u));
+  translate: -78% -45%;
+  font-size: max(0.75rem, calc(15 * var(--u)));
+  rotate: -6deg;
+  transform-origin: 80% 20%;
+}
+
+.cam[data-live] .cam-flying[data-phase="eject"] .cam-sticker {
+  animation: cam-press 600ms var(--ease-out-strong) 1520ms both;
+}
+
+.cam[data-live] .cam-gallery-sticker {
+  animation: cam-press 600ms var(--ease-out-strong) 1720ms both;
+}
+
+@keyframes cam-press {
+  0% {
+    opacity: 0;
+    scale: 1.5;
+    rotate: -12deg;
+  }
+  55% {
+    opacity: 1;
+    scale: 0.94;
+  }
+}
+
+/* Where the print will go: an empty spot on the board, or in the gallery */
+.cam-slot {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 284 / 274;
+  border: calc(3 * var(--u)) dashed color-mix(in srgb, var(--color-candy) 85%, #fff);
+  background: rgb(255 245 248 / 0.9);
+}
+
+.cam-slot--board {
+  top: calc(var(--print-y) * var(--u));
+  left: calc(var(--print-x) * var(--u));
+  width: calc(var(--print-w) * var(--u));
+  border-radius: calc(28 * var(--u) * var(--print-w) / 284);
+  rotate: var(--print-tilt);
+}
+
+.cam-slot--tile {
+  top: calc((var(--tile-b-y) - var(--print-w) * var(--tile-k) * 0.4824) * var(--u));
+  left: calc((var(--tile-b-x) - var(--print-w) * var(--tile-k) * 0.5) * var(--u));
+  width: calc(var(--print-w) * var(--tile-k) * var(--u));
+  border-width: calc(2 * var(--u));
+  border-radius: calc(28 * var(--u) * var(--print-w) * var(--tile-k) / 284);
+  rotate: var(--tile-b-tilt);
+}
+
+.cam-slot__disc {
+  display: grid;
+  place-items: center;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background: var(--color-yolk);
+  box-shadow: var(--shadow-stamp);
+}
+
+.cam-slot--tile .cam-slot__disc {
+  width: 36%;
+}
+
+.cam[data-live] .cam-surface {
+  animation: cam-surface 560ms var(--ease-out-strong) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes cam-surface {
+  from {
+    opacity: 0;
+    translate: 0 calc(14 * var(--u));
+    scale: 0.96;
+  }
+}
+
+/* Paused, or scrolled away: everything holds where it is */
+.cam[data-paused] *,
+.cam[data-paused] *::before,
+.cam[data-paused] *::after {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cam *,
+  .cam *::before,
+  .cam *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 .leaflet-container {
   font-family: var(--font-body);
   background: color-mix(in srgb, var(--color-candy) 28%, var(--color-milk));

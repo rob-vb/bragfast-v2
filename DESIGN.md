@@ -230,7 +230,8 @@ supplies the warmth.
   `berry/70` for secondary text, `berry/12`–`berry/15` for hairlines, `berry/45` for a photo
   scrim.
 - **Milk** (`{colors.milk}`, `#ffe5f0`): the header band and its lifted pill (always opaque), spot-card and
-  leaderboard-row surfaces, ghost-button hover, and the selection foreground on berry.
+  leaderboard-row surfaces, the home app band's ground, ghost-button hover, and the selection
+  foreground on berry.
 
 ### Secondary
 
@@ -240,17 +241,20 @@ supplies the warmth.
 - **Yolk** (`{colors.yolk}`, `#feb62a`): the attention colour. **Every focus ring in the app is
   2px yolk at 2px offset** — set once on `:focus-visible` in `globals.css` and repeated as
   `ring-yolk` on composite controls. Also the leaderboard rank circle, the empty-state icon
-  disc, and map-marker fill.
+  disc, and map-marker fill. In the home app band yolk means **a new place**: the first
+  chapter's fill, the phone's badge and the **Nieuw op het board** sticker, as in the app.
 
 ### Tertiary
 
-- **Shell** (`{colors.shell}`, `#fff5f8`): the quietest surface — empty-state wells and
-  leaderboard-row hover.
+- **Shell** (`{colors.shell}`, `#fff5f8`): the quietest surface — empty-state wells,
+  leaderboard-row hover, and the well of the plate in the home app band.
 - **Candy** (`{colors.candy}`, `#ff9ebe`): the second podium step, a passport stamp ink, the
   heart on a white/12 like pill, the **Gesloten** and **Voorbeeld** stickers, the photo well
   while a print loads (at 40%), and the Leaflet canvas (28% into milk).
 - **Mint** (`{colors.mint}`, `#bfead3`): the third podium step, a passport stamp ink, and the
-  Like sticker in the how-it-works hero. Reach for it before inventing a ninth colour.
+  Like sticker in the how-it-works hero. In the home app band mint means **a listed place**:
+  the second chapter's fill, the phone's badge and the **In de galerij** sticker. Reach for it
+  before inventing a ninth colour.
 
 ### White
 
@@ -311,11 +315,21 @@ voices, no third.
   but capped below a city name — the still is the loud thing. `.hero-title` is
   `min(96cqi / --fit-word, clamp(2.5rem, 1.6rem + 4.4vw, 5.25rem))`, where `--fit-word` is the
   lead's widest word from `lib/display-fit.ts`, so no word breaks the column. Line-height is 1,
-  looser than a city name, because this title has descenders. The copy splits at its last
-  `, `: the lead is painted in white with `text-shadow-photo` (`max-width: 11em`, balanced
-  wrap), and the tag after the comma is a yolk `.sticker` pill in berry ink at 0.86em, tilted
-  -3deg. Copy without a comma is all paint and no sticker. The heading keeps the whole line
-  as its `aria-label`.
+  looser than a city name, because this title has descenders. The hero's one message
+  (`hero`) splits at its last `, `: the lead is painted in white with `text-shadow-photo`
+  (`max-width: 11em`, balanced wrap), and the tag after the comma is a yolk `.sticker` pill in
+  berry ink at 0.86em, tilted -3deg. Hero copy without a comma is all paint and no sticker.
+  The heading keeps the whole line as its `aria-label`. The comma split is the hero's alone;
+  no other title is cut at a comma.
+- **Home app title** (`.cam-title`, Bagel Fat One berry on milk, fitted, line-height 0.98,
+  tracking 0.012em): **Je bord** / **op het board.** The same lockup as the hero, built from
+  two message keys (`appTitleLead`, `appTitleTag`) rather than a comma split, so the English
+  lead ("Your plate,") keeps its own comma. The lead is painted in berry; the tag is a yolk
+  `.sticker` at 0.62em on its own line, tilted -3deg. `--fit-line` is the wider of the lead and
+  the tag (with its pill) from `lib/display-fit.ts`, and the size is
+  `min(100cqi / --fit-line, clamp(2.5rem, 1.4rem + 3.6vw, 4.5rem))`: one step under the hero
+  title's cap, so the hero stays the page's loudest line. The heading's `aria-label` is lead
+  plus tag.
 - **Home lede** (Nunito 600, `clamp(1.0625rem, 0.95rem + 0.4vw, 1.25rem)`, line-height 1.5,
   white with `text-shadow-photo-copy`, `max-w-xl`, pretty wrap): the intro under the home
   title.
@@ -364,6 +378,11 @@ hanging 152px (lg) / 96px (mobile) below the slab. Under the slab the same split
 gallery left and **Zo kom je er** right, the right column padded to clear the print. **Meer
 in {woonplaats}** runs full width below both.
 
+Home runs hero, local favorites (when the board qualifies), the berry steps band, then the milk
+app band (`max-w-6xl`, `py-20` / `sm:py-28`). On `lg` the app band is 5/7: title, chapters and
+store buttons left, the stage right. Below `lg` it reads title, chapter row and caption, stage,
+store buttons, with the stage capped at 34rem and centred.
+
 Spot grids are `grid gap-4 sm:grid-cols-2 lg:grid-cols-3`. The city board is a podium when
 it is sorted by likes, descending, and its top spot has at least one like: that print spans
 two columns (and two rows on `lg` once there are three spots), and the rest stack beside it.
@@ -383,7 +402,8 @@ Four shadow tokens, all tinted — no grey or black drop shadows anywhere.
   city poster, tilted -3deg, so it reads as a sticker pressed onto the slab. The home title's
   tag is the same sticker at display size: its die-cut scales as `max(3px, 0.05em)`, its cast
   as `0 0.16em 0.3em` deep-berry/35, and it carries the step-enamel lip in ems
-  (`inset 0 0.06em 0 white/45`).
+  (`inset 0 0.06em 0 white/45`). The home app title's tag is that display sticker with a
+  lighter cast (deep-berry/30), because it sits on milk rather than a photo.
 - **Photo text shadows** (`text-shadow-photo`, `text-shadow-photo-copy`): type on the home
   still. The copy shadow is tighter and denser because Nunito's strokes are thinner than
   Bagel's; it carries the home lede. There is no shade, scrim or overlay on the
@@ -392,6 +412,11 @@ Four shadow tokens, all tinted — no grey or black drop shadows anywhere.
 - **Print cast** (`.brag-print`: `0 1px 0 berry/6, 0 3px 0 deep-berry/12, 0 24px 48px -12px
   deep-berry/55`, where deep berry is `rgb(22 4 14)`, the `.sticker` cast): the spot hero print,
   so it reads as paper lying on the slab and, where it hangs, on the white page.
+- **Scene casts** (home app band): every shadow in the scene is sized in the scene's own units
+  so it scales with it. The plate takes a berry/4 inset rim and a soft berry/18 cast; the phone
+  a white/20 enamel lip, a short deep-berry/28 foot and a deep-berry/55 cast; a print the print
+  cast at a lighter deep-berry/10 foot and /45 cast, lifting to a deep-berry/38 cast while it
+  is in the air.
 - **Step enamel** (`inset 0 3px 0 white/45`): the top lip of a filled podium step, the same
   highlight `shadow-stamp` puts on a sticker, with no cast because the step stands on the
   floor.
@@ -603,7 +628,9 @@ masked to a soft pool around the print; it is light, not a wash.
 **Foto's** with the count in Nunito 800 `berry/50`. A two-column grid of square prints (milk
 slab, 8px pad, 20px photo) that lift like spot cards on hover and open the lightbox. The
 last cell is the app slot: a shell well with a 2px dashed candy border, the yolk camera disc
-with `shadow-stamp`, and the app-row copy; it spans both columns when it would sit alone.
+with `shadow-stamp`, **Laat je bord zien** (`appRowPhotosTitle`, the same line as the home app
+band's second chapter) in Bagel Fat One and, from a 12rem slot, `appRowPhotosBody` in
+`berry/70`; it spans both columns when it would sit alone.
 Your own photo carries a white trash pill that arms on the first press ("Echt wissen?", blush)
 and deletes on the second, disarming after 4s or on blur.
 
@@ -695,12 +722,64 @@ reduced motion keeps the framing and loses only the drift. Used full-bleed on th
 
 ### Home steps (`Steps` in `components/home-view.tsx`)
 
-A berry band under local favorites (or the hero), titled in Section type in white. Four slabs
+A berry band under local favorites (or the hero) and above the app band, titled in Section
+type in white. Four slabs
 of `white/7` with a `white/10` ring, each holding one how-it-works verb as its `.sticker`
 (the same ink and tilt as `VerbStickers`) and one milk/85 sentence. The whole slab links to
 that verb's poster on how it works; hover or focus straightens the sticker and scales it 1.05,
 as on the how-it-works hero. Mobile sets the sticker beside its sentence; `sm` and up stack
 them in two, then four, columns. The band ends in the white `h-12` pill link to how it works.
+
+### Home app band (`components/app-section.tsx`, `components/instant-camera.tsx`)
+
+The two things one photo in the app does, played as one showreel on a milk band. The server
+part holds the band, the title lockup (see **Home app title**), a `berry/80` Nunito 600
+`text-lg` lede and the store buttons; the client part holds the stage, the chapters and the
+control. It replaces the two app rows; there are no empty phone shells.
+
+- **Chapters.** The two acts, **Brag als eerste** and **Laat je bord zien**, are white
+  `.sticker` pills in Bagel Fat One berry (`text-lg` → `sm:text-2xl` → `lg:text-3xl`),
+  tilted -2 and 2deg, that straighten and scale 1.04 when pressed, hovered (fine pointer)
+  or focused. Each fills with its act's badge colour, yolk for a new place and mint for a
+  listed one, through a `clip-path: inset(... round 9999px)` that keeps the pill's round end
+  as it grows; the fill runs until the print lands and is full from then on. Tapping a
+  chapter plays its act. On `lg` they stack, each with its line (`appActBragBody`,
+  `appActPlateBody`) in `berry/75` under it; below `lg` they sit in a row right above the
+  stage, with the playing act's line as one caption under the row.
+- **Stage.** One picture drawn in stage units (`--u`, 1/560 of the stage's width), so the whole
+  scene scales as one. A wide stage (560 × 660) lays the board beside the phone; under a
+  30rem container it turns narrow (560 × 1150) and stacks the board above the phone. Each
+  variant sets its own positions and tilts for the phone, the prints, the gallery tiles and
+  the plate.
+- **Plate.** The **bord** the board is named after: a white disc under everything, with a
+  shell well (inset 16%) and a thin candy rim line (candy 45% into white, inset 4.5%).
+- **Phone.** A berry body in phone points (`--pt`, 1/414 of the phone; 414 × 868, 66pt
+  radius), with side keys, an enamel lip, a white screen at 54pt and an 8:15 status bar
+  round a berry island. It shows the app's own Dutch screens and copy in both locales:
+  the camera it opens (berry chrome, a milk viewfinder with a white/35 thirds grid, a yolk
+  focus box, a yolk **1×** chip, the last shot in the corner and a white shutter), search
+  (**Waar heb je dit gegeten?**, a field with a blush caret, two hits), confirm (the photo
+  with its yolk or mint badge, the place on a shell row with a blush **Wijzig**, a blush
+  **Publiceren** pill) and live (the lockup, a **Delen** pill, the photo at 4:5, **Foto staat
+  live.** in Bagel Fat One, **Bekijk op brag.fast** and a ghost **Nog een foto**). A berry/22
+  thumb dot with a white ring marks each tap. The shutter and **Nog een foto** work; the rest
+  is a picture.
+- **Prints.** A brag print in its own units (`--pu`, 1/284 of that print): a white slab at
+  28pu with a 10pu pad, a 4:3 photo at the concentric 18pu (candy/40 while it loads), and the
+  spot print's lip ("Ontdekt door", `@handle` with a blush `@`, the date). A gallery tile is
+  the same print scaled down (0.44 wide, 0.38 narrow).
+- **Slots.** Where the print will go: a print-shaped well on shell/90 with a dashed candy border
+  (3 units; 2 on a tile) holding the yolk camera disc with `shadow-stamp` and a blush glyph.
+- **Voorbeeld.** Every place, handle and photo is made up and says so: a candy **Voorbeeld**
+  `.sticker` on the phone's edge (-8deg) and on the new place's print and the listed place's
+  print (-7deg). Gallery tiles carry no label of their own; they belong to the labelled listed
+  print. A screen-reader summary
+  (`appDemoSummary`) stands in for the scene, which is `aria-hidden`.
+- **Outcome stickers.** A yolk **Nieuw op het board** on the new print's corner (7deg), or a
+  mint **In de galerij** beside the new gallery tile (-6deg).
+- **Control.** One white `h-10` pill with a berry/12 ring, centred 1.25rem under the phone:
+  Lucide pause, play or replay glyph and **Pauzeer**, **Speel af** or **Nog een keer**. Ink
+  turns blush on fine-pointer hover; press is 0.97. Reduced motion hides it.
 
 ### Woonplaats index (`app/nl/page.tsx`)
 
@@ -733,7 +812,9 @@ Three durations and three easings, all tokens:
   sticker moments: the poster letters landing and the like heart popping. Nothing else
   springs.
 
-**Home's one authored moment** is the title arriving. The lead's words come into focus one
+**Home has two authored moments**: the title arriving, and the app band's showreel.
+
+The title: the lead's words come into focus one
 after another (`hero-focus`: from 0.45 opacity, a 0.09em blur and a 0.08em drop; 1100ms
 `ease-out-strong`, 130ms apart), then the tag is pressed on (`hero-tag-press`: from scale
 1.45, -11deg and no opacity, overshooting to 0.95 before it settles at -3deg; 640ms
@@ -742,6 +823,23 @@ frame; nothing waits for the moment. Ambient: the ken-burns drift, and, where th
 scroll timelines (`@supports (animation-timeline: view())`) and motion is not reduced, the
 still falls behind the page as the hero exits (`hero-drift`, translating 22% over the hero's
 exit view-timeline).
+
+The app band plays once, when the stage is half in view, both acts through with a 1.1s
+breath between them, then rests on the replay pill. Under 15% in view or with the tab hidden
+its clock stops and every animation inside holds (`data-paused`). It follows the Stage's still
+rules: no script, reduced motion, or a stage already on screen at wake shows act one finished,
+the print on the board and the phone on its live screen. Each act is 8.2s: the camera opens
+already on the plate and focuses from a blur (900ms, from a 4pt blur and scale 1.08, the
+focus box closing in from 1.35); the thumb presses the shutter and the screen flashes white;
+search fades up and the place is typed one letter per 100ms, its hits rising 70ms apart; the
+tap pushes confirm in like the app's sheet (440ms `ease-drawer`, search sliding 30% away);
+the badge pops, the slot or the listed print surfaces on the plate, Publiceren is pressed and
+spins, and the live screen fades up. Then the print comes out from behind the phone, tilted
+with it, and passes in front only once it is clear of it, before it is pressed down on the
+board (1500ms) or shrunk into the gallery (1700ms). It develops on the way from strawberry-milk
+haze to colour (2300ms, from no opacity, 10% saturation, 1.5 brightness and a 4px blur), its
+caption inks in, and the yolk or mint outcome sticker is pressed on (600ms, from scale 1.5 and
+-12deg). Arrivals and presses take `ease-out-strong`, the push `ease-drawer`; nothing springs.
 
 **The spot page's one authored moment** is the print landing: it drops from 2.5rem above,
 tilted 2.5 times its resting angle and scaled 1.07, at 20% opacity, and settles over 1000ms
@@ -789,7 +887,8 @@ sliding, the sticker only fades, and the egg stays still.
 
 Press feedback is uniform: `active:scale-[0.97]`. Hover effects are gated behind the
 `pointer-fine` variant so a touch device never sticks in a hover state. Under
-`prefers-reduced-motion` the ken-burns, scroll drift, home title focus and tag press, poster letters, print landing, glow fade, lightbox
+`prefers-reduced-motion` the ken-burns, scroll drift, home title focus and tag press, every animation and transition in the
+home app band (which shows act one finished, swaps finished acts when a chapter is tapped, and drops its control), poster letters, print landing, glow fade, lightbox
 slide, like pop, sort glide, stamp press, podium rise, egg drop (the menu egg included) and like-bar fill stop — and on how it works the
 staged print, map bands, pin ring, pin glide and pin tour, town label, +1 float, demo
 podium rise, demo egg drop and demo stamp press stop, and the like demo re-sorts without a

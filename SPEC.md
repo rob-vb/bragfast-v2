@@ -35,7 +35,7 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 **Ship in v1**
 
 - Crawlable site, NL woonplaats boards, spot + profile + leaderboard pages
-- Homepage: woonplaats autocomplete over the BAG gazetteer; IP local-favorites when that woonplaats board has at least 3 listed spots with a photo; the four-step band; two app rows with per-store Coming soon. No featured woonplaatsen. No GPS. No spot search on `/`. No national feed.
+- Homepage: woonplaats autocomplete over the BAG gazetteer; IP local-favorites when that woonplaats board has at least 3 listed spots with a photo; the four-step band; the app section with per-store Coming soon. No featured woonplaatsen. No GPS. No spot search on `/`. No national feed.
 - Woonplaats page: list of spots added in the app, empty state when none, list default, map toggle when spots exist
 - Empty woonplaats: `noSpotsYet` and `emptyBoardAppHint`. No add control. No sort or map on empty. `noindex, follow` and out of the sitemap until the first spot.
 - Woonplaats index `/nl`: every board with at least one live spot, A to Z.
@@ -145,14 +145,14 @@ Do not ship featured woonplaatsen or **Steden om te ontdekken**. Stock city scen
 
 **Steps.** One berry band under favorites (or under the hero when favorites is omitted), titled **Zo werkt brag.fast**: the four verbs of how it works (Zoek, Brag, Like, Klim) as stickers, one sentence each, each card linking to its poster on `/how-it-works`, and one link to the whole page. Always show it. It explains; it does not list woonplaatsen or spots.
 
-**App rows.** Two bands under the steps band. Always show them.
+**App section.** One band under the steps band, titled **Je bord op het board.** Always show it. It covers both things the app does with one photo, as two acts:
 
-1. First to brag a spot (create in the app).
-2. Show off your plate (extra photos in the app).
+1. **Brag als eerste**: the place is new, so the photo puts it on its woonplaats board with the photographer's name (create in the app).
+2. **Laat je bord zien**: the place is listed, so the photo joins its gallery (extra photos in the app).
 
-No third row. No recent-brags feed on `/`. GPS stays in the app. Copy is not frozen; do not put **adder** in Dutch UI sentences.
+The device frame shows the app at work: its own Dutch screens and copy play the two acts once when the band is half in view, and the photo comes out of the phone as a print on the board or in the gallery. Every place, handle and photo in it is example data under a **Voorbeeld** label. Visitors can pause, replay, or play either act; reduced motion shows the finished first act. Then a line of copy and the per-store download controls.
 
-Each row: title, one or two sentences, per-store download controls, a device frame. Empty phone shells are allowed while the site is in development. Swap in real stills or looping mp4 later without changing the layout.
+No third act. No recent-brags feed on `/`. GPS stays in the app. Copy is not frozen; do not put **adder** in Dutch UI sentences.
 
 Store buttons: one iOS, one Android. Each is independently **live** (href to that store URL) or **disabled + Coming soon**. iOS ships first; Android may stay coming-soon after iOS is live. Do not href a store that is not actually listed.
 
@@ -287,7 +287,7 @@ Geclaimd means "this page has a paying owner," not "we checked KvK" and not "thi
 Homepage one-liner: **Ontbijt- en brunchplekken, per stad.**  
 Ontbijt and brunch: say the pair where copy states what the site is (hero, meta titles and descriptions, board title and lead, SEO, llms.txt). Elsewhere talk about the **plek** or the **bord**, or use both verbs (*ontbijt of brunch je*, *ontbeten of gebruncht*). Never **ontbijt** or **breakfast** alone. The slogan is **Eerst de foto, dan de hap.** / **Photo first, then the bite.** (footer and App Store subtitle).  
 Hashtag in UI: `#bragfast`.  
-Homepage app-row and local-favorites headings: not frozen; owner rewrites later. Do not use **adder** in Dutch UI sentences. Disabled store buttons: **Coming soon**.  
+Homepage app-section and local-favorites headings: not frozen; owner rewrites later. Do not use **adder** in Dutch UI sentences. Disabled store buttons: **Coming soon**.  
 Board empty: **Nog geen plekken in deze stad.** (`noSpotsYet`) plus `emptyBoardAppHint`.  
 Closed: **Gesloten**.  
 Leaderboard chrome (NL and EN): **Leaderboard**.  
@@ -324,8 +324,8 @@ Stop each step when the criterion is true.
 7. **Leaderboard.** `/nl/leaderboard` and the passport at `/u/{slug}`.  
    *Done:* two adders with different like sums appear in that order. A user with no spot and no earned like is absent.
 
-8. **Homepage.** Local favorites from IP when the board has ≥3 photo spots; two app rows; featured woonplaatsen gone.  
-   *Done:* `/` HTML has no **Steden om te ontdekken**. A board under the 3-spot gate does not render the favorites block. Two app rows include per-store **Coming soon** (disabled until that store URL exists).
+8. **Homepage.** Local favorites from IP when the board has ≥3 photo spots; the app section; featured woonplaatsen gone.  
+   *Done:* `/` HTML has no **Steden om te ontdekken**. A board under the 3-spot gate does not render the favorites block. The app section includes per-store **Coming soon** (disabled until that store URL exists).
 
 ## Out of scope reminders
 
