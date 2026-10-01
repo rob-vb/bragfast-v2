@@ -57,6 +57,28 @@ export async function deleteAccount(
       }
     }
 
+    // Blocks either way go; reports they filed stay, without their name
+    const blocks = [
+      ...(await ctx.db
+        .query("blocks")
+        .withIndex("by_user_blocked", (q) => q.eq("userId", user._id))
+        .collect()),
+      ...(await ctx.db
+        .query("blocks")
+        .withIndex("by_blocked", (q) => q.eq("blockedId", user._id))
+        .collect()),
+    ];
+    for (const block of blocks) {
+      await ctx.db.delete(block._id);
+    }
+    const filed = await ctx.db
+      .query("reports")
+      .withIndex("by_reporter", (q) => q.eq("reporterId", user._id))
+      .collect();
+    for (const report of filed) {
+      await ctx.db.patch(report._id, { reporterId: undefined });
+    }
+
     await ctx.db.delete(user._id);
   }
 

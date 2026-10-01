@@ -1,4 +1,4 @@
-import type { Id } from "../_generated/dataModel";
+import type { Doc, Id } from "../_generated/dataModel";
 import type { MutationCtx } from "../_generated/server";
 import {
   pickDiscoveryPhoto,
@@ -54,27 +54,39 @@ export async function deleteOwnPhoto(
   if (row === null || plan.action === "reject") {
     return plan;
   }
+  await deletePhoto(ctx, row);
+  return { action: "delete" };
+}
+
+/** Point the spot's hero away from a photo that leaves view. */
+async function moveHeroOff(ctx: MutationCtx, row: Doc<"photos">) {
   const spot = await ctx.db.get(row.spotId);
+  if (!spot) {
+    return;
+  }
   const remaining = (await photosOnSpot(ctx, row.spotId)).filter(
-    (photo) => photo._id !== row._id,
+    (photo) => photo._id !== row._id && photo.hiddenAt === undefined,
   );
   const hero = planHeroAfterDelete({
     deletingStorageId: row.storageId,
-    heroStorageId: spot?.photoId ?? null,
+    heroStorageId: spot.photoId ?? null,
     remaining: remaining.map((photo) => ({
       storageId: photo.storageId,
       createdAt: photo.createdAt,
     })),
   });
-  if (spot) {
-    if (hero.kind === "promote") {
-      await ctx.db.patch(spot._id, {
-        photoId: hero.storageId as Id<"_storage">,
-      });
-    } else if (hero.kind === "empty") {
-      await ctx.db.patch(spot._id, { photoId: undefined });
-    }
+  if (hero.kind === "promote") {
+    await ctx.db.patch(spot._id, {
+      photoId: hero.storageId as Id<"_storage">,
+    });
+  } else if (hero.kind === "empty") {
+    await ctx.db.patch(spot._id, { photoId: undefined });
   }
+}
+
+/** Gone for good: the row, its reports, its like credit and, if unshared, the file. */
+export async function deletePhoto(ctx: MutationCtx, row: Doc<"photos">) {
+  await moveHeroOff(ctx, row);
   // The likes stay on the spot; only the photo's credit goes
   const credited = await ctx.db
     .query("likes")
@@ -83,14 +95,40 @@ export async function deleteOwnPhoto(
   for (const like of credited) {
     await ctx.db.patch(like._id, { viaPhotoId: undefined });
   }
+  const reports = await ctx.db
+    .query("reports")
+    .withIndex("by_photo", (q) => q.eq("target.photoId", row._id))
+    .collect();
+  for (const report of reports) {
+    await ctx.db.delete(report._id);
+  }
   await ctx.db.delete(row._id);
+  const spot = await ctx.db.get(row.spotId);
   const stillUsed =
-    remaining.some((photo) => photo.storageId === row.storageId) ||
-    (hero.kind !== "empty" && hero.storageId === row.storageId);
+    (await photosOnSpot(ctx, row.spotId)).some(
+      (photo) => photo.storageId === row.storageId,
+    ) || spot?.photoId === row.storageId;
   if (!stillUsed) {
     await ctx.storage.delete(row.storageId);
   }
-  return { action: "delete" };
+}
+
+/** Out of view pending owner review; the hero moves on if it was this one. */
+export async function hidePhoto(ctx: MutationCtx, row: Doc<"photos">) {
+  if (row.hiddenAt !== undefined) {
+    return;
+  }
+  await ctx.db.patch(row._id, { hiddenAt: Date.now() });
+  await moveHeroOff(ctx, row);
+}
+
+/** Back in view; it becomes the hero only when the spot has none. */
+export async function unhidePhoto(ctx: MutationCtx, row: Doc<"photos">) {
+  await ctx.db.patch(row._id, { hiddenAt: undefined });
+  const spot = await ctx.db.get(row.spotId);
+  if (spot && spot.photoId === undefined) {
+    await ctx.db.patch(spot._id, { photoId: row.storageId });
+  }
 }
 
 export async function backfillHeroPhotos(ctx: MutationCtx): Promise<number> {

@@ -5,22 +5,31 @@ import Link from "next/link";
 import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
 import { api } from "@/convex/_generated/api";
-import { t, type Locale } from "@/domain/messages";
-import type { AdminReportRow, AdminSpotRow } from "@/domain/viewModels";
+import { reportReasonLabel, t, type Locale } from "@/domain/messages";
+import type {
+  AdminPhotoReportRow,
+  AdminReportRow,
+  AdminSpotRow,
+} from "@/domain/viewModels";
 import { Button } from "@/components/ui/button";
 
 export function AdminQueue({
   locale,
   reports,
+  photoReports,
   spots,
 }: {
   locale: Locale;
   reports: AdminReportRow[];
+  photoReports: AdminPhotoReportRow[];
   spots: AdminSpotRow[];
 }) {
   const router = useRouter();
   const restore = useMutation(api.admin.restore);
   const keepHidden = useMutation(api.admin.keepHidden);
+  const restorePhoto = useMutation(api.admin.restorePhoto);
+  const removePhoto = useMutation(api.admin.removePhoto);
+  const removeUploader = useMutation(api.admin.removeUploader);
   const closeSpot = useMutation(api.admin.closeSpot);
   const reopenSpot = useMutation(api.admin.reopenSpot);
   const [pending, setPending] = useState(false);
@@ -41,7 +50,71 @@ export function AdminQueue({
         <h2 className="font-display text-2xl tracking-wide">
           {t(locale, "openReports")}
         </h2>
-        {reports.length === 0 ? (
+        {photoReports.length > 0 ? (
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+            {photoReports.map((report) => (
+              <li
+                key={report.photoId}
+                className="flex gap-4 rounded-slab border border-berry/10 bg-white p-4"
+              >
+                {report.photoUrl ? (
+                  <a
+                    href={report.photoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block size-28 shrink-0 overflow-hidden rounded-[1.25rem] bg-candy/40"
+                  >
+                    <img src={report.photoUrl} alt="" className="size-full object-cover" />
+                  </a>
+                ) : null}
+                <div className="min-w-0">
+                  <Link href={report.spotPath} className="text-lg font-bold text-blush">
+                    {report.spotName}
+                  </Link>
+                  <p className="mt-1 text-sm text-berry/70">
+                    {report.uploaderSlug ? `@${report.uploaderSlug} · ` : null}
+                    {report.reasons
+                      .map((reason) => reportReasonLabel(locale, reason))
+                      .join(", ")}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={pending}
+                      onClick={() => run(() => restorePhoto({ photoId: report.photoId }))}
+                    >
+                      {t(locale, "restoreBrag")}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={pending}
+                      onClick={() => run(() => removePhoto({ photoId: report.photoId }))}
+                    >
+                      {t(locale, "adminRemovePhoto")}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={pending}
+                      onClick={() => {
+                        if (window.confirm(t(locale, "adminRemoveUploaderConfirm"))) {
+                          void run(() => removeUploader({ photoId: report.photoId }));
+                        }
+                      }}
+                    >
+                      {t(locale, "adminRemoveUploader")}
+                    </Button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {reports.length === 0 && photoReports.length === 0 ? (
           <p className="mt-6 text-berry/70">{t(locale, "noOpenReports")}</p>
         ) : (
           <ul className="mt-6 grid gap-3">

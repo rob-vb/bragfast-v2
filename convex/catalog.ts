@@ -190,10 +190,12 @@ export const spotPage = query({
       }
       return passports.get(userId) ?? null;
     };
-    const photoRows = await ctx.db
-      .query("photos")
-      .withIndex("by_spot_created", (q) => q.eq("spotId", row._id))
-      .collect();
+    const photoRows = (
+      await ctx.db
+        .query("photos")
+        .withIndex("by_spot_created", (q) => q.eq("spotId", row._id))
+        .collect()
+    ).filter((photo) => photo.hiddenAt === undefined);
     photoRows.sort((a, b) => a.createdAt - b.createdAt);
     const brought = likesBroughtByPhoto(
       await ctx.db

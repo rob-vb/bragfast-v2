@@ -12,7 +12,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
-import { Camera, ChevronLeft, ChevronRight, Trash2, X } from "lucide-react";
+import { ConvexError } from "convex/values";
+import { Camera, ChevronLeft, ChevronRight, Flag, Trash2, X } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import {
@@ -23,10 +24,12 @@ import {
   t,
   type Locale,
 } from "@/domain/messages";
+import type { PhotoReportReason } from "@/domain/moderation";
 import { photoCredits } from "@/domain/photo";
 import type { SpotPagePhoto } from "@/domain/viewModels";
 import { LikeButton } from "@/components/like-button";
 import { notify } from "@/components/ui/toast";
+import { requestSignIn } from "@/lib/sign-in-signal";
 import { photoSrc } from "@/lib/photo-src";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +56,7 @@ export function SpotPhotos({
   const viewerId = useQuery(api.photos.viewerId);
   const brought = useQuery(api.likes.likesBrought, { spotId });
   const remove = useMutation(api.photos.deleteOwn);
+  const report = useMutation(api.moderation.reportPhoto);
   const router = useRouter();
   const [gone, setGone] = useState<ReadonlySet<string>>(() => new Set());
   const [open, setOpen] = useState<number | null>(null);
@@ -77,6 +81,20 @@ export function SpotPhotos({
         return next;
       });
       notify(t(locale, "deletePhotoFailed"));
+    }
+  }
+
+  /** A report hides the photo for everyone until the owner has looked. */
+  async function onReport(photo: SpotPagePhoto, reason: PhotoReportReason) {
+    try {
+      await report({ photoId: photo.id as Id<"photos">, reason });
+      setGone((prev) => new Set(prev).add(photo.id));
+      notify(t(locale, "reportThanks"));
+      router.refresh();
+    } catch (error) {
+      const already =
+        error instanceof ConvexError && error.data === "already-reported";
+      notify(t(locale, already ? "reportAlready" : "reportFailed"));
     }
   }
 
@@ -149,6 +167,8 @@ export function SpotPhotos({
         photos={shown}
         index={open}
         onIndex={setOpen}
+        viewerId={viewerId}
+        onReport={onReport}
       />
     </section>
   );
@@ -234,6 +254,8 @@ function Lightbox({
   photos,
   index,
   onIndex,
+  viewerId,
+  onReport,
 }: {
   locale: Locale;
   name: string;
@@ -242,8 +264,12 @@ function Lightbox({
   photos: SpotPagePhoto[];
   index: number | null;
   onIndex: (index: number | null) => void;
+  /** Undefined while loading, null when signed out. */
+  viewerId: Id<"users"> | null | undefined;
+  onReport: (photo: SpotPagePhoto, reason: PhotoReportReason) => Promise<void>;
 }) {
   const [step, setStep] = useState(0);
+  const [reporting, setReporting] = useState<string | null>(null);
   const press = useRef<number | null>(null);
   const total = photos.length;
   const at = index === null || total === 0 ? null : Math.min(index, total - 1);
@@ -289,6 +315,7 @@ function Lightbox({
       open={at !== null}
       onOpenChange={(next) => {
         if (!next) {
+          setReporting(null);
           setStep(0);
           onIndex(null);
         }
@@ -316,13 +343,37 @@ function Lightbox({
                 <DialogPrimitive.Title className="text-sm font-bold text-milk tabular-nums">
                   {photoPosition(locale, shown.at + 1, total)}
                 </DialogPrimitive.Title>
-                <DialogPrimitive.Close
-                  aria-label={t(locale, "close")}
-                  className={arrow}
-                >
-                  <X aria-hidden className="size-5" strokeWidth={2.5} />
-                </DialogPrimitive.Close>
+                <div className="flex items-center gap-2">
+                  {viewerId !== undefined && viewerId !== shown.photo.uploadedBy ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        viewerId === null ? requestSignIn() : setReporting(shown.photo.id)
+                      }
+                      className="inline-flex h-12 items-center gap-2 rounded-full bg-white/12 px-4 text-sm font-bold text-white transition-[background-color,transform] duration-press ease-out-strong active:scale-[0.97] pointer-fine:hover:bg-white/22"
+                    >
+                      <Flag aria-hidden className="size-4" strokeWidth={2.5} />
+                      {t(locale, "reportPhoto")}
+                    </button>
+                  ) : null}
+                  <DialogPrimitive.Close
+                    aria-label={t(locale, "close")}
+                    className={arrow}
+                  >
+                    <X aria-hidden className="size-5" strokeWidth={2.5} />
+                  </DialogPrimitive.Close>
+                </div>
               </div>
+              {reporting === shown.photo.id ? (
+                <ReportSheet
+                  locale={locale}
+                  onCancel={() => setReporting(null)}
+                  onPick={(reason) => {
+                    setReporting(null);
+                    void onReport(shown.photo, reason);
+                  }}
+                />
+              ) : null}
               <div
                 className="relative flex min-h-0 flex-1 touch-pan-y items-center justify-center px-4 py-4 sm:px-24"
                 onPointerDown={onPointerDown}
@@ -422,5 +473,53 @@ function Lightbox({
         </DialogPrimitive.Popup>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
+  );
+}
+
+const REPORT_CHOICES: readonly [PhotoReportReason, "reportOffensive" | "reportSpam" | "reportWrongSpot"][] = [
+  ["offensive", "reportOffensive"],
+  ["spam", "reportSpam"],
+  ["wrong-spot", "reportWrongSpot"],
+];
+
+/** The reasons a photo can be reported for, over the lightbox. */
+function ReportSheet({
+  locale,
+  onPick,
+  onCancel,
+}: {
+  locale: Locale;
+  onPick: (reason: PhotoReportReason) => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div
+      role="group"
+      aria-labelledby="report-title"
+      className="absolute inset-x-4 top-20 z-10 mx-auto max-w-sm rounded-slab bg-shell p-5 text-berry shadow-lift sm:top-24"
+    >
+      <p id="report-title" className="font-display text-xl leading-tight tracking-wide">
+        {t(locale, "reportPhotoTitle")}
+      </p>
+      <div className="mt-4 grid gap-2">
+        {REPORT_CHOICES.map(([reason, label]) => (
+          <button
+            key={reason}
+            type="button"
+            onClick={() => onPick(reason)}
+            className="rounded-field bg-white px-4 py-3 text-left font-bold transition-[background-color,transform] duration-press ease-out-strong active:scale-[0.985] pointer-fine:hover:bg-milk"
+          >
+            {t(locale, label)}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={onCancel}
+          className="mt-1 px-4 py-2 text-sm font-bold text-berry/70 pointer-fine:hover:text-berry"
+        >
+          {t(locale, "reportCancel")}
+        </button>
+      </div>
+    </div>
   );
 }

@@ -47,7 +47,7 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 - Photo upload on add, Convex storage
 - i18n: `nl` / `en` UI on the **same** URLs
 - SEO: server-rendered HTML, JSON-LD `FoodEstablishment` on spots and `WebSite` + `Organization` on `/`, a canonical URL and share card on every public page, `robots.txt`, sitemap of chrome pages, woonplaatsen with a live spot, and live spots
-- Admin: reports, closed override
+- Admin: reports (a photo report offers restore, remove the photo, or remove the poster's account), closed override
 
 **Not v1**
 
@@ -171,7 +171,8 @@ Name, address, woonplaats.
 Like count and like control.  
 The adder’s photo as the card and page hero. A gallery of hosted photos on that spot, including the adder’s photo. Signed-in visitors can delete a gallery row they uploaded. Extra-upload is the app, not this page. Empty hero is berry with no broken image.  
 The gallery lightbox carries the same like control, under the uploader and date, beside the likes that photo brought (**12 likes via deze foto**, hidden at zero). Under the Photos heading one credit line names every uploader with a passport once, most likes brought first, then who posted first: **In beeld dankzij @anna, @bram en @cor**. Past six names it names five and counts the rest.  
-Share URL. Report.  
+Share URL.  
+**Meld** in the lightbox, signed-in and not on your own photo, with three reasons: aanstootgevend of illegaal, spam of reclame, hoort niet bij deze plek. A report hides the photo for everyone at once, pending owner review, and mails the owner. Signed-out opens the sign-in dialog.  
 Hours stay in the spot record and in JSON-LD. They are not a seeker heading, weekday list, or Open nu chip.  
 No menu, price, booking, phone-as-a-product in **v1** (optional tel link is fine). No comments. v2 claimed spots may add one owner conversion CTA. See Claim (v2).
 
@@ -199,13 +200,17 @@ The explainer runs in four steps, in the order a spot lives: **Zoek** (every woo
 
 Demo pieces (the photo print, the example board, the podium, the stamp) use made-up spots and usernames, labelled **Voorbeeld**. They never link to a real spot or passport, and demo likes write nothing. The example board sorts with the same rule as `sortCityBoard`.
 
+### Privacy `/privacy` and Terms `/terms`
+
+Footer links, English slugs, one content module (`domain/legal.ts`) in NL and EN. The privacy statement covers the website and the app; account deletion lives at `/privacy#delete-account`, the store deletion URL (`/privacy/data-deletion` redirects there). The terms carry the house rules with zero tolerance for objectionable content, the photo licence and the App Store clauses; they are the app's EULA.
+
 ## Auth and identity
 
 - **Better Auth**, v1 providers: Google, Apple, `emailAndPassword`. Apple `clientSecret` is the short-lived JWT Better Auth expects, not a Google-style static secret. Set it on the Convex deployment with `APPLE_CLIENT_ID`.
 - Unique public `username` (`UserSlug`) at signup. Mint the passport row then.
 - Google or Apple first login without a username opens the same dialog on the username field. Do not create a user without a `UserSlug`.
 - Password login accepts email or username.
-- Transactional email only: "your spot is live."
+- Transactional email only: "your spot is live." The owner also gets a mail per photo report or block.
 - Keep `AuthControl` mounted. `requestSignIn()` opens that dialog.
 
 ## Add a spot
@@ -219,7 +224,8 @@ The website has no add UI. The app creates a spot when a user publishes the firs
 - Duplicate Place ID on an existing spot attaches a gallery photo from the app.
 - The Place is a breakfast or brunch tent on the honor system. No GPS required from the visitor.
 - User can delete their own gallery photo later (AVG). Deleting the hero promotes the oldest remaining photo, or leaves the hero empty. Report hides pending owner review.
-- No pre-moderation of every upload.
+- No pre-moderation of every upload. The owner scans new photos after the fact (`moderation:unscannedPhotos`, `moderation:markScanned`, `moderation:flagFromScan` from the CLI); a flag hides the photo into the admin queue like a report.
+- The app can report the hero it shows for an existing spot and block that photo's poster (App Review guideline 1.2). A block hides the poster's photos from the blocker in the app only; the website is the same for everyone. The owner gets a mail. App settings list blocks and lift them.
 - The website gallery must show app photos. Do not add an extra-upload control on the website spot page.
 
 ## Likes
@@ -254,9 +260,10 @@ Do not add a second framework. Do not ship a client-only SPA for public pages.
 
 - `User`. brag.fast account, `UserSlug`, email
 - `Spot`. place_id unique, slug, woonplaats slug, country=`nl`, types, hours, `closed_permanently`, `addedBy`, hero photo storage id, like count
-- `Photo`. spot_id, storage id, uploaded_by, created_at, discovery (the photo that created the spot). Many per spot. Hero stays `Spot.photoId`.
+- `Photo`. spot_id, storage id, uploaded_by, created_at, discovery (the photo that created the spot), hidden while a report waits, scanned_at. Many per spot. Hero stays `Spot.photoId` and never points at a hidden photo.
 - `Like`. user_id, spot_id, created_at, via_photo_id (optional credit). Unique `(user_id, spot_id)`
-- `Report`. spot or photo, reason, status
+- `Report`. spot or photo, reason, status, reporter while open (cleared when handled)
+- `Block`. user_id, blocked user_id
 
 ## Claim (v2)
 

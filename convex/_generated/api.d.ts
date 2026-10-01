@@ -24,6 +24,7 @@ import type * as model_photos from "../model/photos.js";
 import type * as model_placeAdd from "../model/placeAdd.js";
 import type * as model_spots from "../model/spots.js";
 import type * as model_users from "../model/users.js";
+import type * as moderation from "../moderation.js";
 import type * as notify from "../notify.js";
 import type * as photos from "../photos.js";
 import type * as places from "../places.js";
@@ -53,6 +54,7 @@ declare const fullApi: ApiFromModules<{
   "model/placeAdd": typeof model_placeAdd;
   "model/spots": typeof model_spots;
   "model/users": typeof model_users;
+  moderation: typeof moderation;
   notify: typeof notify;
   photos: typeof photos;
   places: typeof places;

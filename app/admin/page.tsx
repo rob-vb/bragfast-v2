@@ -30,6 +30,7 @@ export default async function AdminPage() {
         <AdminQueue
           locale={locale}
           reports={queue.reports}
+          photoReports={queue.photoReports}
           spots={queue.spots}
         />
       </div>

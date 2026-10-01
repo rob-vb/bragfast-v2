@@ -22,8 +22,11 @@ import {
   isOwnerEmail,
   planClosedOverride,
   planReportReview,
+  pickViewerHero,
+  planBlockUploader,
+  planPhotoReport,
 } from "./moderation";
-import { bragLiveEmail } from "./notify";
+import { bragLiveEmail, moderationAlertEmail } from "./notify";
 import { classifyPlaceTypes, planPlaceAdd, slugFromPlaceName } from "./placeAdd";
 import {
   photoCredits,
@@ -1527,4 +1530,66 @@ test("legal inline splits markdown links", () => {
     { text: " nu." },
   ]);
   assert.deepEqual(legalInline("Geen link."), [{ text: "Geen link." }]);
+});
+
+test("a photo report hides once, never your own, never twice by the same viewer", () => {
+  const base = { exists: true, ownPhoto: false, hidden: false, reportedByViewer: false };
+  assert.deepEqual(planPhotoReport(base), { action: "hide" });
+  assert.deepEqual(planPhotoReport({ ...base, hidden: true }), { action: "record" });
+  assert.deepEqual(planPhotoReport({ ...base, ownPhoto: true }), {
+    action: "reject",
+    reason: "own-photo",
+  });
+  assert.deepEqual(planPhotoReport({ ...base, reportedByViewer: true }), {
+    action: "reject",
+    reason: "already-reported",
+  });
+  assert.deepEqual(planPhotoReport({ ...base, exists: false }), {
+    action: "reject",
+    reason: "missing",
+  });
+});
+
+test("blocking the maker of a photo", () => {
+  const base = { exists: true, ownPhoto: false, alreadyBlocked: false };
+  assert.deepEqual(planBlockUploader(base), { action: "block" });
+  assert.deepEqual(planBlockUploader({ ...base, alreadyBlocked: true }), { action: "noop" });
+  assert.deepEqual(planBlockUploader({ ...base, ownPhoto: true }), {
+    action: "reject",
+    reason: "own-photo",
+  });
+});
+
+test("the hero a viewer sees skips hidden photos and blocked makers", () => {
+  const photos = [
+    { storageId: "s1", uploadedBy: "anna", createdAt: 1, hidden: false },
+    { storageId: "s2", uploadedBy: "bram", createdAt: 2, hidden: false },
+    { storageId: "s3", uploadedBy: "cor", createdAt: 3, hidden: true },
+  ];
+  const none = new Set<string>();
+  assert.equal(pickViewerHero({ heroStorageId: "s2", photos, blocked: none })?.storageId, "s2");
+  assert.equal(
+    pickViewerHero({ heroStorageId: "s2", photos, blocked: new Set(["bram"]) })?.storageId,
+    "s1",
+  );
+  assert.equal(pickViewerHero({ heroStorageId: "s3", photos, blocked: none })?.storageId, "s1");
+  assert.equal(
+    pickViewerHero({ heroStorageId: "s1", photos, blocked: new Set(["anna", "bram"]) }),
+    null,
+  );
+});
+
+test("the owner's moderation mail names the spot and escapes it", () => {
+  const mail = moderationAlertEmail({
+    kind: "report",
+    reason: "offensive",
+    spotName: "Bakker & <Zn>",
+    spotUrl: "https://brag.fast/nl/oldenzaal/bakker",
+    adminUrl: "https://brag.fast/admin",
+    uploaderSlug: "anna",
+  });
+  assert.match(mail.subject, /Bakker & <Zn>/);
+  assert.match(mail.html, /Bakker &amp; &lt;Zn&gt;/);
+  assert.match(mail.html, /aanstootgevend of illegaal/);
+  assert.match(mail.html, /@anna/);
 });

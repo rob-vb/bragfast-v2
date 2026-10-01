@@ -108,6 +108,16 @@ export type AdminReportRow = {
   spotPath: string;
 };
 
+/** Open reports on one photo, which stays hidden until the owner decides. */
+export type AdminPhotoReportRow = {
+  photoId: GenericId<"photos">;
+  photoUrl: string | null;
+  reasons: string[];
+  spotName: string;
+  spotPath: string;
+  uploaderSlug: string | null;
+};
+
 export type AdminSpotRow = {
   spotId: GenericId<"spots">;
   name: string;
