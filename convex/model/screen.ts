@@ -47,7 +47,7 @@ export async function screenPhoto(
             mime_type: "application/json",
             schema: PHOTO_SCREEN_SCHEMA,
           },
-          generation_config: { thinking_level: "minimal" },
+          generation_config: { thinking_level: "low" },
         }),
       },
     );
