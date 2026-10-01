@@ -150,7 +150,7 @@ Do not ship featured woonplaatsen or **Steden om te ontdekken**. Stock city scen
 1. **Brag als eerste**: the place is new, so the photo puts it on its woonplaats board with the photographer's name (create in the app).
 2. **Laat je bord zien**: the place is listed, so the photo joins its gallery (extra photos in the app).
 
-The device frame shows the app at work: its own Dutch screens and copy play the two acts once when the band is half in view, and the photo comes out of the phone as a print on the board or in the gallery. Every place, handle and photo in it is example data under a **Voorbeeld** label. Visitors can pause, replay, or play either act; reduced motion shows the finished first act. Then a line of copy and the per-store download controls.
+The device frame shows the app at work: its own screens and copy, in the site's language (the app speaks Dutch and English), play the two acts once when the band is half in view, and the photo comes out of the phone as a print on the board or in the gallery. Every place, handle and photo in it is example data under a **Voorbeeld** label. Visitors can pause, replay, or play either act; reduced motion shows the finished first act. Then a line of copy and the per-store download controls.
 
 No third act. No recent-brags feed on `/`. GPS stays in the app. Copy is not frozen; do not put **adder** in Dutch UI sentences.
 

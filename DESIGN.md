@@ -756,7 +756,8 @@ control. It replaces the two app rows; there are no empty phone shells.
   shell well (inset 16%) and a thin candy rim line (candy 45% into white, inset 4.5%).
 - **Phone.** A berry body in phone points (`--pt`, 1/414 of the phone; 414 × 868, 66pt
   radius), with side keys, an enamel lip, a white screen at 54pt and an 8:15 status bar
-  round a berry island. It shows the app's own Dutch screens and copy in both locales:
+  round a berry island. It shows the app's own screens and copy in the page's locale (Dutch shown here; the
+  English site gets the app's English):
   the camera it opens (berry chrome, a milk viewfinder with a white/35 thirds grid, a yolk
   focus box, a yolk **1×** chip, the last shot in the corner and a white shutter), search
   (**Waar heb je dit gegeten?**, a field with a blush caret, two hits), confirm (the photo

@@ -6,21 +6,64 @@ import { shortDate, t, type Locale } from "@/domain/messages";
 import { cn } from "@/lib/utils";
 
 /**
- * The app's own words (bragfast-app, src/domain/copy.ts). The app is Dutch,
- * so its screen is Dutch on both sites.
+ * The app's own words (bragfast-app, src/domain/copy.ts), in the site's
+ * language: the app speaks Dutch and English too.
  */
 const APP = {
-  whichPlace: "Waar heb je dit gegeten?",
-  searchPlaceholder: "Zoek de tent",
-  searchNearby: "Resultaten dichtbij jou eerst.",
-  previewLoading: "Plek controleren…",
-  changePlace: "Wijzig",
-  publish: "Publiceren",
-  live: "Foto staat live.",
-  share: "Delen",
-  viewOnSite: "Bekijk op brag.fast",
-  anotherPhoto: "Nog een foto",
-} as const;
+  nl: {
+    whichPlace: "Waar heb je dit gegeten?",
+    searchPlaceholder: "Zoek de tent",
+    searchNearby: "Resultaten dichtbij jou eerst.",
+    previewLoading: "Plek controleren…",
+    changePlace: "Wijzig",
+    publish: "Publiceren",
+    live: "Foto staat live.",
+    share: "Delen",
+    viewOnSite: "Bekijk op brag.fast",
+    anotherPhoto: "Nog een foto",
+    badgeNew: "Nieuw op het board",
+    badgeExisting: "Staat al op brag.fast",
+    confirmNew: (town: string) => `Deze tent komt op het board in ${town}.`,
+    confirmExisting: "Deze plek staat al op brag.fast. Je foto gaat naar de galerij.",
+    liveNew: (spot: string) => `${spot} staat op het board.`,
+    liveExisting: (spot: string) => `Je foto staat in de galerij van ${spot}.`,
+  },
+  en: {
+    whichPlace: "Where did you eat this?",
+    searchPlaceholder: "Find the spot",
+    searchNearby: "Nearby spots at the top.",
+    previewLoading: "Checking the spot…",
+    changePlace: "Change",
+    publish: "Publish",
+    live: "Your photo is live.",
+    share: "Share",
+    viewOnSite: "View on brag.fast",
+    anotherPhoto: "Another photo",
+    badgeNew: "New on the board",
+    badgeExisting: "Already on brag.fast",
+    confirmNew: (town: string) => `This spot goes on the board in ${town}.`,
+    confirmExisting: "This spot is already on brag.fast. Your photo goes to its gallery.",
+    liveNew: (spot: string) => `${spot} is on the board.`,
+    liveExisting: (spot: string) => `Your photo is in the gallery of ${spot}.`,
+  },
+} as const satisfies Record<Locale, unknown>;
+
+type AppCopy = (typeof APP)[Locale];
+
+/** What the confirm and live screens say for this act, as the app words it. */
+function actCopy(app: AppCopy, act: Act) {
+  return act.id === "brag"
+    ? {
+        badge: app.badgeNew,
+        confirm: app.confirmNew(act.place.town),
+        live: app.liveNew(act.place.name),
+      }
+    : {
+        badge: app.badgeExisting,
+        confirm: app.confirmExisting,
+        live: app.liveExisting(act.place.name),
+      };
+}
 
 type Hit = { name: string; address: string };
 
@@ -34,14 +77,11 @@ type Act = {
   query: string;
   hits: readonly [Hit, Hit];
   place: { name: string; address: string; town: string; hero: string | null };
-  badge: string;
-  confirm: string;
-  live: string;
 };
 
 // Made up, and labelled so on the page. The first place is new, so the
 // photo puts it on the board; the second is listed, so the photo joins its
-// gallery. Both copy lines are the app's.
+// gallery.
 const ACTS: readonly Act[] = [
   {
     id: "brag",
@@ -55,9 +95,6 @@ const ACTS: readonly Act[] = [
       { name: "Stapels & Stroop", address: "Kruisstraat 30, Haarlem" },
     ],
     place: { name: "Café Stapel", address: "Grote Markt 7", town: "Haarlem", hero: null },
-    badge: "Nieuw op het board",
-    confirm: "Deze tent komt op het board in Haarlem.",
-    live: "Café Stapel staat op het board.",
   },
   {
     id: "plate",
@@ -76,9 +113,6 @@ const ACTS: readonly Act[] = [
       town: "Haarlem",
       hero: "/how-it-works/berries.webp",
     },
-    badge: "Staat al op brag.fast",
-    confirm: "Deze plek staat al op brag.fast. Je foto gaat naar de galerij.",
-    live: "Je foto staat in de galerij van Bakkerij Korst.",
   },
 ];
 
@@ -535,6 +569,8 @@ function Phone({
   const state = (screen: Screen) =>
     frame.screen === screen ? "in" : frame.leaving === screen ? "out" : undefined;
   const existing = act.place.hero !== null;
+  const app = APP[locale];
+  const words = actCopy(app, act);
   return (
     <div className="cam-phone">
       <div
@@ -579,17 +615,17 @@ function Phone({
           </div>
           <div className="cam-search-head">
             <img src={act.photo} alt="" className="cam-thumb" decoding="async" loading="lazy" />
-            <p className="cam-question">{APP.whichPlace}</p>
+            <p className="cam-question">{app.whichPlace}</p>
           </div>
           <div className="cam-input">
             {frame.typed > 0 ? (
               <span>{act.query.slice(0, frame.typed)}</span>
             ) : (
-              <span className="cam-input__placeholder">{APP.searchPlaceholder}</span>
+              <span className="cam-input__placeholder">{app.searchPlaceholder}</span>
             )}
             <span className="cam-caret" />
           </div>
-          <p className="cam-hint">{APP.searchNearby}</p>
+          <p className="cam-hint">{app.searchNearby}</p>
           {frame.hits ? (
             <ul className="cam-hits">
               {act.hits.map((hit, i) => (
@@ -623,7 +659,7 @@ function Phone({
               </span>
             ) : null}
             {frame.ready ? (
-              <span className={cn("cam-badge", existing ? "bg-mint" : "bg-yolk")}>{act.badge}</span>
+              <span className={cn("cam-badge", existing ? "bg-mint" : "bg-yolk")}>{words.badge}</span>
             ) : null}
           </div>
           <div className="cam-place">
@@ -639,14 +675,14 @@ function Phone({
               <span className="cam-hit__address">{act.place.address}</span>
               {frame.ready ? <span className="cam-hit__address">{act.place.town}</span> : null}
             </span>
-            <span className="cam-link">{APP.changePlace}</span>
+            <span className="cam-link">{app.changePlace}</span>
           </div>
           {frame.ready ? (
-            <p className="cam-lede cam-lede--confirm">{act.confirm}</p>
+            <p className="cam-lede cam-lede--confirm">{words.confirm}</p>
           ) : (
             <p className="cam-lede cam-inline">
               <span className="cam-spin cam-spin--blush" />
-              {APP.previewLoading}
+              {app.previewLoading}
             </p>
           )}
           <div className="cam-foot">
@@ -655,7 +691,7 @@ function Phone({
               data-disabled={frame.ready ? undefined : ""}
               data-pressed={frame.tap === "publish" ? "" : undefined}
             >
-              {frame.publishing ? <span className="cam-spin" /> : APP.publish}
+              {frame.publishing ? <span className="cam-spin" /> : app.publish}
               {frame.tap === "publish" ? <span className="cam-touch" /> : null}
             </span>
           </div>
@@ -664,17 +700,17 @@ function Phone({
         <div className="cam-scr" data-state={state("live")}>
           <div className="cam-top">
             <img src="/brag_fast_logo.svg" alt="" className="cam-logo" />
-            <span className="cam-pill">{APP.share}</span>
+            <span className="cam-pill">{app.share}</span>
           </div>
           <div className="cam-hero cam-hero--live">
             <img src={act.photo} alt="" decoding="async" loading="lazy" />
           </div>
-          <p className="cam-display">{APP.live}</p>
-          <p className="cam-lede cam-lede--live">{act.live}</p>
+          <p className="cam-display">{app.live}</p>
+          <p className="cam-lede cam-lede--live">{words.live}</p>
           <div className="cam-foot">
-            <span className="cam-btn">{APP.viewOnSite}</span>
+            <span className="cam-btn">{app.viewOnSite}</span>
             <button type="button" tabIndex={-1} onClick={onAnother} className="cam-btn cam-btn--ghost">
-              {APP.anotherPhoto}
+              {app.anotherPhoto}
             </button>
           </div>
         </div>
