@@ -9,10 +9,10 @@ import {
   type PhotoScreenResult,
 } from "../../domain/screen";
 
-const TIMEOUT_MS = 30_000;
-
 /**
- * Gemini on Vertex AI in the EU multi-region, as Docuhelper does it.
+ * Gemini on Google Cloud's Agent Platform (formerly Vertex AI) in the EU
+ * multi-region, as Docuhelper does it. No client timeout: at busy times an
+ * answer takes over a minute, and a short deadline only turns it into a 504.
  * GOOGLE_VERTEX_CREDENTIALS holds a service account's JSON key; its project
  * is the one billed. Node runtime only.
  */
@@ -64,7 +64,6 @@ export async function screenPhoto(
         thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
         responseMimeType: "application/json",
         responseJsonSchema: PHOTO_SCREEN_SCHEMA,
-        httpOptions: { timeout: TIMEOUT_MS },
       },
     });
     return readPhotoScreen({
