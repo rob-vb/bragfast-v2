@@ -19,7 +19,7 @@ export const nlMessages = {
   stepLikeBody:
     "Like de plekken waar het goed is. De meeste likes staan bovenaan: geen sterren, niets betaald.",
   stepClimbBody:
-    "Elke like op een plek die jij toevoegde, telt voor jou op de leaderboard.",
+    "Likes op plekken die jij toevoegde en likes via jouw foto's tellen voor jou op de leaderboard.",
   stepsMore: "Lees hoe het werkt",
   metaHomeTitle: "Ontbijt en brunch per stad in Nederland | brag.fast",
   metaHomeDescription:
@@ -34,7 +34,7 @@ export const nlMessages = {
   townIndexMetaDescription:
     "Alle steden en dorpen in Nederland met ontbijt- en brunchplekken op brag.fast, van A tot Z, met het aantal plekken per plaats.",
   leaderboardMetaDescription:
-    "Wie zette de meest gelikete plekken op brag.fast? De leaderboard rangschikt iedereen op de likes op de plekken die ze toevoegden.",
+    "Wie brengt de meeste likes binnen op brag.fast? De leaderboard rangschikt iedereen op de likes op plekken die ze toevoegden en via hun foto's.",
   privacyMetaDescription: "Welke gegevens brag.fast bewaart, en waarom.",
   dataDeletionMetaDescription:
     "Zo wis je je eigen foto's of je hele brag.fast-account.",
@@ -84,12 +84,12 @@ export const nlMessages = {
   discoveryHint: "Met deze foto kwam de plek op brag.fast",
   viewPassport: "Paspoort",
   leaderboard: "Leaderboard",
-  leaderboardIntro: "Gerangschikt op likes op de plekken die ze toevoegden.",
+  leaderboardIntro: "Gerangschikt op likes op plekken die ze toevoegden en via hun foto's.",
   leaderboardEmpty: "Nog niemand heeft een plek toegevoegd.",
   podiumOpen: "Nog vrij",
   climbTitle: "Zo klim je",
   climbBody:
-    "Voeg een plek toe in de app met de eerste foto. Elke like op die plek telt voor jou.",
+    "Zet een plek erop met de eerste foto in de app, of voeg je foto toe aan een plek die er al staat. Likes op jouw plekken en via jouw foto's tellen voor jou.",
   passportCities: "Steden",
   sortByLikes: "Likes",
   sortByName: "Naam",
@@ -150,7 +150,7 @@ export const nlMessages = {
   hiwDemoHandle: "jij",
   hiwToday: "vandaag",
   hiwClimbBody:
-    "Elke like op een plek die jij toevoegde telt voor jou. Zo klim je op de leaderboard.",
+    "Elke like op een plek die jij toevoegde telt voor jou, net als elke like die via jouw foto binnenkomt. Zo klim je op de leaderboard.",
   hiwClimbPassport:
     "Je paspoort krijgt een stempel voor elke plaats waar je een foto plaatste.",
   hiwSeeLeaderboard: "Bekijk de leaderboard",
@@ -195,7 +195,8 @@ export const enMessages = {
     "Having breakfast or brunch somewhere that isn't on here yet? One photo in the app puts the spot on the board.",
   stepLikeBody:
     "Like the spots that are good. Most likes sit on top: no stars, nothing paid.",
-  stepClimbBody: "Every like on a spot you added counts for you on the leaderboard.",
+  stepClimbBody:
+    "Likes on spots you added and likes through your photos count for you on the leaderboard.",
   stepsMore: "Read how it works",
   metaHomeTitle: "Breakfast and brunch by city in the Netherlands | brag.fast",
   metaHomeDescription:
@@ -209,7 +210,7 @@ export const enMessages = {
   townIndexMetaDescription:
     "Every city and village in the Netherlands with breakfast and brunch spots on brag.fast, A to Z, with the number of spots in each.",
   leaderboardMetaDescription:
-    "Who put the most-liked spots on brag.fast? The leaderboard ranks everyone by the likes on the spots they added.",
+    "Who brings in the most likes on brag.fast? The leaderboard ranks everyone by the likes on spots they added and through their photos.",
   privacyMetaDescription: "What brag.fast stores, and why.",
   dataDeletionMetaDescription: "How to delete your own photos or your whole brag.fast account.",
   comingSoon: "Coming soon",
@@ -258,12 +259,12 @@ export const enMessages = {
   discoveryHint: "This photo put the spot on brag.fast",
   viewPassport: "Passport",
   leaderboard: "Leaderboard",
-  leaderboardIntro: "Ranked by likes on spots they added.",
+  leaderboardIntro: "Ranked by likes on spots they added and through their photos.",
   leaderboardEmpty: "Nobody has added a spot yet.",
   podiumOpen: "Still open",
   climbTitle: "How to climb",
   climbBody:
-    "Add a spot in the app with the first photo. Every like on it counts for you.",
+    "Put a spot on with the first photo in the app, or add your photo to a spot that's already on. Likes on your spots and through your photos count for you.",
   passportCities: "Cities",
   sortByLikes: "Likes",
   sortByName: "Name",
@@ -324,7 +325,7 @@ export const enMessages = {
   hiwDemoHandle: "you",
   hiwToday: "today",
   hiwClimbBody:
-    "Every like on a spot you added counts for you. That's how you climb the leaderboard.",
+    "Every like on a spot you added counts for you, and so does every like that comes in through your photo. That's how you climb the leaderboard.",
   hiwClimbPassport: "Your passport gets a stamp for every town where you posted a photo.",
   hiwSeeLeaderboard: "See the leaderboard",
   hiwRulesTitle: "House rules",
@@ -414,6 +415,16 @@ export function spotMetaDescription(
   return locale === "en"
     ? `Breakfast and brunch at ${spot.name}, ${spot.address}. ${likes} from visitors on brag.fast.`
     : `Ontbijt en brunch bij ${spot.name}, ${spot.address}. ${likes} van bezoekers op brag.fast.`;
+}
+
+/** Under a leaderboard name: the spots an account added, else its photos. */
+export function contributionLabel(
+  locale: Locale,
+  row: { spotCount: number; photoCount: number },
+): string {
+  return row.spotCount > 0
+    ? uniqueSpotsLabel(locale, row.spotCount)
+    : photoCountLabel(locale, row.photoCount);
 }
 
 export function photoCountLabel(locale: Locale, count: number): string {

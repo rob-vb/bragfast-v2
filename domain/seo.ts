@@ -106,7 +106,7 @@ export function llmsTxt(origin: string, spots: readonly LiveSpotRef[]): string {
     `- [Home](${origin}/): search any Dutch woonplaats`,
     `- [How it works](${origin}/how-it-works): the steps and the house rules`,
     `- [Steden](${origin}/nl): every board with at least one spot, A to Z`,
-    `- [Leaderboard](${origin}/nl/leaderboard): people ranked by the likes on the spots they added`,
+    `- [Leaderboard](${origin}/nl/leaderboard): people ranked by the likes on spots they added and through their photos`,
   ];
   for (const board of boards) {
     const { slug, nameNl, nameEn } = board.city;

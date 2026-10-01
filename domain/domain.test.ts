@@ -55,7 +55,7 @@ import {
   planLikeToggle,
   sortCityBoard,
 } from "./like";
-import { rankAdders, rankedLeaderboard, standingOf } from "./leaderboard";
+import { rankLeaderboard, rankedLeaderboard, standingOf } from "./leaderboard";
 import {
   breadcrumbJsonLd,
   foodEstablishmentJsonLd,
@@ -1012,25 +1012,62 @@ test("applyCityBoardSort by name is alphabetic and ignores likeCount", () => {
 });
 
 test("leaderboard ranks Alice above Bob when her spots have more likes", () => {
-  const ranked = rankedLeaderboard([
-    { username: "alice", likeCount: 3, addedAt: 10 },
-    { username: "alice", likeCount: 2, addedAt: 20 },
-    { username: "bob", likeCount: 2, addedAt: 5 },
-  ]);
+  const ranked = rankedLeaderboard({
+    spots: [
+      { id: "s1", addedBy: "alice", addedAt: 10 },
+      { id: "s2", addedBy: "alice", addedAt: 20 },
+      { id: "s3", addedBy: "bob", addedAt: 5 },
+    ],
+    photos: [],
+    likes: [
+      ...Array.from({ length: 3 }, () => ({ spotId: "s1" })),
+      ...Array.from({ length: 2 }, () => ({ spotId: "s2" })),
+      ...Array.from({ length: 2 }, () => ({ spotId: "s3" })),
+    ],
+  });
   assert.deepEqual(
-    ranked.map((row) => row.username),
-    ["alice", "bob"],
+    ranked.map((row) => [row.username, row.likeSum, row.spotCount]),
+    [
+      ["alice", 5, 2],
+      ["bob", 2, 1],
+    ],
   );
-  assert.equal(ranked[0]?.likeSum, 5);
-  assert.equal(ranked[1]?.likeSum, 2);
 });
 
-test("equal like sums break ties by spot count then earliest add", () => {
-  const ranked = rankAdders([
-    { username: "few", likeSum: 4, spotCount: 1, earliestAddAt: 1 },
-    { username: "many", likeSum: 4, spotCount: 3, earliestAddAt: 20 },
-    { username: "early", likeSum: 1, spotCount: 1, earliestAddAt: 10 },
-    { username: "late", likeSum: 1, spotCount: 1, earliestAddAt: 20 },
+test("a like counts for the adder and the credited photographer, once each", () => {
+  const ranked = rankedLeaderboard({
+    spots: [
+      { id: "s1", addedBy: "anna", addedAt: 1 },
+      { id: "s2", addedBy: null, addedAt: 2 },
+    ],
+    photos: [
+      { id: "hero", uploadedBy: "anna", createdAt: 1 },
+      { id: "plate", uploadedBy: "bram", createdAt: 5 },
+      { id: "terrace", uploadedBy: "bram", createdAt: 6 },
+      { id: "quiet", uploadedBy: "cor", createdAt: 7 },
+    ],
+    likes: [
+      { spotId: "s1", viaPhotoId: "hero" },
+      { spotId: "s1", viaPhotoId: "plate" },
+      { spotId: "s1" },
+      { spotId: "s2", viaPhotoId: "terrace" },
+    ],
+  });
+  assert.deepEqual(
+    ranked.map((row) => [row.username, row.likeSum, row.spotCount, row.photoCount, row.since]),
+    [
+      ["anna", 3, 1, 1, 1],
+      ["bram", 2, 0, 2, 5],
+    ],
+  );
+});
+
+test("equal like sums break ties by spot count then who joined first", () => {
+  const ranked = rankLeaderboard([
+    { username: "few", likeSum: 4, spotCount: 1, photoCount: 1, since: 1 },
+    { username: "many", likeSum: 4, spotCount: 3, photoCount: 3, since: 20 },
+    { username: "early", likeSum: 1, spotCount: 0, photoCount: 1, since: 10 },
+    { username: "late", likeSum: 1, spotCount: 0, photoCount: 1, since: 20 },
   ]);
   assert.deepEqual(
     ranked.map((row) => row.username),
@@ -1038,23 +1075,24 @@ test("equal like sums break ties by spot count then earliest add", () => {
   );
 });
 
-test("a standing is the adder's place and like sum, or null when absent", () => {
-  const ranked = rankAdders([
-    { username: "alice", likeSum: 5, spotCount: 1, earliestAddAt: 10 },
-    { username: "bob", likeSum: 2, spotCount: 2, earliestAddAt: 5 },
+test("a standing is the account's place and like sum, or null when absent", () => {
+  const ranked = rankLeaderboard([
+    { username: "alice", likeSum: 5, spotCount: 1, photoCount: 1, since: 10 },
+    { username: "bob", likeSum: 2, spotCount: 2, photoCount: 2, since: 5 },
   ]);
   assert.deepEqual(standingOf(ranked, "bob"), { rank: 2, likeSum: 2 });
   assert.equal(standingOf(ranked, "ghost"), null);
 });
 
-test("zero-spot accounts are absent from the leaderboard", () => {
-  const ranked = rankAdders([
-    { username: "alice", likeSum: 5, spotCount: 1, earliestAddAt: 10 },
-    { username: "ghost", likeSum: 99, spotCount: 0, earliestAddAt: 1 },
+test("accounts with no spot added and no like earned are absent", () => {
+  const ranked = rankLeaderboard([
+    { username: "adder", likeSum: 0, spotCount: 1, photoCount: 1, since: 10 },
+    { username: "photographer", likeSum: 1, spotCount: 0, photoCount: 1, since: 1 },
+    { username: "ghost", likeSum: 0, spotCount: 0, photoCount: 0, since: 1 },
   ]);
   assert.deepEqual(
     ranked.map((row) => row.username),
-    ["alice"],
+    ["photographer", "adder"],
   );
 });
 

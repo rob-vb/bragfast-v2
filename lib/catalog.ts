@@ -159,20 +159,18 @@ export async function loadBoardIndex(): Promise<BoardIndexEntry[]> {
 
 export async function loadLeaderboard(): Promise<LeaderboardData> {
   try {
-    return { adders: await fetchQuery(api.leaderboard.rankedAdders, {}) };
+    return { rows: await fetchQuery(api.leaderboard.rankedAdders, {}) };
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;
     }
-    return { adders: [] };
+    return { rows: [] };
   }
 }
 
 export async function loadPassport(slug: string): Promise<PassportData | null> {
   try {
-    const passport = await fetchQuery(api.identity.passportPhotos, { slug });
-    // Tolerate a Convex deployment that predates the like count
-    return passport && { ...passport, likeCount: passport.likeCount ?? 0 };
+    return await fetchQuery(api.identity.passportPhotos, { slug });
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;
@@ -185,12 +183,12 @@ export async function loadPassport(slug: string): Promise<PassportData | null> {
 export async function loadPassportPage(
   slug: string,
 ): Promise<PassportPageData | null> {
-  const [passport, { adders }] = await Promise.all([
+  const [passport, { rows }] = await Promise.all([
     loadPassport(slug),
     loadLeaderboard(),
   ]);
   if (!passport) {
     return null;
   }
-  return { ...passport, standing: standingOf(adders, passport.slug) };
+  return { ...passport, standing: standingOf(rows, passport.slug) };
 }

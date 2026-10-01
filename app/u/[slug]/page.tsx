@@ -145,7 +145,7 @@ export default async function PassportPage({
                     </>
                   ) : null}
                   {inCitiesLabel(locale, stamps.length)}
-                  {page.likeCount > 0 ? (
+                  {page.standing && page.standing.likeSum > 0 ? (
                     <>
                       <span aria-hidden className="text-candy">
                         ·
@@ -156,7 +156,7 @@ export default async function PassportPage({
                           className="size-4.5 fill-candy text-candy"
                           strokeWidth={2.5}
                         />
-                        {likeCountLabel(locale, page.likeCount)}
+                        {likeCountLabel(locale, page.standing.likeSum)}
                       </span>
                     </>
                   ) : null}

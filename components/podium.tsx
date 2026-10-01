@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import type { AdderRow } from "@/domain/leaderboard";
+import type { LeaderboardRow } from "@/domain/leaderboard";
 import {
+  contributionLabel,
   likeCountLabel,
   t,
-  uniqueSpotsLabel,
   type Locale,
 } from "@/domain/messages";
 import { Egg } from "@/components/visual";
@@ -21,22 +21,22 @@ const STEPS = [
 ] as const;
 
 /**
- * The top three adders on a podium standing on the berry slab's floor. A
+ * The top three on a podium standing on the berry slab's floor. A
  * place nobody holds yet is an open dashed step.
  */
 export function Podium({
   locale,
-  adders,
+  rows,
   label,
 }: {
   locale: Locale;
-  adders: readonly AdderRow[];
+  rows: readonly LeaderboardRow[];
   label: string;
 }) {
   return (
     <ol aria-label={label} className="grid grid-cols-3 items-end gap-2 sm:gap-3">
       {STEPS.map((step) => {
-        const adder = adders[step.place - 1];
+        const row = rows[step.place - 1];
         return (
           <li
             key={step.place}
@@ -46,7 +46,7 @@ export function Podium({
               className="podium-rise flex flex-col items-center"
               style={{ "--rise": `${step.rise}ms` } as CSSProperties}
             >
-              {adder ? (
+              {row ? (
                 <div className="flex w-full min-w-0 flex-col items-center px-1 pb-3 text-center sm:pb-4">
                   {step.place === 1 ? (
                     <Egg
@@ -55,16 +55,16 @@ export function Podium({
                     />
                   ) : null}
                   <Link
-                    href={`/u/${adder.username}`}
+                    href={`/u/${row.username}`}
                     style={
                       {
-                        "--fit-word": displayFit(`@${adder.username}`, 0.025).word,
+                        "--fit-word": displayFit(`@${row.username}`, 0.025).word,
                       } as CSSProperties
                     }
                     className="podium-name line-clamp-3 max-w-full font-display leading-tight tracking-wide text-balance wrap-break-word text-white transition-colors duration-press ease-out-strong focus-visible:outline-none! after:absolute after:inset-0 after:rounded-t-slab after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-yolk pointer-fine:group-hover/step:text-milk"
                   >
                     <span className="text-blush">@</span>
-                    {adder.username}
+                    {row.username}
                   </Link>
                   <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/12 px-2.5 py-1 text-xs font-bold whitespace-nowrap text-milk tabular-nums sm:text-sm">
                     <Heart
@@ -72,10 +72,10 @@ export function Podium({
                       className="size-3.5 fill-candy text-candy"
                       strokeWidth={2.5}
                     />
-                    {likeCountLabel(locale, adder.likeSum)}
+                    {likeCountLabel(locale, row.likeSum)}
                   </p>
                   <p className="mt-1 text-xs font-bold text-milk/70 tabular-nums">
-                    {uniqueSpotsLabel(locale, adder.spotCount)}
+                    {contributionLabel(locale, row)}
                   </p>
                 </div>
               ) : (
@@ -87,7 +87,7 @@ export function Podium({
                 className={cn(
                   "flex w-full justify-center rounded-t-slab pt-2 sm:pt-4",
                   step.height,
-                  adder
+                  row
                     ? cn(step.ink, "shadow-[inset_0_3px_0_rgb(255_255_255/0.45)]")
                     : "border-2 border-b-0 border-dashed border-white/22",
                 )}
@@ -97,7 +97,7 @@ export function Podium({
                   className={cn(
                     "font-display text-5xl leading-none tabular-nums sm:text-7xl",
                     "transition-[rotate,translate] duration-300 ease-out-strong",
-                    adder
+                    row
                       ? "text-berry pointer-fine:group-hover/step:-translate-y-1 pointer-fine:group-hover/step:-rotate-6"
                       : "text-white/25",
                   )}
