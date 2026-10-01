@@ -171,8 +171,8 @@ export async function loadLeaderboard(): Promise<LeaderboardData> {
 export async function loadPassport(slug: string): Promise<PassportData | null> {
   try {
     const passport = await fetchQuery(api.identity.passportPhotos, { slug });
-    // Tolerate a Convex deployment that predates like credit
-    return passport && { ...passport, likesBrought: passport.likesBrought ?? 0 };
+    // Tolerate a Convex deployment that predates the like count
+    return passport && { ...passport, likeCount: passport.likeCount ?? 0 };
   } catch (error) {
     if (!isMissingConvexFunction(error)) {
       throw error;
