@@ -2,7 +2,6 @@ import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 import {
-  internalAction,
   internalMutation,
   internalQuery,
   mutation,
@@ -17,7 +16,6 @@ import {
 } from "../domain/moderation";
 import { moderationAlertEmail } from "../domain/notify";
 import { hidePhoto } from "./model/photos";
-import { screenPhoto } from "./model/screen";
 import { ensureAppUser } from "./model/users";
 
 const reasonValidator = v.union(
@@ -216,8 +214,34 @@ export const flagFromScan = internalMutation({
   },
 });
 
-/** Run the pre-publish check on a stored photo, to try the Gemini setup from the CLI. */
-export const screenStored = internalAction({
-  args: { storageId: v.id("_storage") },
-  handler: async (ctx, { storageId }) => await screenPhoto(ctx, storageId),
+export const photoForScreen = internalQuery({
+  args: { photoId: v.id("photos") },
+  handler: async (ctx, { photoId }) => {
+    const photo = await ctx.db.get(photoId);
+    // Gone or already hidden by a report: nothing to look at
+    return photo && photo.hiddenAt === undefined ? { storageId: photo.storageId } : null;
+  },
+});
+
+/** Passed: the owner's scan can skip it. Breach: hide it and tell the owner. */
+export const applyScreen = internalMutation({
+  args: { photoId: v.id("photos"), category: v.union(v.string(), v.null()) },
+  handler: async (ctx, { photoId, category }) => {
+    const photo = await ctx.db.get(photoId);
+    if (!photo) {
+      return;
+    }
+    await ctx.db.patch(photoId, { scannedAt: Date.now() });
+    if (category === null || photo.hiddenAt !== undefined) {
+      return;
+    }
+    const reason = `gemini: ${category}`;
+    await ctx.db.insert("reports", {
+      target: { kind: "photo", photoId },
+      reason,
+      status: "open",
+    });
+    await hidePhoto(ctx, photo);
+    await alertOwner(ctx, photo, { kind: "report", reason });
+  },
 });

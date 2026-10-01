@@ -1,8 +1,8 @@
 /**
- * The check every photo passes before it goes live. A Gemini Flash model looks
- * at the photo and answers in `PHOTO_SCREEN_SCHEMA`. Only clear breaches of
- * the house rules stop a photo; anything the check cannot read lets it
- * through, and the owner's scan and visitor reports catch the rest.
+ * The check every photo gets right after it goes live: Gemini on Vertex AI
+ * looks at it and answers in `PHOTO_SCREEN_SCHEMA`. Only clear breaches of the
+ * house rules hide a photo; anything the check cannot read leaves it up, and
+ * the owner's scan and visitor reports catch the rest.
  */
 
 export const PHOTO_SCREEN_MODEL = "gemini-3.8-flash";
@@ -28,7 +28,7 @@ export const PHOTO_SCREEN_SCHEMA = {
   required: ["allowed", "category"],
 } as const;
 
-export const PHOTO_SCREEN_INSTRUCTION = `You check photos people post to brag.fast, a Dutch site of breakfast and brunch spots. A photo goes live as soon as you allow it.
+export const PHOTO_SCREEN_INSTRUCTION = `You check photos people post to brag.fast, a Dutch site of breakfast and brunch spots. A photo you reject is taken down.
 
 Reject a photo only when it clearly shows one of these:
 - sexual: nudity or sexual content
@@ -44,33 +44,38 @@ Answer with allowed and the category ("ok" when allowed).`;
 
 export type PhotoScreenResult =
   | { status: "allowed" }
-  | { status: "rejected"; category: Exclude<PhotoScreenCategory, "ok"> }
+  | { status: "rejected"; category: string }
   | { status: "unscreened"; why: string };
 
-/** Read an Interactions API response into a verdict. */
-export function readPhotoScreen(response: unknown): PhotoScreenResult {
-  if (typeof response !== "object" || response === null) {
-    return { status: "unscreened", why: "no response" };
+/** Google's own safety filter stopped the answer: the photo is out too. */
+const SAFETY_STOPS = new Set([
+  "SAFETY",
+  "PROHIBITED_CONTENT",
+  "IMAGE_SAFETY",
+  "IMAGE_PROHIBITED_CONTENT",
+  "BLOCKLIST",
+  "SPII",
+]);
+
+/** Read a Vertex `generateContent` answer into a verdict. */
+export function readPhotoScreen(answer: {
+  blockReason?: string;
+  finishReason?: string;
+  text?: string;
+}): PhotoScreenResult {
+  const stop = answer.blockReason ?? answer.finishReason;
+  if (stop && SAFETY_STOPS.has(stop)) {
+    return { status: "rejected", category: `blocked (${stop})` };
   }
-  const { status, steps } = response as { status?: unknown; steps?: unknown };
-  if (status !== "completed") {
-    return { status: "unscreened", why: `status ${String(status)}` };
+  if (answer.blockReason) {
+    return { status: "unscreened", why: `blocked: ${answer.blockReason}` };
   }
-  const text = Array.isArray(steps)
-    ? steps
-        .flatMap((step: { content?: unknown }) =>
-          Array.isArray(step?.content) ? step.content : [],
-        )
-        .filter(
-          (part: { type?: unknown; text?: unknown }): part is { text: string } =>
-            part?.type === "text" && typeof part.text === "string",
-        )
-        .map((part) => part.text)
-        .join("")
-    : "";
+  if (answer.finishReason !== "STOP") {
+    return { status: "unscreened", why: `finish ${answer.finishReason ?? "none"}` };
+  }
   let verdict: unknown;
   try {
-    verdict = JSON.parse(text);
+    verdict = JSON.parse(answer.text ?? "");
   } catch {
     return { status: "unscreened", why: "unreadable answer" };
   }
@@ -87,19 +92,7 @@ export function readPhotoScreen(response: unknown): PhotoScreenResult {
     category !== "ok" &&
     (PHOTO_SCREEN_CATEGORIES as readonly string[]).includes(category)
   ) {
-    return {
-      status: "rejected",
-      category: category as Exclude<PhotoScreenCategory, "ok">,
-    };
+    return { status: "rejected", category };
   }
   return { status: "unscreened", why: "unreadable answer" };
-}
-
-/** Base64 for the request body, in chunks so large photos don't blow the stack. */
-export function bytesToBase64(bytes: Uint8Array): string {
-  let binary = "";
-  for (let i = 0; i < bytes.length; i += 0x8000) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-  }
-  return btoa(binary);
 }

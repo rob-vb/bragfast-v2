@@ -5,7 +5,7 @@ description: Review photos posted to brag.fast since the last scan and hide anyt
 
 # Scan new photos
 
-The owner's after-the-fact moderation pass. Every photo passes a Gemini check in `places.publish` before it goes live; photos that check approved are already marked scanned. This scan covers the rest: photos that went live unscreened (no key, an error, a timeout) and anything from before the check existed. The rules are the terms at `/terms` (`domain/legal.ts`, section `rules`).
+The owner's after-the-fact moderation pass. Every photo gets a Gemini check on Vertex right after it goes live (`screen.screenNewPhoto`); photos it passed are already marked scanned and photos it rejected already wait in `/admin`. This scan covers the rest: photos the check could not answer for (no credentials, an error, a timeout twice) and anything from before the check existed. The rules are the terms at `/terms` (`domain/legal.ts`, section `rules`).
 
 Run every command from `/var/www/bragfast-v2`. The functions are internal, so only the CLI can call them; they act on the live deployment `dev:focused-deer-318`.
 

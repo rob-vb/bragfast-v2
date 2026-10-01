@@ -82,7 +82,7 @@ const PRIVACY_NL: LegalDoc = {
         { h3: "Wat je plaatst" },
         "Je foto's, de plek waar ze bij horen en wanneer je ze plaatste. Plaats je de eerste foto van een plek, dan staat jouw gebruikersnaam erbij als ontdekker. Voor een foto naar ons komt, verkleint de app hem en verdwijnt de metadata, zoals de GPS-locatie en het cameramerk.",
         "Waarom: dit is waar brag.fast om draait (uitvoering van de overeenkomst).",
-        "Voor een foto live gaat, controleert AI van Google (Gemini) of hij niet tegen de regels ingaat, zoals naakt of geweld. Daarnaast bekijken we nieuwe foto's zelf, met hulp van AI van Anthropic. Ze zien alleen de foto, niet wie hem plaatste.",
+        "Direct nadat je een foto plaatst, controleert AI van Google (Gemini) of hij niet tegen de regels ingaat, zoals naakt of geweld. Is dat zo, dan verdwijnt hij meteen. Daarnaast bekijken we nieuwe foto's zelf, met hulp van AI van Anthropic. Ze zien alleen de foto, niet wie hem plaatste.",
         { h3: "Likes" },
         "Welke plekken je liket, en via welke foto. Daarmee zetten we de plekken op volgorde en tellen we de leaderboard. Wie wat liket, tonen we niet; alleen de totalen zijn openbaar.",
         { h3: "Je locatie (alleen in de app)" },
@@ -136,7 +136,7 @@ const PRIVACY_NL: LegalDoc = {
             ["Hetzner", "De server van de website. Servers in Finland (EU)."],
             [
               "Google",
-              "Zoeken naar plekken (Google Places): je zoekterm en, als je toestemming gaf, je locatie als middelpunt van de zoekopdracht. De controle van nieuwe foto's (Gemini); Google bewaart die foto's niet en traint er niet op. En inloggen met Google, als je daarvoor kiest.",
+              "Zoeken naar plekken (Google Places): je zoekterm en, als je toestemming gaf, je locatie als middelpunt van de zoekopdracht. De controle van nieuwe foto's (Gemini via Google Cloud, servers in de EU); Google traint niet op die foto's. En inloggen met Google, als je daarvoor kiest.",
             ],
             ["Apple", "Inloggen met Apple, als je daarvoor kiest, en de App Store."],
             [
@@ -261,7 +261,7 @@ const PRIVACY_EN: LegalDoc = {
         { h3: "What you post" },
         "Your photos, the spot they belong to and when you posted them. If you post the first photo of a spot, your username shows as the one who found it. Before a photo reaches us, the app shrinks it and drops its metadata, such as the GPS location and the camera make.",
         "Why: this is what brag.fast is for (performance of a contract).",
-        "Before a photo goes live, AI from Google (Gemini) checks that it does not break the rules, such as nudity or violence. We also look at new photos ourselves, with help from AI by Anthropic. They only see the photo, not who posted it.",
+        "Right after you post a photo, AI from Google (Gemini) checks that it does not break the rules, such as nudity or violence. If it does, the photo disappears at once. We also look at new photos ourselves, with help from AI by Anthropic. They only see the photo, not who posted it.",
         { h3: "Likes" },
         "Which spots you like, and through which photo. That is how we order the spots and count the leaderboard. We never show who liked what; only the totals are public.",
         { h3: "Your location (app only)" },
@@ -315,7 +315,7 @@ const PRIVACY_EN: LegalDoc = {
             ["Hetzner", "The website's server. Servers in Finland (EU)."],
             [
               "Google",
-              "Searching for spots (Google Places): your search term and, if you gave permission, your location as the centre of the search. The check on new photos (Gemini); Google does not keep those photos or train on them. And Sign in with Google, if you choose it.",
+              "Searching for spots (Google Places): your search term and, if you gave permission, your location as the centre of the search. The check on new photos (Gemini via Google Cloud, servers in the EU); Google does not train on those photos. And Sign in with Google, if you choose it.",
             ],
             ["Apple", "Sign in with Apple, if you choose it, and the App Store."],
             [
@@ -476,7 +476,7 @@ const TERMS_NL: LegalDoc = {
             "bots, scrapers of andere manieren om brag.fast te overbelasten of te misbruiken.",
           ],
         },
-        "Elke foto wordt automatisch gecontroleerd voor hij live gaat, en we kijken zelf ook mee. Breek je deze regels, dan halen we de content weg en kunnen we je account zonder waarschuwing blokkeren of verwijderen.",
+        "Elke foto wordt direct na het plaatsen automatisch gecontroleerd, en we kijken zelf ook mee. Breek je deze regels, dan halen we de content weg en kunnen we je account zonder waarschuwing blokkeren of verwijderen.",
       ],
     },
     {
@@ -623,7 +623,7 @@ const TERMS_EN: LegalDoc = {
             "bots, scrapers or other ways to overload or abuse brag.fast.",
           ],
         },
-        "Every photo is checked automatically before it goes live, and we look ourselves too. If you break these rules, we remove the content and may block or delete your account without warning.",
+        "Every photo is checked automatically right after it is posted, and we look ourselves too. If you break these rules, we remove the content and may block or delete your account without warning.",
       ],
     },
     {

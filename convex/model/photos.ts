@@ -16,7 +16,6 @@ export async function insertSpotPhoto(
     createdAt?: number;
     discovery?: boolean;
     source?: PhotoSource;
-    scannedAt?: number;
   },
 ): Promise<Id<"photos">> {
   return await ctx.db.insert("photos", {
@@ -26,7 +25,6 @@ export async function insertSpotPhoto(
     createdAt: input.createdAt ?? Date.now(),
     ...(input.discovery ? { discovery: true } : {}),
     ...(input.source ? { source: input.source } : {}),
-    ...(input.scannedAt !== undefined ? { scannedAt: input.scannedAt } : {}),
   });
 }
 

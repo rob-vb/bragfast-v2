@@ -29,6 +29,7 @@ import type * as moderation from "../moderation.js";
 import type * as notify from "../notify.js";
 import type * as photos from "../photos.js";
 import type * as places from "../places.js";
+import type * as screen from "../screen.js";
 import type * as seed from "../seed.js";
 import type * as wipe from "../wipe.js";
 
@@ -60,6 +61,7 @@ declare const fullApi: ApiFromModules<{
   notify: typeof notify;
   photos: typeof photos;
   places: typeof places;
+  screen: typeof screen;
   seed: typeof seed;
   wipe: typeof wipe;
 }>;

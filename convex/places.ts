@@ -10,7 +10,6 @@ import {
 import type { Id } from "./_generated/dataModel";
 import { authComponent } from "./auth";
 import { applyPlaceAdd, type PlaceAddCommit } from "./model/placeAdd";
-import { screenPhoto } from "./model/screen";
 import { ensureUserByAuthId } from "./model/users";
 import {
   planPlacePreview,
@@ -319,15 +318,6 @@ async function publishPlace(
   if (!key) {
     throw new ConvexError("Places is not configured");
   }
-  const screen = await screenPhoto(ctx, args.storageId);
-  if (screen.status === "rejected") {
-    await ctx.storage.delete(args.storageId);
-    throw new ConvexError("photo-rejected");
-  }
-  if (screen.status === "unscreened") {
-    // Live anyway; the owner's scan picks it up
-    console.warn(`[screen] ${args.storageId} unscreened: ${screen.why}`);
-  }
   const details = await fetchDetails(args.placeId, key);
   const displayName =
     (typeof authUser.name === "string" ? authUser.name.trim() : "") ||
@@ -345,7 +335,6 @@ async function publishPlace(
     avatarUrl: typeof authUser.image === "string" ? authUser.image : null,
     channel,
     source: args.source,
-    screened: screen.status === "allowed",
   });
   if (result.action === "reject") {
     throw new ConvexError(result.reason);
@@ -390,8 +379,6 @@ export const apply = internalMutation({
       v.union(v.literal("web"), v.literal("app")),
     ),
     source: v.optional(v.union(v.literal("ios"), v.literal("web"))),
-    /** The photo passed the pre-publish check, so the owner's scan can skip it. */
-    screened: v.optional(v.boolean()),
   },
   handler: async (ctx, args): Promise<PlaceAddCommit> => {
     const user = await ensureUserByAuthId(ctx, {
@@ -399,7 +386,7 @@ export const apply = internalMutation({
       displayName: args.displayName,
       avatarUrl: args.avatarUrl,
     });
-    return await applyPlaceAdd(ctx, {
+    const result = await applyPlaceAdd(ctx, {
       placeId: args.placeId,
       name: args.name,
       address: args.address,
@@ -409,7 +396,22 @@ export const apply = internalMutation({
       addedBy: user._id,
       channel: args.channel ?? "web",
       source: args.source,
-      scannedAt: args.screened ? Date.now() : undefined,
     });
+    if (result.action !== "reject") {
+      // Live now; Gemini looks right after and hides it if it breaks the rules
+      const photo = (
+        await ctx.db
+          .query("photos")
+          .withIndex("by_user", (q) => q.eq("uploadedBy", user._id))
+          .collect()
+      ).find((row) => row.storageId === args.storageId);
+      if (photo) {
+        await ctx.scheduler.runAfter(0, internal.screen.screenNewPhoto, {
+          photoId: photo._id,
+          attempt: 1,
+        });
+      }
+    }
+    return result;
   },
 });
