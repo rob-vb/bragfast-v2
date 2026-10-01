@@ -5,7 +5,7 @@ import { Heart } from "lucide-react";
 import { loadAppStores, loadLeaderboard } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/seo";
-import { likeCountLabel, t, uniqueSpotsLabel } from "@/domain/messages";
+import { contributionLabel, likeCountLabel, t } from "@/domain/messages";
 import { PageHero, PageHeroLead, PageHeroTitle } from "@/components/page-hero";
 import { Podium } from "@/components/podium";
 import { StoreButtons } from "@/components/store-buttons";
@@ -26,11 +26,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function LeaderboardPage() {
   const locale = await getLocale();
-  const { adders } = await loadLeaderboard();
+  const { rows } = await loadLeaderboard();
   const stores = loadAppStores();
-  const rest = adders.slice(PODIUM);
+  const rest = rows.slice(PODIUM);
   // The leader's likes are the full bar; nobody below has more
-  const lead = adders[0]?.likeSum ?? 0;
+  const lead = rows[0]?.likeSum ?? 0;
 
   return (
     <main>
@@ -43,7 +43,7 @@ export default async function LeaderboardPage() {
             {t(locale, "leaderboardIntro")}
           </PageHeroLead>
           <div className="-mb-10 lg:col-span-8">
-            <Podium locale={locale} adders={adders} label={t(locale, "leaderboard")} />
+            <Podium locale={locale} rows={rows} label={t(locale, "leaderboard")} />
           </div>
         </div>
       </PageHero>
@@ -51,10 +51,10 @@ export default async function LeaderboardPage() {
       <div className="mx-auto w-full max-w-6xl px-5 pb-14 pt-10 sm:px-8 sm:pb-20 sm:pt-14">
         {rest.length > 0 ? (
           <ol start={PODIUM + 1} className="grid gap-3">
-            {rest.map((adder, index) => (
-              <li key={adder.username}>
+            {rest.map((row, index) => (
+              <li key={row.username}>
                 <Link
-                  href={`/u/${adder.username}`}
+                  href={`/u/${row.username}`}
                   className="group/row grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 rounded-slab bg-milk py-3 pr-5 pl-3 text-berry transition-[background-color,scale] duration-press ease-out-strong active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yolk sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,16rem)_6.5rem] sm:gap-6 pointer-fine:hover:bg-shell"
                 >
                   <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-yolk font-display text-xl tracking-wide tabular-nums">
@@ -63,20 +63,20 @@ export default async function LeaderboardPage() {
                   <span className="min-w-0">
                     <span className="line-clamp-2 font-display text-2xl leading-tight tracking-wide wrap-break-word">
                       <span className="text-blush">@</span>
-                      {adder.username}
+                      {row.username}
                     </span>
                     <span className="block text-sm font-semibold text-berry/70 tabular-nums">
-                      {uniqueSpotsLabel(locale, adder.spotCount)}
+                      {contributionLabel(locale, row)}
                     </span>
                   </span>
                   <span
                     aria-hidden
                     className="hidden h-2.5 overflow-hidden rounded-full bg-white sm:block"
                   >
-                    {adder.likeSum > 0 ? (
+                    {row.likeSum > 0 ? (
                       <span
                         className="like-bar block h-full rounded-full bg-blush"
-                        style={{ "--share": adder.likeSum / lead } as CSSProperties}
+                        style={{ "--share": row.likeSum / lead } as CSSProperties}
                       />
                     ) : null}
                   </span>
@@ -86,7 +86,7 @@ export default async function LeaderboardPage() {
                       className="size-4 fill-blush text-blush"
                       strokeWidth={2.5}
                     />
-                    {likeCountLabel(locale, adder.likeSum)}
+                    {likeCountLabel(locale, row.likeSum)}
                   </span>
                 </Link>
               </li>
@@ -107,7 +107,7 @@ export default async function LeaderboardPage() {
               id="climb-heading"
               className="font-display text-2xl leading-tight tracking-wide text-balance sm:text-3xl"
             >
-              {adders.length === 0 ? t(locale, "leaderboardEmpty") : t(locale, "climbTitle")}
+              {rows.length === 0 ? t(locale, "leaderboardEmpty") : t(locale, "climbTitle")}
             </h2>
             <p className="mt-2 max-w-xl text-base leading-relaxed text-pretty text-berry/70">
               {t(locale, "climbBody")}

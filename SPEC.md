@@ -21,9 +21,9 @@ Scraped Places catalogs and Instagram ingest are not the product. The website is
 | **Spot** | One hospitality venue, canonicalized by Google Place ID. The app creates it from the first photo of a Place. |
 | **Woonplaats** | One Dutch BAG woonplaats board (stad or dorp). The URL slug is the name people type (`den-bosch`, `den-haag`, `hoofddorp`). CBS counts 2501 BAG woonplaatsen on 1 January 2024. |
 | **Like** | One signed-in visitor, one row per spot. Rank unit on the woonplaats board. |
-| **Credit** | The photo a like came through: the gallery photo in view when the visitor tapped like, else the hero. It tells a photographer their photo helped the spot. It never adds a like or moves rank. |
+| **Credit** | The photo a like came through: the gallery photo in view when the visitor tapped like, else the hero. It tells a photographer their photo helped the spot and counts for them on the leaderboard. It never adds a like or moves a spot's rank. |
 | **Adder** | The account that added the spot. |
-| **Leaderboard** | Person board at `/nl/leaderboard`. Rank is the sum of likes on spots the adder added. |
+| **Leaderboard** | Person board at `/nl/leaderboard`. Rank is the likes an account earned: likes on spots it added plus likes credited to its photos, each like once. |
 | **Passport** | Public profile of every photo that account posted, in any country. The photo that created a spot carries an **Ontdekt** mark. The `UserSlug` exists at signup. |
 | **Photo** | One hosted image on the spot. Create requires the adder’s photo. That photo is the hero and the first gallery row. The app may attach more visitor photos to the same spot. Hosted on brag.fast. |
 | **Claim** | Paid ownership of the spot page (v2). Tools and a conversion CTA, never rank. **Geclaimd** means someone is paying for that page, not that we verified the business. |
@@ -43,7 +43,7 @@ Do not call a woonplaats a gemeente. Gemeente boards are retired.
 - Ranking: like count on the spot. Tie-break is the most recent like, then recency of the add
 - Auth: Better Auth with Google, Apple, and `emailAndPassword`. Unique public `username` (`UserSlug`) at signup. Password login accepts email or username. Google or Apple first login that lacks a username stays on the same dialog until the username is set. No magic link.
 - Like: signed-in, one per spot, toggle off to unlike. Signed-out like opens the sign-in dialog and writes nothing
-- Leaderboard: adders ranked by likes on spots they added. Tie-break is number of spots added, then earliest add. An account with zero adds is absent.
+- Leaderboard: accounts ranked by earned likes (likes on spots they added plus likes credited to their photos, each once). Tie-break is number of spots added, then who first added a spot or posted a photo. An account with no add and no earned like is absent.
 - Photo upload on add, Convex storage
 - i18n: `nl` / `en` UI on the **same** URLs
 - SEO: server-rendered HTML, JSON-LD `FoodEstablishment` on spots and `WebSite` + `Organization` on `/`, a canonical URL and share card on every public page, `robots.txt`, sitemap of chrome pages, woonplaatsen with a live spot, and live spots
@@ -64,10 +64,10 @@ The owner sets the "idea is working" bar. Do not block v1 on a metric.
 ## Hard rules
 
 1. Discovery owns the product. Likes feed the woonplaats board. Do not build a national live feed as the homepage. IP local-favorites are that one woonplaats board, not a radius and not a ticker.
-2. Rank **spots**, not dishes. The person board is the adder leaderboard.
+2. Rank **spots**, not dishes. The person board ranks the people behind them: adders and photographers, by earned likes.
 3. Catalog of boards = NL woonplaatsen. One GPS point, one woonplaats. Board and spot URLs are country-prefixed for a future `/be/...`. Profiles are not: a person posts photos in more than one country.
 4. A like is a vote. No star ratings. Do not surface Google rating as "best."
-5. One like per signed-in visitor per spot. Many photos on the same spot do not add likes. A like credits at most one photo, and the credit moves no rank.
+5. One like per signed-in visitor per spot. Many photos on the same spot do not add likes. A like credits at most one photo, and the credit moves no spot's rank.
 6. Board numbers are earned from likes. An empty woonplaats shows the empty state, not a scraped tail.
 7. Host only media the user uploaded on brag.fast.
 8. Claim (v2) is ownership and tools. Rank stays 100% likes. Paid extras are **additive** (CTA, official hero, Geclaimd mark). Unpaid pages keep the same board rules. Owners cannot hide visitor photos.
@@ -82,7 +82,7 @@ The owner sets the "idea is working" bar. Do not block v1 on a metric.
 /nl/{city}                woonplaats page
 /nl/{city}/{spot}         spot page
 /u/{slug}                 public passport (no country; /nl/u/{slug} redirects 308)
-/nl/leaderboard           adder leaderboard
+/nl/leaderboard           person leaderboard
 /how-it-works             how it works (chrome page, explainer)
 ```
 
@@ -107,11 +107,13 @@ Show the like count on the spot page and on the woonplaats list.
 - A second click from the same session removes the row.
 - Signed-out click opens sign-in and writes nothing.
 
-**Adder leaderboard**
+**Person leaderboard**
 
-- Score = sum of likes on spots that account added.
-- Tie-break: number of spots added, then earliest add.
-- Hide accounts with zero adds. Empty leaderboard has its own copy.
+- Score = likes the account earned: every like on a spot it added, plus every like credited to one of its photos. A like that is both (the adder's own hero) counts once. A like without credit counts for the adder only.
+- Discovery still pays most: the adder earns every like on the spot, a photographer only the likes that came through their photo.
+- Tie-break: number of spots added, then who first added a spot or posted a photo.
+- Hide accounts with no add and no earned like. Under each name: spots added, or the photo count when there are none. Empty leaderboard has its own copy.
+- The passport's like count is this score.
 
 **Recency:** likes have no 90-day window in v1. Do not add decay curves.
 
@@ -177,13 +179,13 @@ JSON-LD `FoodEstablishment` (or `Restaurant`/`Bakery`/`Hotel` when type is clear
 
 ### Passport `/u/{slug}`
 
-Username (`UserSlug`), photo count, count of spots discovered, leaderboard standing, and one like count (hidden at zero): likes on spots the account added plus likes credited to its photos, each like once. It can run higher than the leaderboard score, which counts added spots only. The body is every photo the account posted, newest first, each linking to its spot, with a list/map toggle (the map pins each photographed spot once). The photo whose publish created the spot carries an **Ontdekt** sticker (`photos.discovery`); a later photo never inherits it when that one is deleted. One stamp per woonplaats the account posted a photo in. No avatar, no display name, no email. Header is berry, no photograph. One-line bio optional. No follow. Mint the public URL at signup. Index after the first photo.
+Username (`UserSlug`), photo count, count of spots discovered, leaderboard standing and its like count (hidden at zero). The body is every photo the account posted, newest first, each linking to its spot, with a list/map toggle (the map pins each photographed spot once). The photo whose publish created the spot carries an **Ontdekt** sticker (`photos.discovery`); a later photo never inherits it when that one is deleted. One stamp per woonplaats the account posted a photo in. No avatar, no display name, no email. Header is berry, no photograph. One-line bio optional. No follow. Mint the public URL at signup. Index after the first photo.
 
 The path has no country prefix: profiles span countries while boards stay per country. `/nl/u/{slug}` redirects there.
 
 ### Leaderboard `/nl/leaderboard`
 
-List of adders. Readable signed-out. Header and footer link here. Empty copy when nobody has added yet.
+List of adders and photographers. Readable signed-out. Header and footer link here. Empty copy when nobody has added yet.
 
 ### Woonplaats index `/nl`
 
@@ -193,7 +195,7 @@ Every woonplaats board with at least one live spot, A to Z by the name the visit
 
 Chrome page. Header and footer link here. English slug. Dutch default title **Hoe het werkt**.
 
-The explainer runs in four steps, in the order a spot lives: **Zoek** (every woonplaats has a board; the real search box), **Brag** (the first photo in the app creates the spot under your name), **Like** (one like per person per spot, tap again to undo, most likes on top, a tie goes to the newest like, no stars and no paid placement), **Klim** (likes on spots you added count toward the leaderboard; the passport gets a stamp per woonplaats you posted a photo in). Then house rules (what counts as a spot, likes are not for sale, browse without an account, delete your own photos, closed spots leave the board) and the store buttons.
+The explainer runs in four steps, in the order a spot lives: **Zoek** (every woonplaats has a board; the real search box), **Brag** (the first photo in the app creates the spot under your name), **Like** (one like per person per spot, tap again to undo, most likes on top, a tie goes to the newest like, no stars and no paid placement), **Klim** (likes on spots you added and likes through your photos count toward the leaderboard; the passport gets a stamp per woonplaats you posted a photo in). Then house rules (what counts as a spot, likes are not for sale, browse without an account, delete your own photos, closed spots leave the board) and the store buttons.
 
 Demo pieces (the photo print, the example board, the podium, the stamp) use made-up spots and usernames, labelled **Voorbeeld**. They never link to a real spot or passport, and demo likes write nothing. The example board sorts with the same rule as `sortCityBoard`.
 
@@ -320,7 +322,7 @@ Stop each step when the criterion is true.
    *Done:* the woonplaats list orders by like count. Counts match the spot page.
 
 7. **Leaderboard.** `/nl/leaderboard` and the passport at `/u/{slug}`.  
-   *Done:* two adders with different like sums appear in that order. A user with zero spots is absent.
+   *Done:* two adders with different like sums appear in that order. A user with no spot and no earned like is absent.
 
 8. **Homepage.** Local favorites from IP when the board has ≥3 photo spots; two app rows; featured woonplaatsen gone.  
    *Done:* `/` HTML has no **Steden om te ontdekken**. A board under the 3-spot gate does not render the favorites block. Two app rows include per-store **Coming soon** (disabled until that store URL exists).

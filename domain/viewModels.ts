@@ -1,6 +1,6 @@
 import type { GenericId } from "convex/values";
 import type { CitySlug, SpotSlug, UserSlug } from "./ids";
-import type { AdderRow, LeaderboardStanding } from "./leaderboard";
+import type { LeaderboardRow, LeaderboardStanding } from "./leaderboard";
 import type { OpeningHours, SpotLifecycle, SpotType } from "./spot";
 
 export type CitySpotCard = {
@@ -161,8 +161,6 @@ export type PassportData = {
   slug: UserSlug;
   /** Spots this account put on brag.fast with a first photo. */
   discoveredCount: number;
-  /** Likes on spots this account added, plus likes through its photos elsewhere, each once. */
-  likeCount: number;
   photos: PassportPhoto[];
 };
 
@@ -171,5 +169,5 @@ export type PassportPageData = PassportData & {
 };
 
 export type LeaderboardData = {
-  adders: AdderRow[];
+  rows: LeaderboardRow[];
 };

@@ -16,7 +16,7 @@ A crawlable breakfast and brunch directory for the Netherlands. Spots are the un
 
 ## Positioning
 
-TripAdvisor without the everything-else. Rank is like count, not dishes, not stars, not paid placement. Empty woonplaatsen show an empty state until someone adds the first photo in the app. Adders climb `/nl/leaderboard` by likes on spots they added. Inferred from `SPEC.md`.
+TripAdvisor without the everything-else. Rank is like count, not dishes, not stars, not paid placement. Empty woonplaatsen show an empty state until someone adds the first photo in the app. Adders and photographers climb `/nl/leaderboard` by likes on spots they added and likes through their photos. Inferred from `SPEC.md`.
 
 ## Operating Context
 
@@ -24,7 +24,7 @@ Public pages are server-rendered Next.js on a VPS. The owner-facing site is http
 
 ## Capabilities and Constraints
 
-Specified in `SPEC.md`, not all shipped yet: woonplaats boards for every Dutch BAG woonplaats, app-only catalog writes with Places autocomplete and one required photo, a spot gallery of hosted photos (app attaches extras), signed-in likes (one per spot), adder leaderboard, Better Auth Google + Apple + `emailAndPassword`.
+Specified in `SPEC.md`, not all shipped yet: woonplaats boards for every Dutch BAG woonplaats, app-only catalog writes with Places autocomplete and one required photo, a spot gallery of hosted photos (app attaches extras), signed-in likes (one per spot), person leaderboard (adders and photographers), Better Auth Google + Apple + `emailAndPassword`.
 
 Shipped in the current tree and still true until later PRs land: homepage search, woonplaats list, map toggle, sign-in chrome, admin reports. Featured woonplaatsen and near-me are retired; `/` follows the Homepage section in `SPEC.md` (an intro that explains site and app, links to how it works and the woonplaats index under the search, IP local-favorites when the board qualifies, the four-step band, two app rows, no GPS). `/nl` lists the boards that have a live spot; empty boards are noindex until their first spot.
 
