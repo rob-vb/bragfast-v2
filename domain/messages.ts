@@ -500,12 +500,6 @@ export function photoLikesLabel(locale: Locale, count: number): string {
   return locale === "en" ? `${likes} via this photo` : `${likes} via deze foto`;
 }
 
-/** "12 likes via foto's": likes that came through an account's photos */
-export function likesBroughtLabel(locale: Locale, count: number): string {
-  const likes = likeCountLabel(locale, count);
-  return locale === "en" ? `${likes} via photos` : `${likes} via foto's`;
-}
-
 /** "3 anderen": the people a credit line leaves unnamed */
 export function othersLabel(locale: Locale, count: number): string {
   if (locale === "en") {

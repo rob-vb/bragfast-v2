@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Camera, Flag, Heart, LayoutGrid, MapIcon, Trophy } from "lucide-react";
+import { Flag, Heart, LayoutGrid, MapIcon, Trophy } from "lucide-react";
 import { CityMap } from "@/components/city-map-loader";
 import { EggEmpty } from "@/components/egg-empty";
 import { PassportStamps } from "@/components/passport-stamps";
@@ -15,7 +15,6 @@ import {
   inCitiesLabel,
   leaderboardRankLabel,
   likeCountLabel,
-  likesBroughtLabel,
   passportMetaDescription,
   photoCountLabel,
   shortDate,
@@ -146,7 +145,7 @@ export default async function PassportPage({
                     </>
                   ) : null}
                   {inCitiesLabel(locale, stamps.length)}
-                  {page.standing ? (
+                  {page.likeCount > 0 ? (
                     <>
                       <span aria-hidden className="text-candy">
                         ·
@@ -157,22 +156,7 @@ export default async function PassportPage({
                           className="size-4.5 fill-candy text-candy"
                           strokeWidth={2.5}
                         />
-                        {likeCountLabel(locale, page.standing.likeSum)}
-                      </span>
-                    </>
-                  ) : null}
-                  {page.likesBrought > 0 ? (
-                    <>
-                      <span aria-hidden className="text-candy">
-                        ·
-                      </span>
-                      <span className="inline-flex items-center gap-1.5">
-                        <Camera
-                          aria-hidden
-                          className="size-4.5 text-candy"
-                          strokeWidth={2.5}
-                        />
-                        {likesBroughtLabel(locale, page.likesBrought)}
+                        {likeCountLabel(locale, page.likeCount)}
                       </span>
                     </>
                   ) : null}

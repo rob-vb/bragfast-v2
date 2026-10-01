@@ -161,8 +161,8 @@ export type PassportData = {
   slug: UserSlug;
   /** Spots this account put on brag.fast with a first photo. */
   discoveredCount: number;
-  /** Likes that came through this account's photos, on any spot. */
-  likesBrought: number;
+  /** Likes on spots this account added, plus likes through its photos elsewhere, each once. */
+  likeCount: number;
   photos: PassportPhoto[];
 };
 

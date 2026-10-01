@@ -177,7 +177,7 @@ JSON-LD `FoodEstablishment` (or `Restaurant`/`Bakery`/`Hotel` when type is clear
 
 ### Passport `/u/{slug}`
 
-Username (`UserSlug`), photo count, count of spots discovered, leaderboard standing, likes via the account’s photos (hidden at zero). The body is every photo the account posted, newest first, each linking to its spot, with a list/map toggle (the map pins each photographed spot once). The photo whose publish created the spot carries an **Ontdekt** sticker (`photos.discovery`); a later photo never inherits it when that one is deleted. One stamp per woonplaats the account posted a photo in. No avatar, no display name, no email. Header is berry, no photograph. One-line bio optional. No follow. Mint the public URL at signup. Index after the first photo.
+Username (`UserSlug`), photo count, count of spots discovered, leaderboard standing, and one like count (hidden at zero): likes on spots the account added plus likes credited to its photos, each like once. It can run higher than the leaderboard score, which counts added spots only. The body is every photo the account posted, newest first, each linking to its spot, with a list/map toggle (the map pins each photographed spot once). The photo whose publish created the spot carries an **Ontdekt** sticker (`photos.discovery`); a later photo never inherits it when that one is deleted. One stamp per woonplaats the account posted a photo in. No avatar, no display name, no email. Header is berry, no photograph. One-line bio optional. No follow. Mint the public URL at signup. Index after the first photo.
 
 The path has no country prefix: profiles span countries while boards stay per country. `/nl/u/{slug}` redirects there.
 
