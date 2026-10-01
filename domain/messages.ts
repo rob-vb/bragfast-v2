@@ -170,7 +170,6 @@ export const nlMessages = {
   hiwRuleClosedBody:
     "Een plek die voorgoed dicht is, gaat van de board. De pagina blijft, met Gesloten erop.",
   hiwCloseBody: "Staat jouw favoriete plek er nog niet op? Met de app ben jij de eerste.",
-  hiwSearchAPlace: "Zoek een plaats",
 } as const;
 
 export type MessageKey = keyof typeof nlMessages;
@@ -343,7 +342,6 @@ export const enMessages = {
   hiwRuleClosedBody:
     "A spot that closes for good leaves the board. Its page stays, marked Closed.",
   hiwCloseBody: "Is your favourite spot not on here yet? With the app, you're first.",
-  hiwSearchAPlace: "Search a place",
 } as const satisfies Record<MessageKey, string>;
 
 export type Locale = "nl" | "en";

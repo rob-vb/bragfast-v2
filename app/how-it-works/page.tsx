@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Search } from "lucide-react";
 import { getLocale } from "@/lib/i18n";
 import { loadAppStores } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
@@ -24,7 +22,6 @@ import { StoreButtons } from "@/components/store-buttons";
 import { TownSearch } from "@/components/town-search";
 import { PrintGlow } from "@/components/spot-print";
 import { Egg } from "@/components/visual";
-import { buttonVariants } from "@/components/ui/button";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -142,10 +139,6 @@ export default async function HowItWorksPage() {
             {t(locale, "hiwCloseBody")}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/" className={buttonVariants()}>
-              <Search aria-hidden className="size-4" strokeWidth={2.5} />
-              {t(locale, "hiwSearchAPlace")}
-            </Link>
             <StoreButtons locale={locale} ios={stores.ios} className="mt-0" />
           </div>
         </div>
