@@ -22,6 +22,7 @@ import type * as model_account from "../model/account.js";
 import type * as model_owner from "../model/owner.js";
 import type * as model_photos from "../model/photos.js";
 import type * as model_placeAdd from "../model/placeAdd.js";
+import type * as model_screen from "../model/screen.js";
 import type * as model_spots from "../model/spots.js";
 import type * as model_users from "../model/users.js";
 import type * as moderation from "../moderation.js";
@@ -52,6 +53,7 @@ declare const fullApi: ApiFromModules<{
   "model/owner": typeof model_owner;
   "model/photos": typeof model_photos;
   "model/placeAdd": typeof model_placeAdd;
+  "model/screen": typeof model_screen;
   "model/spots": typeof model_spots;
   "model/users": typeof model_users;
   moderation: typeof moderation;

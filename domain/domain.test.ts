@@ -27,6 +27,7 @@ import {
   planPhotoReport,
 } from "./moderation";
 import { bragLiveEmail, moderationAlertEmail } from "./notify";
+import { bytesToBase64, readPhotoScreen } from "./screen";
 import { classifyPlaceTypes, planPlaceAdd, slugFromPlaceName } from "./placeAdd";
 import {
   photoCredits,
@@ -1592,4 +1593,29 @@ test("the owner's moderation mail names the spot and escapes it", () => {
   assert.match(mail.html, /Bakker &amp; &lt;Zn&gt;/);
   assert.match(mail.html, /aanstootgevend of illegaal/);
   assert.match(mail.html, /@anna/);
+});
+
+test("the pre-publish screen only stops a photo on a clear verdict", () => {
+  const answer = (text: string, status = "completed") => ({
+    status,
+    steps: [{ type: "model_output", content: [{ type: "text", text }] }],
+  });
+  assert.deepEqual(readPhotoScreen(answer('{"allowed":true,"category":"ok"}')), {
+    status: "allowed",
+  });
+  assert.deepEqual(readPhotoScreen(answer('{"allowed":false,"category":"sexual"}')), {
+    status: "rejected",
+    category: "sexual",
+  });
+  // A refusal without a known category, junk, or a failed call lets it through
+  assert.equal(readPhotoScreen(answer('{"allowed":false,"category":"ok"}')).status, "unscreened");
+  assert.equal(readPhotoScreen(answer("not json")).status, "unscreened");
+  assert.equal(readPhotoScreen(answer('{"allowed":true}', "failed")).status, "unscreened");
+  assert.equal(readPhotoScreen(null).status, "unscreened");
+});
+
+test("photo bytes become base64 for the screen", () => {
+  assert.equal(bytesToBase64(new TextEncoder().encode("brag.fast")), "YnJhZy5mYXN0");
+  const big = new Uint8Array(100_000).fill(255);
+  assert.equal(bytesToBase64(big), Buffer.from(big).toString("base64"));
 });

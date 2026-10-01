@@ -55,6 +55,7 @@ export async function applyPlaceAdd(
     addedBy: Id<"users">;
     channel?: PhotoPublishChannel;
     source?: PhotoSource;
+    scannedAt?: number;
   },
 ): Promise<PlaceAddCommit> {
   const placeId = parsePlaceId(input.placeId);
@@ -86,6 +87,7 @@ export async function applyPlaceAdd(
       storageId: photoId,
       uploadedBy: input.addedBy,
       source: input.source,
+      scannedAt: input.scannedAt,
     });
     if (byPlaceId.photoId === undefined) {
       await ctx.db.patch(byPlaceId._id, { photoId });
@@ -125,6 +127,7 @@ export async function applyPlaceAdd(
     uploadedBy: input.addedBy,
     discovery: true,
     source: input.source,
+    scannedAt: input.scannedAt,
   });
   return { ...plan, spotSlug: slug };
 }

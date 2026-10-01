@@ -224,7 +224,7 @@ The website has no add UI. The app creates a spot when a user publishes the firs
 - Duplicate Place ID on an existing spot attaches a gallery photo from the app.
 - The Place is a breakfast or brunch tent on the honor system. No GPS required from the visitor.
 - User can delete their own gallery photo later (AVG). Deleting the hero promotes the oldest remaining photo, or leaves the hero empty. Report hides pending owner review.
-- No pre-moderation of every upload. The owner scans new photos after the fact (`moderation:unscannedPhotos`, `moderation:markScanned`, `moderation:flagFromScan` from the CLI); a flag hides the photo into the admin queue like a report.
+- Every upload passes a pre-publish check (`gemini-3.8-flash`, `domain/screen.ts`) inside `places.publish`. Only a clear breach (sexual, violence, hate, drugs, personal data, spam) stops it: the blob is deleted and publish throws `photo-rejected`. A photo that is not breakfast is not a breach. When the check cannot answer (no `GEMINI_API_KEY`, error, timeout) the photo goes live unscreened. The owner's scan (`moderation:unscannedPhotos`, `moderation:markScanned`, `moderation:flagFromScan` from the CLI) covers unscreened photos; a flag hides the photo into the admin queue like a report.
 - The app can report the hero it shows for an existing spot and block that photo's poster (App Review guideline 1.2). A block hides the poster's photos from the blocker in the app only; the website is the same for everyone. The owner gets a mail. App settings list blocks and lift them.
 - The website gallery must show app photos. Do not add an extra-upload control on the website spot page.
 

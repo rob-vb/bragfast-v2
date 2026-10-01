@@ -2,6 +2,7 @@ import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 import {
+  internalAction,
   internalMutation,
   internalQuery,
   mutation,
@@ -16,6 +17,7 @@ import {
 } from "../domain/moderation";
 import { moderationAlertEmail } from "../domain/notify";
 import { hidePhoto } from "./model/photos";
+import { screenPhoto } from "./model/screen";
 import { ensureAppUser } from "./model/users";
 
 const reasonValidator = v.union(
@@ -212,4 +214,10 @@ export const flagFromScan = internalMutation({
     await ctx.db.patch(photoId, { scannedAt: Date.now() });
     await hidePhoto(ctx, photo);
   },
+});
+
+/** Run the pre-publish check on a stored photo, to try the Gemini setup from the CLI. */
+export const screenStored = internalAction({
+  args: { storageId: v.id("_storage") },
+  handler: async (ctx, { storageId }) => await screenPhoto(ctx, storageId),
 });
