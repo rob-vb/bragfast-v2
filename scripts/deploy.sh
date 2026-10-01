@@ -5,6 +5,9 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+# Backend first: the new site may call functions the old backend lacks.
+npx convex deploy -y
+
 npm run build
 
 rm -rf .next-next .next-prev

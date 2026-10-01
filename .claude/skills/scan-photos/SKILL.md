@@ -7,14 +7,14 @@ description: Review photos posted to brag.fast since the last scan and hide anyt
 
 The owner's after-the-fact moderation pass. Every photo gets a Gemini check on Vertex right after it goes live (`screen.screenNewPhoto`); photos it passed are already marked scanned and photos it rejected already wait in `/admin`. This scan covers the rest: photos the check could not answer for (no credentials, an error, a timeout twice) and anything from before the check existed. The rules are the terms at `/terms` (`domain/legal.ts`, section `rules`).
 
-Run every command from `/var/www/bragfast-v2`. The functions are internal, so only the CLI can call them; they act on the live deployment `dev:focused-deer-318`.
+Run every command from `/var/www/bragfast-v2`. The functions are internal, so only the CLI can call them; pass `--prod` so they act on the live deployment `prod:dashing-cormorant-532`; without it they hit dev.
 
 ## Steps
 
 1. List what has not been scanned yet, oldest first:
 
    ```bash
-   npx convex run moderation:unscannedPhotos '{"limit": 50}'
+   npx convex run --prod moderation:unscannedPhotos '{"limit": 50}'
    ```
 
    An empty list means you are done: say so in one line.
@@ -35,13 +35,13 @@ Run every command from `/var/www/bragfast-v2`. The functions are internal, so on
 4. Flag each bad photo with a short Dutch reason. It hides at once and lands in `/admin` for the owner's decision:
 
    ```bash
-   npx convex run moderation:flagFromScan '{"photoId": "<id>", "reason": "naakt"}'
+   npx convex run --prod moderation:flagFromScan '{"photoId": "<id>", "reason": "naakt"}'
    ```
 
 5. Mark every photo you looked at and did not flag as scanned, in one call:
 
    ```bash
-   npx convex run moderation:markScanned '{"photoIds": ["<id>", "<id>"]}'
+   npx convex run --prod moderation:markScanned '{"photoIds": ["<id>", "<id>"]}'
    ```
 
 6. If the list was full (50), repeat from step 1.
