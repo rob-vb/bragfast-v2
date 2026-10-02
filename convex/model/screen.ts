@@ -14,9 +14,17 @@ import {
  * multi-region, as Docuhelper does it. No client timeout: at busy times an
  * answer takes over a minute, and a short deadline only turns it into a 504.
  * GOOGLE_VERTEX_CREDENTIALS holds a service account's JSON key; its project
- * is the one billed. Node runtime only.
+ * is the one billed. With LITELLM_URL set, the LiteLLM gateway holds the
+ * credentials instead and LITELLM_API_KEY is this app's virtual key.
+ * Node runtime only.
  */
 function vertex(): GoogleGenAI | null {
+  if (process.env.LITELLM_URL && process.env.LITELLM_API_KEY) {
+    return new GoogleGenAI({
+      apiKey: process.env.LITELLM_API_KEY,
+      httpOptions: { baseUrl: process.env.LITELLM_URL },
+    });
+  }
   const raw = process.env.GOOGLE_VERTEX_CREDENTIALS;
   if (!raw) {
     return null;
