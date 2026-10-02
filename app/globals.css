@@ -1038,7 +1038,7 @@ a.stamp:focus-visible {
    the stage's width), the phone's points (--pt, 1/414 of the phone) or a
    print's units (--pu, 1/284 of that print), so it scales as a whole. A
    wide stage lays the board beside the phone; a narrow one stacks it on
-   top. It all lies on a plate: the bord the board is named after. */
+   top. It all lies on a plate, the bord you eat from. */
 @property --u {
   syntax: "<length>";
   inherits: true;

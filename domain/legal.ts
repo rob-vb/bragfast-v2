@@ -108,7 +108,7 @@ const PRIVACY_NL: LegalDoc = {
         {
           list: [
             "je gebruikersnaam en je profielpagina, met al je foto's, je stempels per woonplaats en hoeveel likes je binnenbrengt;",
-            "je foto's, bij de plek en op het bord van de woonplaats;",
+            "je foto's, bij de plek en in het overzicht van de woonplaats;",
             "je gebruikersnaam als ontdekker bij plekken die je als eerste plaatste;",
             "je plek op de leaderboard.",
           ],
@@ -186,7 +186,7 @@ const PRIVACY_NL: LegalDoc = {
           list: [
             "je account en je inloggegevens, ook de koppeling met Google of Apple;",
             "al je foto's, ook uit de opslag;",
-            "al je likes (de volgorde op de borden past zich aan);",
+            "al je likes (de volgorde in de overzichten past zich aan);",
             "je profielpagina en je plek op de leaderboard;",
             "je blokkades, en je naam bij meldingen die je deed.",
           ],
@@ -502,7 +502,7 @@ const TERMS_NL: LegalDoc = {
       title: "Plekken, likes en de volgorde",
       blocks: [
         "Een plek komt op brag.fast doordat een bezoeker er een foto plaatst. De naam, het adres en de ligging halen we uit Google Places. We doen ons best, maar kunnen niet beloven dat alles klopt.",
-        "De volgorde op een bord hangt alleen af van likes: één like per persoon per plek, de meeste likes bovenaan. Een betere plek kun je niet kopen. De volgorde is de mening van bezoekers, niet die van ons.",
+        "De volgorde in een overzicht hangt alleen af van likes: één like per persoon per plek, de meeste likes bovenaan. Een betere plek kun je niet kopen. De volgorde is de mening van bezoekers, niet die van ons.",
         "Plekken die je toevoegde, blijven op brag.fast, ook als je je account verwijdert.",
       ],
     },

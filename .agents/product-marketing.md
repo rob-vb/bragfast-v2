@@ -1,18 +1,18 @@
 # Product Marketing Context
 
-**Document version:** v1
+**Document version:** v3
 **Last updated:** 2026-10-02
 
 ## Product Overview
 **One-liner:** Help anderen de beste ontbijt- en brunchplekken ontdekken door de foto die je toch al van je bord maakt te delen via brag.fast.
-**What it does:** Als de bediening het ontbijt of de brunch brengt, maken mensen bijna altijd eerst een foto. Met brag.fast deel je die foto op het bord van jouw stad. Zo ontdekken anderen nieuwe plekken en krijgen die plekken nieuwe gasten. Likes bepalen welke plek bovenaan staat.
+**What it does:** Als de bediening het ontbijt of de brunch brengt, maken mensen bijna altijd eerst een foto. Met brag.fast deel je die foto op het overzicht van jouw stad. Zo ontdekken anderen nieuwe plekken en krijgen die plekken nieuwe gasten. Likes bepalen welke plek bovenaan staat.
 **Product category:** "Beste ontbijt in <stad>" / "Best breakfast in <city>". Lokale ontdekgids voor ontbijt- en brunchplekken.
 **Product type:** Gratis consumentenapp (iOS/Android onderweg, web-app nu op https://brag.fast/app) met een openbare website (https://brag.fast/) als zoekgids per woonplaats.
 **Business model:** Gratis voor bezoekers. Later betalen eigenaren van plekken. Het huidige plan wijkt af van SPEC.md ("Claim (v2)": €29 per plek per maand voor een conversieknop, eigen hoofdfoto en Geclaimd-label). Genoemde ideeën: analytics, kortingen voor gebruikers. **Open punt:** details volgen. Vaste regel in SPEC.md: betalen geeft nooit een hogere ranking.
 
 ## Target Audience
 **Target users:** 18–40 jaar, wonen in een grote stad of zijn een weekendje weg. Foodies die al foto's delen op Instagram.
-**Two sides of the board:**
+**Two sides of the product:**
 - **Posters:** gasten die hun ontbijt of brunch fotograferen en delen.
 - **Ontdekkers:** vaak dezelfde mensen, vooral op een weekendje weg in een onbekende stad. Ook mensen die "beste ontbijt in <stad>" googelen. (Dit is ook het ontstaansverhaal: de oprichter zocht zelf altijd waar je in een nieuwe stad goed kunt ontbijten.)
 - **Toekomstige betalende klant:** zelfstandige ontbijt- en brunchzaken, bijvoorbeeld Frank & Charlie in Enschede.
@@ -56,8 +56,8 @@ B2C, dus geen inkoopcomité. Horecaondernemers worden een persona zodra het verd
 - **Geen moeite.** De foto die je toch al maakt, deel je in een paar tikken. *(Belangrijkste.)*
 - **Alleen ontbijt en brunch.** Geen restaurants die er toevallig ook eieren serveren.
 - **Likes bepalen de volgorde, niet geld.** Eén like per persoon per plek, geen sterren, geen betaalde plaatsing.
-- **Een bord per woonplaats.** Dit komt mee met de BAG-data. Het is geen verkoopargument, dus niet voorop zetten.
-**How we do it differently:** De gast maakt de gids. De foto die bij het bord hoort is het bewijs, likes zijn de ranking.
+- **Een overzicht per woonplaats.** Dit komt mee met de BAG-data. Het is geen verkoopargument, dus niet voorop zetten.
+**How we do it differently:** De gast maakt de gids. De foto van wat er op tafel kwam is het bewijs, likes zijn de ranking.
 **Why that's better:** Je ziet precies wat je krijgt, en de ranking komt van mensen die er echt zijn geweest.
 **Why customers choose us:** Gericht alle leuke tentjes in één stad, in plaats van zoeken door alles heen.
 
@@ -65,7 +65,7 @@ B2C, dus geen inkoopcomité. Horecaondernemers worden een persona zodra het verd
 | Objection | Response |
 |-----------|----------|
 | "Ik zet het al op Instagram." | Met brag.fast help je de eigenaar van de plek waar je eet, en mensen die hetzelfde lekker vinden als jij. |
-| "Er staat nog niks in mijn stad." | Mooi, dan ben jij de ontdekker. Jouw foto wordt de foto van de plek, op het bord en bovenaan de spotpagina, met een **Ontdekt**-sticker in je paspoort. |
+| "Er staat nog niks in mijn stad." | Mooi, dan ben jij de ontdekker. Jouw foto wordt de foto van de plek, op het overzicht en bovenaan de spotpagina, met een **Ontdekt**-sticker in je paspoort. |
 | "Weer een account aanmaken." | Inloggen met Apple of Google, snel en makkelijk. Kijken kan zonder account. |
 
 **Anti-persona:** Wie thuis ontbijt fotografeert, wie een dinerrestaurant zoekt, influencers die op volgers uit zijn (brag.fast heeft geen volgers of feed).
@@ -74,7 +74,7 @@ B2C, dus geen inkoopcomité. Horecaondernemers worden een persona zodra het verd
 **Push:** Google en TripAdvisor tonen alles door elkaar, met spijt achteraf als gevolg.
 **Pull:** Alleen ontbijt en brunch, echte borden van echte gasten, je foto doet eindelijk iets.
 **Habit:** De foto op Instagram zetten of in de camerarol laten staan, vrienden om tips vragen, standaard Google Maps openen.
-**Anxiety:** Weer een app, lege borden in de eigen stad, twijfel of andermans smaak bij de hunne past.
+**Anxiety:** Weer een app, een leeg overzicht in de eigen stad, twijfel of andermans smaak bij de hunne past.
 
 ## Customer Language
 **How they describe the problem:**
@@ -83,15 +83,16 @@ B2C, dus geen inkoopcomité. Horecaondernemers worden een persona zodra het verd
 - "Waar kun je hier goed ontbijten?"
 **How they describe us:**
 - "Kijk, als ik ergens ontbijt of brunch maak ik vaak een foto en met brag.fast heb je een plek om dat te delen en daardoor andere mensen te helpen." (oprichter, tegen een vriend)
-**Words to use:** ontbijt- en brunchplekken (altijd het paar), plek, tent, tentje(s), bord, ontdekker, brag, like, #bragfast. Slogan: **Eerst de foto, dan de hap.** / **Photo first, then the bite.** Homepage: **Ontbijt- en brunchplekken, per stad.** App-band: **Klik. Brag. Klaar.**
-**Words to avoid:** "ontbijt" of "breakfast" los (altijd met brunch), "adder" in Nederlandse zinnen, review, sterren, beoordeling, feed, volgers, betaalde vermelding.
+**Words to use:** ontbijt- en brunchplekken (altijd het paar), plek, tent, tentje(s), overzicht (de plekken van een stad), bord (alleen het bord waar je van eet), ontdekker, brag, like, #bragfast. Slogan: **Eerst de foto, dan de hap.** / **Photo first, then the bite.** Homepage: **Ontbijt- en brunchplekken, per stad.** App-band: **Klik. Brag. Klaar.**
+**Words to avoid:** "ontbijt" of "breakfast" los (altijd met brunch), "adder" in Nederlandse zinnen, review, sterren, beoordeling, feed, volgers, betaalde vermelding, "bord" voor de lijst van een stad (verwart met het bord waar je van eet).
 **Glossary:**
 | Term | Meaning |
 |------|---------|
-| Bord | Ranglijst van plekken in één woonplaats (stad of dorp) |
+| Overzicht | Ranglijst van plekken in één woonplaats (stad of dorp). "Het overzicht van Enschede". |
+| Bord | Het bord waar je van eet. "Laat je bord zien", "Echte borden van echte gasten". Nooit de lijst van een stad. |
 | Plek / spot | Eén ontbijt- of brunchzaak |
 | Brag | Je foto van wat je kreeg |
-| Like | Hoe een plek stijgt op het bord; één per persoon per plek |
+| Like | Hoe een plek stijgt in het overzicht; één per persoon per plek |
 | Ontdekt | Sticker op de foto die een plek aanmaakte |
 | Paspoort | Je openbare profiel: al je foto's, een stempel per woonplaats |
 | Leaderboard | Gebruikers gerangschikt op verdiende likes |
@@ -124,4 +125,6 @@ B2C, dus geen inkoopcomité. Horecaondernemers worden een persona zodra het verd
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v3 (2026-10-02) — Open points: "overzicht" staat nu ook in SPEC.md en de sitetekst, dus het open punt over "bord" is weg.
+- v2 (2026-10-02) — "Bord" voor de lijst van een stad vervangen door "overzicht" (Product Overview, Differentiation, Objections, Switching, Customer Language, Glossary, Open points): "bord" werd verward met het bord waar je van eet en betekent nu alleen dat.
 - v1 (2026-10-02) — Initial context.

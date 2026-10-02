@@ -752,7 +752,7 @@ control. It replaces the two app rows; there are no empty phone shells.
   30rem container it turns narrow (560 × 1150) and stacks the board above the phone. Each
   variant sets its own positions and tilts for the phone, the prints, the gallery tiles and
   the plate.
-- **Plate.** The **bord** the board is named after: a white disc under everything, with a
+- **Plate.** The **bord** you eat from: a white disc under everything, with a
   shell well (inset 16%) and a thin candy rim line (candy 45% into white, inset 4.5%).
 - **Phone.** A berry body in phone points (`--pt`, 1/414 of the phone; 414 × 868, 66pt
   radius), with side keys, an enamel lip, a white screen at 54pt and an 8:15 status bar
