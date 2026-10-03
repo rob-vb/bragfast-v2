@@ -11,7 +11,7 @@ This skill is for the next agent, mid-task, who has never seen the app. Read `fe
 
 ## Isolate first
 
-The owner-facing preview is **https://brag.fast/** (nginx → `127.0.0.1:3002` → henk's pm2 `bragfast` = `next start`; the same box also answers on `http://77.42.31.66/`). Cursor `next dev` on 3010 is a different process. **Never drive either of those.** Never `pm2 restart`, never kill by process name `next` / `bragfast`.
+The owner-facing preview is **https://brag.fast/** (nginx → `127.0.0.1:3002` → root's pm2 `bragfast` = `next start`; the same box also answers on `http://77.42.31.66/`). Cursor `next dev` on 3010 is a different process. **Never drive either of those.** Never `pm2 restart`, never kill by process name `next` / `bragfast`.
 
 Launch a dedicated `next dev` on **127.0.0.1:3019** (override with `BRAGFAST_VERIFY_PORT`). Two Next processes can share the machine on different ports.
 

@@ -1,4 +1,4 @@
-// pm2 app for https://brag.fast. Runs as henk; scripts/deploy.sh reloads it.
+// pm2 app for https://brag.fast. Runs under root's pm2; scripts/deploy.sh reloads it.
 module.exports = {
   apps: [
     {
